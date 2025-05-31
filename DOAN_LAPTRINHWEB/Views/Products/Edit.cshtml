@@ -1,0 +1,261 @@
+﻿@model DOAN_LAPTRINHWEB.Models.Product
+@using Microsoft.AspNetCore.Antiforgery
+@inject IAntiforgery Antiforgery
+
+@{
+    ViewData["Title"] = "Chỉnh sửa sản phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var token = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+
+<div class="container">
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0"><i class="fas fa-edit me-2"></i>Chỉnh sửa sản phẩm</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data" id="editProductForm">
+                @Html.AntiForgeryToken()
+                <div class="row">
+                    <div class="col-md-8">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                        <input type="hidden" asp-for="ProductId" />
+
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label fw-bold">Tên sản phẩm</label>
+                            <input asp-for="Name" class="form-control" placeholder="Nhập tên sản phẩm" required />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label fw-bold">Mô tả</label>
+                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Nhập mô tả sản phẩm"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Price" class="form-label fw-bold">Giá (VNĐ)</label>
+                                <div class="input-group">
+                                    <input asp-for="Price" class="form-control" type="number" placeholder="Nhập giá" required />
+                                    <span class="input-group-text">đ</span>
+                                </div>
+                                <span asp-validation-for="Price" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Stock" class="form-label fw-bold">Số lượng</label>
+                                <input asp-for="Stock" class="form-control" type="number" min="0" placeholder="Nhập số lượng" required />
+                                <span asp-validation-for="Stock" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="CategoryId" class="form-label fw-bold">Danh mục</label>
+                            <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryId" required>
+                                <option value="">-- Chọn danh mục --</option>
+                            </select>
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Ngày tạo</label>
+                                    <input value="@Model.CreatedAt?.ToString("dd/MM/yyyy HH:mm")" class="form-control" readonly />
+                                    <input type="hidden" asp-for="CreatedAt" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Ngày cập nhật</label>
+                                    <input class="form-control" value="@DateTime.Now.ToString("dd/MM/yyyy HH:mm")" readonly />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0">Hình ảnh chính</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3 text-center">
+                                    @{
+                                        var primaryImage = Model.ProductImages?.FirstOrDefault(img => img.IsPrimary == true);
+                                        var imageUrl = primaryImage?.ImageUrl ?? "/images/no-image.jpg";
+                                    }
+                                    <img id="preview" src="@imageUrl" class="img-fluid mb-3 border rounded" style="max-height: 200px;" />
+                                    <div class="d-grid">
+                                        <label for="primaryImage" class="btn btn-outline-primary">
+                                            <i class="fas fa-upload me-2"></i>Thay đổi ảnh chính
+                                        </label>
+                                        <input id="primaryImage" name="PrimaryImage" type="file" accept="image/*" class="d-none" onchange="previewImage(this)" />
+                                    </div>
+                                    <small class="text-muted">Kích thước tối đa: 2MB. Định dạng: JPG, PNG</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Ảnh phụ</h5>
+                                <input type="file" name="AdditionalImages" accept="image/*" multiple class="d-none" id="additionalImages" />
+                                <label for="additionalImages" class="btn btn-sm btn-outline-primary mb-0">
+                                    <i class="fas fa-plus"></i> Thêm ảnh
+                                </label>
+                            </div>
+                            <div class="card-body">
+                                <div id="additional-images-preview" class="mb-3"></div>
+                                <div class="additional-images-container">
+                                    @if (Model.ProductImages != null && Model.ProductImages.Any(img => img.IsPrimary != true))
+                                    {
+                                        <div class="row row-cols-2 g-2" id="existingImages">
+                                            @foreach (var image in Model.ProductImages.Where(img => img.IsPrimary != true))
+                                            {
+                                                <div class="col image-container" data-id="@image.ImageId">
+                                                    <div class="position-relative">
+                                                        <img src="@image.ImageUrl" class="img-thumbnail" style="height: 80px; object-fit: cover; width: 100%;" />
+                                                        <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 btn-remove-image"
+                                                                data-image-id="@image.ImageId">
+                                                            <i class="fas fa-times"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="text-center text-muted" id="noImagesMessage">
+                                            <i class="fas fa-image fa-3x mb-2"></i>
+                                            <p>Chưa có ảnh phụ</p>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-4">
+                    <a asp-action="Index" class="btn btn-outline-secondary me-2">
+                        <i class="fas fa-arrow-left me-1"></i>Quay lại
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i>Lưu thay đổi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#preview').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $(document).ready(function () {
+            // Show success message if available
+                 @if (TempData["SuccessMessage"] != null && Context.Request.Method == "GET")
+        {
+                <text>
+                    // Không hiển thị thông báo khi load form
+                    // TempData["SuccessMessage"] = null; // Không thể sửa TempData trong View
+                </text>
+        }
+        else if (TempData["SuccessMessage"] != null)
+        {
+                <text>
+                    alert('@TempData["SuccessMessage"]');
+                </text>
+        }
+
+            // Show preview of additional images when selected
+            $('#additionalImages').change(function () {
+                const files = Array.from(this.files);
+                $('#additional-images-preview').empty();
+
+                if (files.length > 0) {
+                    $('#noImagesMessage').hide();
+
+                    const previewRow = $('<div class="row row-cols-2 g-2 mb-3"></div>');
+                    $('#additional-images-preview').append(previewRow);
+
+                    files.forEach(file => {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const previewCol = $(`
+                                <div class="col">
+                                    <div class="position-relative">
+                                        <img src="${e.target.result}" class="img-thumbnail" style="height: 80px; object-fit: cover; width: 100%;" />
+                                        <div class="badge bg-info position-absolute bottom-0 end-0 m-1">New</div>
+                                    </div>
+                                </div>
+                            `);
+                            previewRow.append(previewCol);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                }
+            });
+
+            // Remove image functionality with improved error handling
+            $('.btn-remove-image').click(function() {
+                const imageId = $(this).data('image-id');
+                const containerElement = $(this).closest('.image-container');
+
+                if (confirm('Bạn có chắc chắn muốn xóa ảnh này?')) {
+                    $.ajax({
+                        url: '/Products/RemoveImage/' + imageId,
+                        type: 'POST',
+                        headers: {
+                            "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        success: function(data) {
+                            if (data.success) {
+                                // Remove the image element from DOM on success
+                                containerElement.fadeOut(300, function() {
+                                    $(this).remove();
+
+                                    // Show the "no images" message if no images remain
+                                    if ($('#existingImages').children().length === 0) {
+                                        $('#noImagesMessage').show();
+                                    }
+                                });
+                            } else {
+                                alert('Không thể xóa ảnh: ' + (data.message || 'Lỗi không xác định'));
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(xhr.responseText);
+                            alert('Lỗi kết nối server. Vui lòng thử lại sau.');
+                        }
+                    });
+                }
+            });
+
+            // Debug form submission
+            $('#editProductForm').on('submit', function(e) {
+                console.log('Form đang được gửi...');
+                // Uncomment dòng này để debug form data
+                // e.preventDefault();
+                var formData = new FormData(this);
+                for (var pair of formData.entries()) {
+                    console.log(pair[0] + ': ' + (pair[1] instanceof File ? pair[1].name : pair[1]));
+                }
+            });
+        });
+    </script>
+}

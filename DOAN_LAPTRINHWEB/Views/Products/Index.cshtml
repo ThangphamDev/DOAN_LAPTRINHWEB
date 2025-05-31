@@ -1,0 +1,254 @@
+﻿@model IEnumerable<DOAN_LAPTRINHWEB.Models.Product>
+
+@{
+    ViewData["Title"] = "Sản phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <!-- Page header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="display-5 fw-bold">Danh sách sản phẩm</h1>
+            <p class="text-muted">Quản lý tất cả sản phẩm của cửa hàng</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary view-switch active" data-view="grid">
+                <i class="fas fa-th"></i>
+            </button>
+            <button class="btn btn-outline-secondary view-switch" data-view="list">
+                <i class="fas fa-list"></i>
+            </button>
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Thêm mới
+            </a>
+        </div>
+    </div>
+
+    <!-- Search and filter -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Tìm kiếm sản phẩm...">
+                        <button class="btn btn-outline-secondary" type="button">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select">
+                        <option selected>Danh mục</option>
+                        <option>Tất cả</option>
+                        <!-- Add categories dynamically -->
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select">
+                        <option selected>Sắp xếp theo</option>
+                        <option>Mới nhất</option>
+                        <option>Giá: Thấp đến cao</option>
+                        <option>Giá: Cao đến thấp</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-success w-100">Lọc</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grid View (now visible by default) -->
+    <div id="grid-view" class="card mb-4">
+        <div class="card-body">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+                @foreach (var item in Model)
+                {
+                    <div class="col">
+                        <div class="card h-100 product-card">
+                            <div class="position-relative">
+                                @{
+                                    var primaryImage = item.ProductImages?.FirstOrDefault(img => img.IsPrimary == true);
+                                    var imageUrl = primaryImage?.ImageUrl ?? "/images/no-image.jpg";
+                                }
+                                <img src="@imageUrl" class="card-img-top product-img" alt="@item.Name">
+                                @if (item.Stock <= 0)
+                                {
+                                    <div class="out-of-stock-badge">
+                                        <span class="badge bg-danger position-absolute top-0 end-0 m-2">Hết hàng</span>
+                                    </div>
+                                }
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title mb-0">@item.Name</h5>
+                                <p class="card-text text-muted small">#@item.ProductId</p>
+                                <p class="card-text text-truncate">@item.Description</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold product-price">@(item.Price.ToString("N0") ?? "0")đ</span>
+                                    <span class="badge bg-info text-dark">@item.Category?.Name</span>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent border-top-0">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">@(item.CreatedAt?.ToString("dd/MM/yyyy") ?? "")</small>
+                                    <div class="btn-group">
+                                        <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-sm btn-outline-info">
+                                            <i class="fas fa-info-circle"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.ProductId" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- List View (hidden by default) -->
+    <div id="list-view" class="card d-none">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col">
+                                @Html.DisplayNameFor(model => model.Name)
+                            </th>
+                            <th scope="col">
+                                @Html.DisplayNameFor(model => model.Description)
+                            </th>
+                            <th scope="col">
+                                @Html.DisplayNameFor(model => model.Price)
+                            </th>
+                            <th scope="col">
+                                @Html.DisplayNameFor(model => model.Stock)
+                            </th>
+                            <th scope="col">
+                                @Html.DisplayNameFor(model => model.Category)
+                            </th>
+                            <th scope="col">Ngày tạo</th>
+                            <th scope="col">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td style="width: 60px">
+                                    @{
+                                        var primaryImage = item.ProductImages?.FirstOrDefault(img => img.IsPrimary == true);
+                                        var imageUrl = primaryImage?.ImageUrl ?? "/images/no-image.jpg";
+                                    }
+                                    <img src="@imageUrl" class="rounded" alt="@item.Name" style="width: 50px; height: 50px; object-fit: cover;">
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <h6 class="mb-0">@Html.DisplayFor(modelItem => item.Name)</h6>
+                                            <span class="text-muted small">#@item.ProductId</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <p class="text-truncate" style="max-width: 200px;">
+                                        @Html.DisplayFor(modelItem => item.Description)
+                                    </p>
+                                </td>
+                                <td>
+                                    <span class="product-price">@(item.Price.ToString("N0") ?? "0")đ</span>
+                                </td>
+                                <td>
+                                    @if (item.Stock > 10)
+                                    {
+                                        <span class="badge bg-success">@Html.DisplayFor(modelItem => item.Stock)</span>
+                                    }
+                                    else if (item.Stock > 0)
+                                    {
+                                        <span class="badge bg-warning text-dark">@Html.DisplayFor(modelItem => item.Stock)</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Hết hàng</span>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="badge bg-info text-dark">@Html.DisplayFor(modelItem => item.Category.Name)</span>
+                                </td>
+                                <td>
+                                    @(item.CreatedAt?.ToString("dd/MM/yyyy") ?? "")
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-sm btn-outline-info">
+                                            <i class="fas fa-info-circle"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.ProductId" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+            </li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Set default view to grid
+            $('#grid-view').removeClass('d-none');
+            $('#list-view').addClass('d-none');
+            $('.view-switch[data-view="grid"]').addClass('active');
+            $('.view-switch[data-view="list"]').removeClass('active');
+
+            // View switching functionality
+            $('.view-switch').click(function() {
+                const view = $(this).data('view');
+
+                // Update active state on buttons
+                $('.view-switch').removeClass('active');
+                $(this).addClass('active');
+
+                // Show/hide appropriate view
+                if (view === 'grid') {
+                    $('#grid-view').removeClass('d-none');
+                    $('#list-view').addClass('d-none');
+                } else {
+                    $('#grid-view').addClass('d-none');
+                    $('#list-view').removeClass('d-none');
+                }
+            });
+        });
+    </script>
+}

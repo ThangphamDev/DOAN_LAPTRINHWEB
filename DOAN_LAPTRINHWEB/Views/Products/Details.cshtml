@@ -1,0 +1,212 @@
+﻿@model DOAN_LAPTRINHWEB.Models.Product
+
+@{
+    ViewData["Title"] = "Chi tiết sản phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container product-details-container">
+    <nav aria-label="breadcrumb" class="my-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Products" asp-action="Index">Sản phẩm</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+        </ol>
+    </nav>
+
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="row g-0">
+            <div class="col-md-5">
+                <div class="product-gallery">
+                    <div class="main-image-container">
+                        @{
+                            var primaryImage = Model.ProductImages?.FirstOrDefault(img => img.IsPrimary == true);
+                            var mainImageUrl = primaryImage?.ImageUrl ?? "/images/no-image.jpg";
+                        }
+                        <img src="@mainImageUrl" id="main-product-image" class="img-fluid rounded-start" alt="@Model.Name">
+
+                        @if (Model.Stock <= 0)
+                        {
+                            <div class="out-of-stock-badge">
+                                <span class="badge bg-danger">Hết hàng</span>
+                            </div>
+                        }
+                        else if (Model.Stock <= 10)
+                        {
+                            <div class="low-stock-badge">
+                                <span class="badge bg-warning text-dark">Còn ít hàng</span>
+                            </div>
+                        }
+                    </div>
+
+                    @if (Model.ProductImages != null && Model.ProductImages.Count > 1)
+                    {
+                        <div class="thumbnail-gallery mt-3">
+                            <div class="row g-2">
+                                @foreach (var image in Model.ProductImages)
+                                {
+                                    <div class="col-3">
+                                        <img src="@image.ImageUrl" class="img-thumbnail thumbnail-item @(image.IsPrimary == true ? "active" : "")"
+                                             alt="@Model.Name" onclick="changeMainImage('@image.ImageUrl')">
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="card-body product-info">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h1 class="product-title">@Model.Name</h1>
+                            <p class="text-muted product-code">Mã sản phẩm: #@Model.ProductId</p>
+                        </div>
+                        <div class="product-actions">
+                            <a asp-action="Edit" asp-route-id="@Model.ProductId" class="btn btn-outline-primary">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@Model.ProductId" class="btn btn-outline-danger">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="product-category mb-3">
+                        <span class="badge bg-info text-dark">@Model.Category?.Name</span>
+                    </div>
+
+                    <div class="product-price-container mb-4">
+                        <h2 class="product-price mb-0">@(Model.Price.ToString("N0") ?? "0")đ</h2>
+                        @if (Model.Stock > 0)
+                        {
+                            <span class="text-success stock-status">
+                                <i class="fas fa-check-circle me-1"></i>Còn hàng (@Model.Stock sản phẩm)
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="text-danger stock-status">
+                                <i class="fas fa-times-circle me-1"></i>Hết hàng
+                            </span>
+                        }
+                    </div>
+
+                    <div class="product-description mb-4">
+                        <h5 class="description-title">Mô tả sản phẩm</h5>
+                        <p class="description-text">@Model.Description</p>
+                    </div>
+
+                    <div class="product-meta">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="meta-item">
+                                    <span class="meta-label">Ngày tạo:</span>
+                                    <span class="meta-value">@(Model.CreatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "Chưa cập nhật")</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="meta-item">
+                                    <span class="meta-label">Cập nhật lần cuối:</span>
+                                    <span class="meta-value">@(Model.UpdatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "Chưa cập nhật")</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <div class="product-actions-bottom">
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Product Information Tabs -->
+    <div class="product-tabs mb-5">
+        <ul class="nav nav-tabs" id="productTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="specifications-tab" data-bs-toggle="tab" data-bs-target="#specifications" type="button"
+                        role="tab" aria-controls="specifications" aria-selected="true">
+                    Thông số kỹ thuật
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button"
+                        role="tab" aria-controls="reviews" aria-selected="false">
+                    Đánh giá
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="related-tab" data-bs-toggle="tab" data-bs-target="#related" type="button"
+                        role="tab" aria-controls="related" aria-selected="false">
+                    Sản phẩm liên quan
+                </button>
+            </li>
+        </ul>
+        <div class="tab-content p-4 border border-top-0 rounded-bottom" id="productTabContent">
+            <div class="tab-pane fade show active" id="specifications" role="tabpanel" aria-labelledby="specifications-tab">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <th scope="row" style="width: 30%">Tên sản phẩm</th>
+                            <td>@Model.Name</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Mã sản phẩm</th>
+                            <td>@Model.ProductId</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Danh mục</th>
+                            <td>@Model.Category?.Name</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Giá</th>
+                            <td>@(Model.Price.ToString("N0") ?? "0")đ</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Số lượng trong kho</th>
+                            <td>@Model.Stock</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Ngày thêm vào hệ thống</th>
+                            <td>@(Model.CreatedAt?.ToString("dd/MM/yyyy") ?? "Chưa cập nhật")</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                <div class="text-center py-5">
+                    <i class="fas fa-comments fa-3x text-muted mb-3"></i>
+                    <h5>Chưa có đánh giá nào</h5>
+                    <p class="text-muted">Sản phẩm này chưa có đánh giá từ khách hàng.</p>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="related" role="tabpanel" aria-labelledby="related-tab">
+                <div class="text-center py-5">
+                    <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                    <h5>Chưa có sản phẩm liên quan</h5>
+                    <p class="text-muted">Không tìm thấy sản phẩm tương tự trong cùng danh mục.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function changeMainImage(imageUrl) {
+            $('#main-product-image').attr('src', imageUrl);
+            $('.thumbnail-item').removeClass('active');
+            $(`img[src='${imageUrl}']`).addClass('active');
+        }
+
+        $(document).ready(function() {
+            // Initialize any plugins or additional functionality here
+        });
+    </script>
+}

@@ -1,0 +1,370 @@
+﻿/* Main styling */
+:root {
+    --primary-color: #0d6efd;
+    --secondary-color: #6c757d;
+    --success-color: #198754;
+    --info-color: #0dcaf0;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Navbar styling */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+.navbar-brand {
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+.nav-link {
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+    .nav-link:hover {
+        transform: translateY(-2px);
+    }
+
+/* Card styling */
+.card {
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+.card-header {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    padding: 0.75rem 1.25rem;
+}
+
+/* Button styling */
+.btn {
+    border-radius: 5px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+}
+
+    .btn-primary:hover {
+        background-color: #0b5ed7;
+        transform: translateY(-2px);
+    }
+
+/* Table styling */
+.table {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+    .table thead {
+        background-color: #f1f3f5;
+    }
+
+.table-hover tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.05);
+}
+
+/* Action buttons */
+.btn-action {
+    padding: 0.25rem 0.5rem;
+    margin-right: 0.25rem;
+    border-radius: 4px;
+}
+
+/* Pagination styling */
+.pagination .page-item .page-link {
+    color: var(--primary-color);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+/* Footer styling */
+.footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+}
+
+    .footer a {
+        color: var(--secondary-color);
+        transition: all 0.2s;
+    }
+
+        .footer a:hover {
+            color: var(--primary-color);
+        }
+
+/* Form styling */
+.form-control:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Product items specific styling */
+.product-image {
+    height: 200px;
+    object-fit: cover;
+    width: 100%;
+}
+
+.product-price {
+    color: var(--primary-color);
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.product-stock {
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+}
+/* Product Grid Styling */
+.product-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+}
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+    }
+
+.product-img {
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.product-card:hover .product-img {
+    transform: scale(1.05);
+}
+
+.product-price {
+    color: #0d6efd;
+    font-weight: bold;
+}
+
+/* View toggle buttons */
+.view-switch {
+    width: 40px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .view-switch.active {
+        background-color: #0d6efd;
+        color: white;
+        border-color: #0d6efd;
+    }
+
+/* Out of stock overlay */
+.out-of-stock-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+    .row-cols-md-3 > * {
+        width: 50%;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .row-cols-md-3 > * {
+        width: 100%;
+    }
+}
+
+/* Product Details Page Styling */
+.product-details-container {
+    margin-bottom: 3rem;
+}
+
+/* Product Gallery */
+.product-gallery {
+    position: relative;
+    padding: 1rem;
+}
+
+.main-image-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    background-color: #f8f9fa;
+    text-align: center;
+}
+
+#main-product-image {
+    max-height: 400px;
+    object-fit: contain;
+    width: 100%;
+    transition: transform 0.3s ease;
+}
+
+    #main-product-image:hover {
+        transform: scale(1.05);
+    }
+
+.out-of-stock-badge, .low-stock-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+.thumbnail-gallery {
+    overflow-x: auto;
+}
+
+.thumbnail-item {
+    cursor: pointer;
+    height: 80px;
+    width: 100%;
+    object-fit: cover;
+    transition: all 0.2s ease;
+    opacity: 0.7;
+    border: 2px solid transparent;
+}
+
+    .thumbnail-item:hover {
+        opacity: 1;
+    }
+
+    .thumbnail-item.active {
+        border-color: var(--primary-color);
+        opacity: 1;
+    }
+
+/* Product Info */
+.product-info {
+    padding: 1.5rem;
+}
+
+.product-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.product-code {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.product-category .badge {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+}
+
+.product-price-container {
+    margin-top: 1.5rem;
+}
+
+.product-price {
+    color: var(--primary-color);
+    font-weight: 700;
+    font-size: 2.2rem;
+}
+
+.stock-status {
+    font-size: 0.95rem;
+    display: block;
+    margin-top: 0.5rem;
+}
+
+.description-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.description-text {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.product-meta {
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+}
+
+.meta-item {
+    margin-bottom: 0.5rem;
+}
+
+.meta-label {
+    font-weight: 600;
+    margin-right: 0.5rem;
+}
+
+.product-actions-bottom {
+    display: flex;
+    justify-content: flex-start;
+    gap: 1rem;
+}
+
+/* Product Tabs */
+.product-tabs {
+    margin-top: 2rem;
+}
+
+.nav-tabs .nav-link {
+    color: var(--secondary-color);
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+}
+
+    .nav-tabs .nav-link.active {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+.tab-content {
+    background-color: white;
+    min-height: 300px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+    .product-title {
+        font-size: 1.5rem;
+    }
+
+    .product-price {
+        font-size: 1.8rem;
+    }
+
+    .product-gallery {
+        margin-bottom: 1.5rem;
+    }
+
+    .main-image-container {
+        max-height: 300px;
+    }
+}
