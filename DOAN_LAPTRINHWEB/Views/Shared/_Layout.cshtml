@@ -45,10 +45,25 @@
                         <li class="nav-item">
                             <a class="nav-link px-3" asp-controller="Products" asp-action="Index">Sản Phẩm</a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle px-3" asp-controller="Categories" asp-action="Index">
+                        <li class="nav-item dropdown category-dropdown-wrapper">
+                            <a class="nav-link dropdown-toggle px-3" href="#">
                                 Danh Mục
                             </a>
+                            <div class="category-dropdown">
+                                <div class="category-dropdown-inner">
+                                    @{
+                                        // Lấy danh sách danh mục từ database
+                                        var dbContext = (HomeStylesDbContext)Context.RequestServices.GetService(typeof(HomeStylesDbContext));
+                                        var categories = dbContext?.Categories.ToList() ?? new List<Category>();
+                                    }
+                                    @foreach (var category in categories)
+                                    {
+                                        <a class="dropdown-item" asp-controller="Products" asp-action="Index" asp-route-categoryId="@category.CategoryId">
+                                            @category.Name
+                                        </a>
+                                    }
+                                </div>
+                            </div>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link px-3" href="#">Ý Tưởng Decor</a>
@@ -56,7 +71,16 @@
                         <li class="nav-item">
                             <a class="nav-link px-3" href="#">Liên Hệ</a>
                         </li>
+                        @if (User.IsInRole("Administrator"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link px-3" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                                    <i class="fas fa-tachometer-alt me-1"></i> Quản trị Admin
+                                </a>
+                            </li>
+                        }
                     </ul>
+
 
                     <!-- Actions -->
                     <div class="nav-actions d-flex align-items-center gap-3">

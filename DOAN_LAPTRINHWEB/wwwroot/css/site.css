@@ -1,4 +1,4 @@
-/* Custom CSS for HomeStyling - Decor Shop */
+﻿/* Custom CSS for HomeStyling - Decor Shop */
 
 :root {
     --primary-color: #212529;
@@ -474,71 +474,213 @@ body {
             -moz-appearance: textfield;
         }
 
-.product-description {
-    line-height: 1.6;
-}
-
-.product-attributes .row {
-    margin-bottom: 10px;
-}
-
-.additional-info {
-    font-size: 0.9rem;
-}
-
-.review-item:last-child {
-    border-bottom: none !important;
-    padding-bottom: 0 !important;
-}
-
-.review-item img {
-    object-fit: cover;
-}
-
-#product-full-description {
-    line-height: 1.7;
-}
-
-    #product-full-description ul {
-        padding-left: 20px;
+    .product-description {
+        line-height: 1.6;
     }
 
-    #product-full-description h4 {
-        margin-top: 1.5rem;
-        margin-bottom: 1rem;
+    .product-attributes .row {
+        margin-bottom: 10px;
     }
 
-.nav-tabs .nav-link {
-    color: #212529;
-    font-weight: 500;
+    .additional-info {
+        font-size: 0.9rem;
+    }
+
+    .review-item:last-child {
+        border-bottom: none !important;
+        padding-bottom: 0 !important;
+    }
+
+    .review-item img {
+        object-fit: cover;
+    }
+
+    #product-full-description {
+        line-height: 1.7;
+    }
+
+        #product-full-description ul {
+            padding-left: 20px;
+        }
+
+        #product-full-description h4 {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+    .nav-tabs .nav-link {
+        color: #212529;
+        font-weight: 500;
+    }
+
+        .nav-tabs .nav-link.active {
+            font-weight: 600;
+            color: #000;
+            border-bottom: 2px solid #212529;
+        }
+
+    @media (max-width: 767px) {
+        .product-image-container {
+            margin-bottom: 2rem;
+        }
+
+        .quantity-selector {
+            width: 110px;
+        }
+    }
+    /* Force main content to full width */
+    body > .container,
+    body > .container-lg,
+    body > .container-fluid,
+    main.container,
+    main.container-lg,
+    main.container-fluid {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: calc(-50vw + 50%) !important;
+        margin-right: calc(-50vw + 50%) !important;
+    }
+/* CSS cho menu dropdown danh mục */
+.category-dropdown-wrapper {
+    position: relative;
 }
 
-    .nav-tabs .nav-link.active {
-        font-weight: 600;
-        color: #000;
-        border-bottom: 2px solid #212529;
+.category-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 220px;
+    background: var(--light-color);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    border-radius: var(--border-radius);
+    padding: 10px 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    z-index: 999;
+}
+
+.category-dropdown-wrapper:hover .category-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.category-dropdown-inner {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.category-dropdown .dropdown-item {
+    padding: 10px 20px;
+    font-size: 0.95rem;
+    color: var(--text-color);
+    transition: all 0.2s ease;
+    display: block;
+    text-decoration: none;
+}
+
+    .category-dropdown .dropdown-item:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+        transform: translateX(5px);
+        color: var(--primary-color);
     }
 
-@media (max-width: 767px) {
-    .product-image-container {
-        margin-bottom: 2rem;
-    }
+/* CSS cho mũi tên dropdown */
+.category-dropdown:before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 30px;
+    width: 16px;
+    height: 16px;
+    background-color: white;
+    transform: rotate(45deg);
+    border-top: 1px solid rgba(0,0,0,0.05);
+    border-left: 1px solid rgba(0,0,0,0.05);
+}
 
-    .quantity-selector {
-        width: 110px;
+/* Animation cho các item trong dropdown */
+.category-dropdown .dropdown-item {
+    opacity: 0;
+    transform: translateX(-10px);
+    animation: fadeInRight 0.3s ease forwards;
+}
+
+@keyframes fadeInRight {
+    to {
+        opacity: 1;
+        transform: translateX(0);
     }
 }
-/* Force main content to full width */
-body > .container,
-body > .container-lg,
-body > .container-fluid,
-main.container,
-main.container-lg,
-main.container-fluid {
-    width: 100vw !important;
-    max-width: 100vw !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    margin-left: calc(-50vw + 50%) !important;
-    margin-right: calc(-50vw + 50%) !important;
+
+/* Delay cho mỗi item */
+.category-dropdown .dropdown-item:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.category-dropdown .dropdown-item:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.category-dropdown .dropdown-item:nth-child(3) {
+    animation-delay: 0.15s;
+}
+
+.category-dropdown .dropdown-item:nth-child(4) {
+    animation-delay: 0.2s;
+}
+
+.category-dropdown .dropdown-item:nth-child(5) {
+    animation-delay: 0.25s;
+}
+
+.category-dropdown .dropdown-item:nth-child(6) {
+    animation-delay: 0.3s;
+}
+
+.category-dropdown .dropdown-item:nth-child(7) {
+    animation-delay: 0.35s;
+}
+
+.category-dropdown .dropdown-item:nth-child(8) {
+    animation-delay: 0.4s;
+}
+
+.category-dropdown .dropdown-item:nth-child(n+9) {
+    animation-delay: 0.45s;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+    .category-dropdown {
+        position: static;
+        width: 100%;
+        box-shadow: none;
+        opacity: 0;
+        visibility: hidden;
+        height: 0;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+    }
+
+    .category-dropdown-wrapper:hover .category-dropdown,
+    .category-dropdown-wrapper:focus-within .category-dropdown {
+        opacity: 1;
+        visibility: visible;
+        height: auto;
+        padding: 5px 0;
+    }
+
+    .category-dropdown:before {
+        display: none;
+    }
+
+    .category-dropdown .dropdown-item {
+        padding-left: 2rem;
+    }
 }

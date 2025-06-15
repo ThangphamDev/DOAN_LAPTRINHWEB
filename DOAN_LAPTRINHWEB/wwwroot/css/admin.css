@@ -1,0 +1,112 @@
+﻿body {
+    overflow-x: hidden;
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#wrapper {
+    min-height: 100vh;
+}
+
+#sidebar-wrapper {
+    width: 250px;
+    min-height: 100vh;
+}
+
+.list-group-item {
+    border: none;
+    transition: all 0.3s;
+}
+
+    .list-group-item:hover {
+        background-color: #343a40 !important;
+        color: white;
+    }
+
+.navbar-toggler {
+    border: none;
+}
+
+.dropdown-menu {
+    border-radius: 8px;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    border: none;
+}
+
+.dropdown-item {
+    padding: 8px 16px;
+    transition: all 0.2s;
+}
+
+    .dropdown-item:hover {
+        background-color: #f1f3f5;
+    }
+
+#sidebarToggle {
+    padding: 0.375rem 0.75rem;
+    margin-right: 1rem;
+}
+
+.card-admin {
+    border-radius: 10px;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    transition: all 0.3s;
+    border: none;
+}
+
+    .card-admin:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+
+    .card-admin .card-header {
+        background-color: #ffffff;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        font-weight: 600;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+.table {
+    vertical-align: middle;
+}
+
+/* Custom colors for dashboard statistics */
+.bg-gradient-primary {
+    background: linear-gradient(45deg, #4e73df, #224abe);
+}
+
+.bg-gradient-success {
+    background: linear-gradient(45deg, #1cc88a, #13855c);
+}
+
+.bg-gradient-info {
+    background: linear-gradient(45deg, #36b9cc, #258391);
+}
+
+.bg-gradient-warning {
+    background: linear-gradient(45deg, #f6c23e, #dda20a);
+}
+
+/* For mobile screens */
+@media (max-width: 768px) {
+    #sidebar-wrapper {
+        margin-left: -250px;
+        position: fixed;
+        z-index: 999;
+        height: 100%;
+        transition: margin 0.25s ease-out;
+    }
+
+    body.sb-sidenav-toggled #sidebar-wrapper {
+        margin-left: 0;
+    }
+
+    #wrapper.toggled #sidebar-wrapper {
+        margin-left: 0;
+    }
+
+    #page-content-wrapper {
+        min-width: 100vw;
+    }
+}
