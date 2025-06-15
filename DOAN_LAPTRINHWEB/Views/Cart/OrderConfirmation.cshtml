@@ -1,0 +1,90 @@
+﻿@model OrderConfirmationViewModel
+@{
+    ViewData["Title"] = "Xác nhận đơn hàng";
+}
+
+<section class="container py-5">
+    <div class="text-center mb-5">
+        <div class="mb-4">
+            <i class="fas fa-check-circle text-success" style="font-size: 64px;"></i>
+        </div>
+        <h1 class="mb-3">Cảm ơn bạn đã đặt hàng!</h1>
+        <p class="lead mb-1">Đơn hàng #@Model.Order.OrderId đã được xác nhận.</p>
+        <p>Chúng tôi sẽ gửi email xác nhận kèm theo thông tin đơn hàng của bạn.</p>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Chi tiết đơn hàng</h5>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <p class="mb-1">
+                                <strong>Mã đơn hàng:</strong> #@Model.Order.OrderId
+                            </p>
+                            <p class="mb-1">
+                                <strong>Ngày đặt:</strong> @Model.Order.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                            </p>
+                            <p class="mb-1">
+                                <strong>Tình trạng:</strong> <span class="badge bg-warning">@Model.Order.OrderStatus</span>
+                            </p>
+                            <p class="mb-1">
+                                <strong>Phương thức thanh toán:</strong> @Model.Order.Payments.FirstOrDefault()?.PaymentMethod
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>Địa chỉ giao hàng:</strong></p>
+                            <p class="mb-1">@Model.Address.FullName</p>
+                            <p class="mb-1">@Model.Address.Street</p>
+                            <p class="mb-1">@Model.Address.City, @Model.Address.State @Model.Address.PostalCode</p>
+                            <p class="mb-1">@Model.Address.Country</p>
+                            <p class="mb-1">@Model.Address.Phone</p>
+                        </div>
+                    </div>
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Sản phẩm</th>
+                                <th class="text-center">Số lượng</th>
+                                <th class="text-end">Giá</th>
+                                <th class="text-end">Tổng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Order.OrderItems)
+                            {
+                                <tr>
+                                    <td>@item.Product.Name</td>
+                                    <td class="text-center">@item.Quantity</td>
+                                    <td class="text-end">@item.Price.ToString("N0")₫</td>
+                                    <td class="text-end">@((item.Price * item.Quantity).ToString("N0"))₫</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-end">Tạm tính</td>
+                                <td class="text-end">@Model.Order.TotalAmount.ToString("N0")₫</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-end">Phí vận chuyển</td>
+                                <td class="text-end">Miễn phí</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-end"><strong>Tổng cộng</strong></td>
+                                <td class="text-end"><strong>@Model.Order.TotalAmount.ToString("N0")₫</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <a asp-controller="Products" asp-action="Index" class="btn btn-dark">Tiếp tục mua sắm</a>
+            </div>
+        </div>
+    </div>
+</section>

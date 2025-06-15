@@ -1,150 +1,141 @@
 ﻿@model DOAN_LAPTRINHWEB.Models.Product
-@using Microsoft.AspNetCore.Antiforgery
-@inject IAntiforgery Antiforgery
 
 @{
-    ViewData["Title"] = "Chỉnh sửa sản phẩm";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-    var token = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+    ViewData["Title"] = "Chỉnh Sửa Sản Phẩm";
 }
 
-<div class="container">
-    <div class="card shadow-sm mb-4">
+<div class="container mt-4">
+    <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
-            <h4 class="mb-0"><i class="fas fa-edit me-2"></i>Chỉnh sửa sản phẩm</h4>
+            <h2 class="mb-0">@ViewData["Title"]</h2>
         </div>
         <div class="card-body">
-            <form asp-action="Edit" method="post" enctype="multipart/form-data" id="editProductForm">
-                @Html.AntiForgeryToken()
+            <form asp-action="Edit" enctype="multipart/form-data" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="ProductId" />
+
                 <div class="row">
                     <div class="col-md-8">
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
-                        <input type="hidden" asp-for="ProductId" />
-
                         <div class="mb-3">
-                            <label asp-for="Name" class="form-label fw-bold">Tên sản phẩm</label>
-                            <input asp-for="Name" class="form-control" placeholder="Nhập tên sản phẩm" required />
+                            <label asp-for="Name" class="form-label">Tên sản phẩm</label>
+                            <input asp-for="Name" class="form-control" required />
                             <span asp-validation-for="Name" class="text-danger"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="Description" class="form-label fw-bold">Mô tả</label>
-                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Nhập mô tả sản phẩm"></textarea>
-                            <span asp-validation-for="Description" class="text-danger"></span>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label asp-for="Price" class="form-label fw-bold">Giá (VNĐ)</label>
-                                <div class="input-group">
-                                    <input asp-for="Price" class="form-control" type="number" placeholder="Nhập giá" required />
-                                    <span class="input-group-text">đ</span>
-                                </div>
-                                <span asp-validation-for="Price" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-6">
-                                <label asp-for="Stock" class="form-label fw-bold">Số lượng</label>
-                                <input asp-for="Stock" class="form-control" type="number" min="0" placeholder="Nhập số lượng" required />
-                                <span asp-validation-for="Stock" class="text-danger"></span>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="CategoryId" class="form-label fw-bold">Danh mục</label>
-                            <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryId" required>
-                                <option value="">-- Chọn danh mục --</option>
-                            </select>
-                            <span asp-validation-for="CategoryId" class="text-danger"></span>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Ngày tạo</label>
-                                    <input value="@Model.CreatedAt?.ToString("dd/MM/yyyy HH:mm")" class="form-control" readonly />
-                                    <input type="hidden" asp-for="CreatedAt" />
+                                    <label asp-for="Price" class="form-label">Giá</label>
+                                    <div class="input-group">
+                                        <input asp-for="Price" class="form-control" type="number" min="0" required />
+                                        <span class="input-group-text">VNĐ</span>
+                                    </div>
+                                    <span asp-validation-for="Price" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Ngày cập nhật</label>
-                                    <input class="form-control" value="@DateTime.Now.ToString("dd/MM/yyyy HH:mm")" readonly />
+                                    <label asp-for="CategoryId" class="form-label">Danh mục</label>
+                                    <select asp-for="CategoryId" asp-items="ViewBag.CategoryId" class="form-select" required></select>
+                                    <span asp-validation-for="CategoryId" class="text-danger"></span>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">Mô tả</label>
+                            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <!-- Thêm trường Tồn kho -->
+                        <div class="mb-3">
+                            <label asp-for="Stock" class="form-label">Tồn kho</label>
+                            <input asp-for="Stock" class="form-control" type="number" min="0" required />
+                            <span asp-validation-for="Stock" class="text-danger"></span>
                         </div>
                     </div>
 
                     <div class="col-md-4">
-                        <div class="card mb-4">
-                            <div class="card-header bg-light">
-                                <h5 class="mb-0">Hình ảnh chính</h5>
+                        <!-- Main Image -->
+                        <div class="mb-3 border p-3 rounded bg-light">
+                            <label class="form-label d-block fw-bold">Hình ảnh đại diện</label>
+
+                            @{
+                                var primaryImage = Model.ProductImages?.FirstOrDefault(img => img.IsPrimary == true);
+                                var mainImageUrl = primaryImage?.ImageUrl ?? "/images/no-image.jpg";
+                            }
+
+                            <div class="text-center mb-3">
+                                <img src="@mainImageUrl" alt="@Model.Name" id="mainPreviewCurrent" class="img-fluid rounded mb-2" style="max-height: 200px;" />
+                                <div class="text-muted small">Hình ảnh hiện tại</div>
                             </div>
-                            <div class="card-body">
-                                <div class="mb-3 text-center">
-                                    @{
-                                        var primaryImage = Model.ProductImages?.FirstOrDefault(img => img.IsPrimary == true);
-                                        var imageUrl = primaryImage?.ImageUrl ?? "/images/no-image.jpg";
-                                    }
-                                    <img id="preview" src="@imageUrl" class="img-fluid mb-3 border rounded" style="max-height: 200px;" />
-                                    <div class="d-grid">
-                                        <label for="primaryImage" class="btn btn-outline-primary">
-                                            <i class="fas fa-upload me-2"></i>Thay đổi ảnh chính
-                                        </label>
-                                        <input id="primaryImage" name="PrimaryImage" type="file" accept="image/*" class="d-none" onchange="previewImage(this)" />
-                                    </div>
-                                    <small class="text-muted">Kích thước tối đa: 2MB. Định dạng: JPG, PNG</small>
-                                </div>
+
+                            <div class="mt-3">
+                                <label for="mainImageUpload" class="form-label">Thay đổi ảnh đại diện:</label>
+                                <input type="file" name="PrimaryImage" id="mainImageUpload" class="form-control" accept="image/*" />
+                                <small class="text-muted">Để trống nếu không muốn thay đổi ảnh</small>
+                            </div>
+
+                            <div id="mainImagePreview" class="mt-3 text-center d-none">
+                                <div class="fw-bold mb-1">Hình ảnh mới</div>
+                                <img id="mainPreview" src="#" class="img-fluid rounded" style="max-height: 200px;" />
                             </div>
                         </div>
 
-                        <div class="card">
-                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0">Ảnh phụ</h5>
-                                <input type="file" name="AdditionalImages" accept="image/*" multiple class="d-none" id="additionalImages" />
-                                <label for="additionalImages" class="btn btn-sm btn-outline-primary mb-0">
-                                    <i class="fas fa-plus"></i> Thêm ảnh
-                                </label>
-                            </div>
-                            <div class="card-body">
-                                <div id="additional-images-preview" class="mb-3"></div>
-                                <div class="additional-images-container">
-                                    @if (Model.ProductImages != null && Model.ProductImages.Any(img => img.IsPrimary != true))
-                                    {
-                                        <div class="row row-cols-2 g-2" id="existingImages">
-                                            @foreach (var image in Model.ProductImages.Where(img => img.IsPrimary != true))
-                                            {
-                                                <div class="col image-container" data-id="@image.ImageId">
-                                                    <div class="position-relative">
-                                                        <img src="@image.ImageUrl" class="img-thumbnail" style="height: 80px; object-fit: cover; width: 100%;" />
-                                                        <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 btn-remove-image"
-                                                                data-image-id="@image.ImageId">
-                                                            <i class="fas fa-times"></i>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            }
-                                        </div>
-                                    }
-                                    else
-                                    {
-                                        <div class="text-center text-muted" id="noImagesMessage">
-                                            <i class="fas fa-image fa-3x mb-2"></i>
-                                            <p>Chưa có ảnh phụ</p>
-                                        </div>
-                                    }
+                        <!-- Additional Images -->
+                        <div class="mb-3 border p-3 rounded bg-light">
+                            <label class="form-label d-block fw-bold">Hình ảnh bổ sung</label>
+
+                            @if (Model.ProductImages != null && Model.ProductImages.Any(img => img.IsPrimary != true))
+                            {
+                                <div class="mb-3">
+                                    <div class="fw-bold mb-2">Hình ảnh hiện có</div>
+                                    <div class="d-flex flex-wrap gap-2" id="existingImages">
+                                        @foreach (var image in Model.ProductImages.Where(img => img.IsPrimary != true))
+                                        {
+                                            <div class="position-relative image-item" data-image-id="@image.ImageId">
+                                                <img src="@image.ImageUrl" alt="Image" class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover;" />
+                                                <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle p-0 delete-image-btn"
+                                                        style="width: 20px; height: 20px; font-size: 10px;"
+                                                        data-image-id="@image.ImageId">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-center text-muted mb-3" id="noImagesMessage">
+                                    <i class="fas fa-images fa-2x mb-2"></i>
+                                    <p>Chưa có ảnh phụ</p>
+                                </div>
+                            }
+
+                            <div class="mt-3">
+                                <div class="fw-bold mb-2">Thêm hình ảnh mới</div>
+                                <input type="file" name="AdditionalImages" id="additionalImages" multiple class="form-control" accept="image/*" />
+                                <small class="text-muted d-block mb-2">Có thể chọn nhiều hình ảnh</small>
+                                <div id="additionalImagesPreview" class="mt-2 d-flex flex-wrap gap-2">
+                                    <!-- Additional images previews will be added here -->
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-end mt-4">
-                    <a asp-action="Index" class="btn btn-outline-secondary me-2">
-                        <i class="fas fa-arrow-left me-1"></i>Quay lại
-                    </a>
+                <div class="d-flex gap-2 mt-3">
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-1"></i>Lưu thay đổi
+                        <i class="fas fa-save me-2"></i>Cập Nhật
                     </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Quay Lại
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@Model.ProductId" class="btn btn-danger ms-auto">
+                        <i class="fas fa-trash me-2"></i>Xóa Sản Phẩm
+                    </a>
                 </div>
             </form>
         </div>
@@ -156,106 +147,156 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
-        function previewImage(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    $('#preview').attr('src', e.target.result);
+        // Main image preview functionality
+        document.getElementById('mainImageUpload').addEventListener('change', function(event) {
+            const preview = document.getElementById('mainPreview');
+            const previewContainer = document.getElementById('mainImagePreview');
+
+            if (event.target.files && event.target.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    previewContainer.classList.remove('d-none');
                 }
-                reader.readAsDataURL(input.files[0]);
+
+                reader.readAsDataURL(event.target.files[0]);
+            } else {
+                preview.src = '';
+                previewContainer.classList.add('d-none');
             }
-        }
+        });
 
-        $(document).ready(function () {
-            // Show success message if available
-                 @if (TempData["SuccessMessage"] != null && Context.Request.Method == "GET")
-        {
-                <text>
-                    // Không hiển thị thông báo khi load form
-                    // TempData["SuccessMessage"] = null; // Không thể sửa TempData trong View
-                </text>
-        }
-        else if (TempData["SuccessMessage"] != null)
-        {
-                <text>
-                    alert('@TempData["SuccessMessage"]');
-                </text>
-        }
+        // Additional images preview functionality
+        document.getElementById('additionalImages').addEventListener('change', function(event) {
+            const previewContainer = document.getElementById('additionalImagesPreview');
+            previewContainer.innerHTML = ''; // Clear previous previews
 
-            // Show preview of additional images when selected
-            $('#additionalImages').change(function () {
-                const files = Array.from(this.files);
-                $('#additional-images-preview').empty();
-
-                if (files.length > 0) {
-                    $('#noImagesMessage').hide();
-
-                    const previewRow = $('<div class="row row-cols-2 g-2 mb-3"></div>');
-                    $('#additional-images-preview').append(previewRow);
-
-                    files.forEach(file => {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            const previewCol = $(`
-                                <div class="col">
-                                    <div class="position-relative">
-                                        <img src="${e.target.result}" class="img-thumbnail" style="height: 80px; object-fit: cover; width: 100%;" />
-                                        <div class="badge bg-info position-absolute bottom-0 end-0 m-1">New</div>
-                                    </div>
-                                </div>
-                            `);
-                            previewRow.append(previewCol);
-                        };
-                        reader.readAsDataURL(file);
-                    });
+            if (event.target.files && event.target.files.length > 0) {
+                // Hide "no images" message if visible
+                const noImagesMsg = document.getElementById('noImagesMessage');
+                if (noImagesMsg) {
+                    noImagesMsg.style.display = 'none';
                 }
-            });
 
-            // Remove image functionality with improved error handling
-            $('.btn-remove-image').click(function() {
-                const imageId = $(this).data('image-id');
-                const containerElement = $(this).closest('.image-container');
+                Array.from(event.target.files).forEach(file => {
+                    const reader = new FileReader();
 
-                if (confirm('Bạn có chắc chắn muốn xóa ảnh này?')) {
-                    $.ajax({
-                        url: '/Products/RemoveImage/' + imageId,
-                        type: 'POST',
+                    reader.onload = function(e) {
+                        const previewDiv = document.createElement('div');
+                        previewDiv.className = 'position-relative';
+
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.className = 'img-thumbnail';
+                        img.style.width = '80px';
+                        img.style.height = '80px';
+                        img.style.objectFit = 'cover';
+
+                        const badge = document.createElement('span');
+                        badge.className = 'badge bg-info position-absolute bottom-0 end-0 m-1';
+                        badge.textContent = 'Mới';
+
+                        previewDiv.appendChild(img);
+                        previewDiv.appendChild(badge);
+                        previewContainer.appendChild(previewDiv);
+                    }
+
+                    reader.readAsDataURL(file);
+                });
+            }
+        });
+
+        // Delete image functionality
+        document.querySelectorAll('.delete-image-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                const imageId = this.getAttribute('data-image-id');
+                const imageContainer = this.closest('.image-item');
+
+                if (confirm('Bạn có chắc chắn muốn xóa ảnh này không?')) {
+                    // Create AJAX request to delete the image
+                    fetch('/Products/RemoveImage/' + imageId, {
+                        method: 'POST',
                         headers: {
-                            "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
-                        },
-                        success: function(data) {
-                            if (data.success) {
-                                // Remove the image element from DOM on success
-                                containerElement.fadeOut(300, function() {
-                                    $(this).remove();
-
-                                    // Show the "no images" message if no images remain
-                                    if ($('#existingImages').children().length === 0) {
-                                        $('#noImagesMessage').show();
-                                    }
-                                });
-                            } else {
-                                alert('Không thể xóa ảnh: ' + (data.message || 'Lỗi không xác định'));
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            console.error(xhr.responseText);
-                            alert('Lỗi kết nối server. Vui lòng thử lại sau.');
+                            'Content-Type': 'application/json',
+                            // Add CSRF token
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
                         }
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Không thể xóa hình ảnh');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            // Remove image from DOM
+                            imageContainer.remove();
+
+                            // Show "no images" message if all images were removed
+                            const remainingImages = document.querySelectorAll('.image-item');
+                            if (remainingImages.length === 0) {
+                                const noImagesMsg = document.getElementById('noImagesMessage');
+                                if (noImagesMsg) {
+                                    noImagesMsg.style.display = 'block';
+                                } else {
+                                    // Create "no images" message if it doesn't exist
+                                    const existingImagesContainer = document.getElementById('existingImages');
+                                    if (existingImagesContainer) {
+                                        existingImagesContainer.innerHTML = `
+                                            <div class="text-center text-muted mb-3" id="noImagesMessage">
+                                                <i class="fas fa-images fa-2x mb-2"></i>
+                                                <p>Chưa có ảnh phụ</p>
+                                            </div>`;
+                                    }
+                                }
+                            }
+
+                            // Show success message
+                            alert('Đã xóa ảnh thành công');
+                        } else {
+                            alert('Không thể xóa hình ảnh: ' + (data.message || 'Lỗi không xác định'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Lỗi khi xóa hình ảnh: ' + error.message);
                     });
                 }
             });
+        });
 
-            // Debug form submission
-            $('#editProductForm').on('submit', function(e) {
-                console.log('Form đang được gửi...');
-                // Uncomment dòng này để debug form data
-                // e.preventDefault();
-                var formData = new FormData(this);
-                for (var pair of formData.entries()) {
-                    console.log(pair[0] + ': ' + (pair[1] instanceof File ? pair[1].name : pair[1]));
+        // Validate file sizes when form is submitted
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const mainImageUpload = document.getElementById('mainImageUpload');
+
+            // Kiểm tra kích thước file ảnh chính nếu có
+            if (mainImageUpload.files.length > 0) {
+                const maxSize = 2 * 1024 * 1024; // 2MB
+                if (mainImageUpload.files[0].size > maxSize) {
+                    e.preventDefault();
+                    alert('Hình ảnh đại diện không được vượt quá 2MB');
+                    return false;
                 }
-            });
+            }
+
+            // Kiểm tra các file ảnh phụ nếu có
+            const additionalImages = document.getElementById('additionalImages');
+            if (additionalImages.files.length > 0) {
+                const maxSize = 2 * 1024 * 1024; // 2MB
+                for (let i = 0; i < additionalImages.files.length; i++) {
+                    if (additionalImages.files[i].size > maxSize) {
+                        e.preventDefault();
+                        alert(`Hình ảnh phụ "${additionalImages.files[i].name}" vượt quá 2MB`);
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         });
     </script>
 }

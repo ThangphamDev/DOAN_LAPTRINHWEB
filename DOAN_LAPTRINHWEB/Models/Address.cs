@@ -7,7 +7,7 @@ public partial class Address
 {
     public int AddressId { get; set; }
 
-    public int UserId { get; set; }
+    public string UserId { get; set; }
 
     public string FullName { get; set; }
 
@@ -23,5 +23,5 @@ public partial class Address
 
     public string Country { get; set; }
 
-    public virtual User? User { get; set; }
+    public virtual ApplicationUser? User { get; set; }
 }

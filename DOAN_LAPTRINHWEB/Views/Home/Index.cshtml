@@ -1,8 +1,278 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+}
+<!-- Hero Banner -->
+<header class="hero-banner">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 d-flex flex-column justify-content-center">
+                <h1 class="display-4 fw-bold">Trang Trí Không Gian Sống Của Bạn</h1>
+                <p class="lead">Biến không gian sống trở nên đẹp hơn với các sản phẩm decor độc đáo và tinh tế</p>
+                <div class="d-flex gap-3 mt-3">
+                    <a asp-controller="Product" asp-action="Index" class="btn btn-dark btn-lg">Khám phá ngay</a>
+                    <a href="#collections" class="btn btn-outline-dark btn-lg">Bộ sưu tập</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <!-- Banner image added via CSS -->
+            </div>
+        </div>
+    </div>
+</header>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- Categories -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Khám Phá Theo Danh Mục</h2>
+            <p class="section-subtitle">Tìm kiếm sản phẩm phù hợp cho từng không gian</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-6 col-md-3">
+                <div class="category-card">
+                    <div class="category-img" style="background-image: url('images/dashboad/lamp.png');">
+                        <div class="category-overlay">
+                            <h4>Đèn Trang Trí</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="category-card">
+                    <div class="category-img" style="background-image: url('images/dashboad/room.png');">
+                        <div class="category-overlay">
+                            <h4>Gối & Thảm</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="category-card">
+                    <div class="category-img" style="background-image: url('images/dashboad/wall.png');">
+                        <div class="category-overlay">
+                            <h4>Tranh & Khung Ảnh</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="category-card">
+                    <div class="category-img" style="background-image: url('images/dashboad/bed.png');">
+                        <div class="category-overlay">
+                            <h4>Đồ Trang Trí Tường</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products -->
+<section id="products" class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Sản Phẩm Nổi Bật</h2>
+            <p class="section-subtitle">Những sản phẩm được yêu thích nhất</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card product-card h-100">
+                    <div class="product-badge bg-danger">-20%</div>
+                    <div class="product-wishlist">
+                        <i class="far fa-heart"></i>
+                    </div>
+                    <a href="#">
+                        <img src="images/dashboad/lamp_minima.png" class="card-img-top" alt="Đèn treo tường Minimalist">
+                    </a>
+                    <div class="card-body">
+                        <div class="product-category">Đèn trang trí</div>
+                        <h5 class="card-title">
+                            <a href="#" class="text-decoration-none text-dark">Đèn treo tường Minimalist</a>
+                        </h5>
+                        <p class="card-text">Đèn trang trí treo tường phong cách tối giản, tinh tế.</p>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            <span>(4.5)</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div class="product-price">
+                                <span class="old-price">600.000 ₫</span>
+                                <span class="current-price">480.000 ₫</span>
+                            </div>
+                            <a href="#" class="btn btn-dark"><i class="fas fa-shopping-cart me-1"></i>Xem</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card product-card h-100">
+                    <div class="product-badge bg-success">Mới</div>
+                    <div class="product-wishlist">
+                        <i class="far fa-heart"></i>
+                    </div>
+                    <a href="#">
+                        <img src="images/dashboad/sofa.png" class="card-img-top" alt="Gối sofa Scandinavian">
+                    </a>
+                    <div class="card-body">
+                        <div class="product-category">Gối & Thảm</div>
+                        <h5 class="card-title">
+                            <a href="#" class="text-decoration-none text-dark">Gối sofa Scandinavian</a>
+                        </h5>
+                        <p class="card-text">Bộ gối trang trí sofa phong cách Bắc Âu, sang trọng.</p>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <span>(4.0)</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div class="product-price">
+                                <span class="current-price">350.000 ₫</span>
+                            </div>
+                            <a href="#" class="btn btn-dark"><i class="fas fa-shopping-cart me-1"></i>Xem</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card product-card h-100">
+                    <div class="product-wishlist">
+                        <i class="far fa-heart"></i>
+                    </div>
+                    <a href="#">
+                        <img src="images/dashboad/picture.png" class="card-img-top" alt="Bộ khung ảnh treo tường">
+                    </a>
+                    <div class="card-body">
+                        <div class="product-category">Tranh & Khung ảnh</div>
+                        <h5 class="card-title">
+                            <a href="#" class="text-decoration-none text-dark">Bộ khung ảnh treo tường</a>
+                        </h5>
+                        <p class="card-text">Bộ 3 khung ảnh treo tường với thiết kế hiện đại.</p>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <span>(5.0)</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div class="product-price">
+                                <span class="current-price">420.000 ₫</span>
+                            </div>
+                            <a href="#" class="btn btn-dark"><i class="fas fa-shopping-cart me-1"></i>Xem</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card product-card h-100">
+                    <div class="product-badge bg-danger">-15%</div>
+                    <div class="product-wishlist">
+                        <i class="far fa-heart"></i>
+                    </div>
+                    <a href="#">
+                        <img src="images/dashboad/clock.jpg" class="card-img-top" alt="Đồng hồ treo tường nghệ thuật">
+                    </a>
+                    <div class="card-body">
+                        <div class="product-category">Đồ trang trí tường</div>
+                        <h5 class="card-title">
+                            <a href="#" class="text-decoration-none text-dark">Đồng hồ treo tường nghệ thuật</a>
+                        </h5>
+                        <p class="card-text">Đồng hồ treo tường thiết kế nghệ thuật độc đáo.</p>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            <i class="far fa-star"></i>
+                            <span>(3.5)</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div class="product-price">
+                                <span class="old-price">550.000 ₫</span>
+                                <span class="current-price">467.500 ₫</span>
+                            </div>
+                            <a href="#" class="btn btn-dark"><i class="fas fa-shopping-cart me-1"></i>Xem</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-5">
+            <a href="#" class="btn btn-outline-dark btn-lg">Xem tất cả sản phẩm</a>
+        </div>
+    </div>
+</section>
+
+<!-- Inspiration Banner -->
+<section id="collections" class="py-5 inspiration-banner">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 offset-lg-6">
+                <div class="inspiration-content bg-white p-5">
+                    <h2 class="mb-4">Cảm Hứng Trang Trí Mới</h2>
+                    <p class="lead">Khám phá bộ sưu tập mùa hè với các ý tưởng trang trí mới mẻ và sáng tạo cho không gian sống của bạn.</p>
+                    <a href="#" class="btn btn-dark mt-3">Khám phá bộ sưu tập</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4 text-center">
+                <div class="feature-box p-4">
+                    <i class="fas fa-truck-fast text-dark fa-3x mb-3"></i>
+                    <h3>Giao hàng nhanh</h3>
+                    <p>Giao hàng miễn phí cho đơn hàng từ 500.000đ trong nội thành</p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="feature-box p-4">
+                    <i class="fas fa-medal text-dark fa-3x mb-3"></i>
+                    <h3>Chất lượng cao cấp</h3>
+                    <p>Sản phẩm được chọn lọc kỹ lưỡng với chất lượng hàng đầu</p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="feature-box p-4">
+                    <i class="fas fa-rotate-left text-dark fa-3x mb-3"></i>
+                    <h3>Đổi trả dễ dàng</h3>
+                    <p>Chính sách đổi trả trong vòng 30 ngày dễ dàng, linh hoạt</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter -->
+<section class="py-5 newsletter-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h2 class="mb-4">Đăng ký nhận thông tin</h2>
+                <p class="mb-4">Nhận thông tin về sản phẩm mới, khuyến mãi và ý tưởng trang trí từ chúng tôi</p>
+                <form class="newsletter-form">
+                    <div class="input-group mb-3">
+                        <input type="email" class="form-control" placeholder="Email của bạn" aria-label="Email của bạn">
+                        <button class="btn btn-dark" type="submit">Đăng ký</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

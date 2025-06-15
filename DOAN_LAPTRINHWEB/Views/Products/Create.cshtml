@@ -1,92 +1,89 @@
 ﻿@model DOAN_LAPTRINHWEB.Models.Product
-
+@using Microsoft.AspNetCore.Mvc.Rendering
 @{
-    ViewData["Title"] = "Thêm sản phẩm mới";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Thêm Sản Phẩm Mới";
 }
 
-<div class="container">
-    <div class="card shadow-sm mb-4">
+<div class="container mt-4">
+    <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
-            <h4 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Thêm sản phẩm mới</h4>
+            <h2 class="mb-0">@ViewData["Title"]</h2>
         </div>
         <div class="card-body">
-            <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <form asp-action="Create" enctype="multipart/form-data" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
                 <div class="row">
                     <div class="col-md-8">
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
-
                         <div class="mb-3">
-                            <label asp-for="Name" class="form-label fw-bold">Tên sản phẩm</label>
-                            <input asp-for="Name" class="form-control" placeholder="Nhập tên sản phẩm" />
+                            <label asp-for="Name" class="form-label">Tên sản phẩm</label>
+                            <input asp-for="Name" class="form-control" required />
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
 
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Price" class="form-label">Giá</label>
+                                    <div class="input-group">
+                                        <input asp-for="Price" class="form-control" type="number" min="0" required />
+                                        <span class="input-group-text">VNĐ</span>
+                                    </div>
+                                    <span asp-validation-for="Price" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="CategoryId" class="form-label">Danh mục</label>
+                                    <select asp-for="CategoryId" asp-items="ViewBag.CategoryId" class="form-select" required>
+                                        <option value="">-- Chọn danh mục --</option>
+                                    </select>
+                                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="mb-3">
-                            <label asp-for="Description" class="form-label fw-bold">Mô tả</label>
-                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Nhập mô tả sản phẩm"></textarea>
+                            <label asp-for="Description" class="form-label">Mô tả sản phẩm</label>
+                            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
                             <span asp-validation-for="Description" class="text-danger"></span>
                         </div>
 
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label asp-for="Price" class="form-label fw-bold">Giá (VNĐ)</label>
-                                <div class="input-group">
-                                    <input asp-for="Price" class="form-control" type="number"  placeholder="Nhập giá" />
-                                    <span class="input-group-text">đ</span>
-                                </div>
-                                <span asp-validation-for="Price" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-6">
-                                <label asp-for="Stock" class="form-label fw-bold">Số lượng</label>
-                                <input asp-for="Stock" class="form-control" type="number" min="0" placeholder="Nhập số lượng" />
-                                <span asp-validation-for="Stock" class="text-danger"></span>
-                            </div>
-                        </div>
-
                         <div class="mb-3">
-                            <label asp-for="CategoryId" class="form-label fw-bold">Danh mục</label>
-                            <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryId">
-                                <option value="">-- Chọn danh mục --</option>
-                            </select>
-                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                            <label asp-for="Stock" class="form-label">Số lượng trong kho</label>
+                            <input asp-for="Stock" class="form-control" type="number" min="0" value="0" required />
+                            <span asp-validation-for="Stock" class="text-danger"></span>
                         </div>
                     </div>
 
                     <div class="col-md-4">
-                        <div class="card mb-3">
-                            <div class="card-header bg-light">
-                                <h5 class="mb-0">Hình ảnh sản phẩm</h5>
+                        <div class="mb-3 border p-3 rounded bg-light">
+                            <label class="form-label d-block fw-bold">Hình ảnh đại diện</label>
+                            <div id="mainImagePreview" class="text-center mb-3">
+                                <img id="mainPreview" src="/images/no-image.jpg" class="img-fluid rounded" style="max-height: 200px;" />
                             </div>
-                            <div class="card-body">
-                                <div class="mb-3 text-center">
-                                    <img id="preview" src="/images/no-image.jpg" class="img-fluid mb-3 border rounded" style="max-height: 200px;" />
-                                    <div class="d-grid">
-                                        <label for="primaryImage" class="btn btn-outline-primary">
-                                            <i class="fas fa-upload me-2"></i>Chọn ảnh chính
-                                        </label>
-                                        <input id="primaryImage" name="PrimaryImage" type="file" accept="image/*" class="d-none" onchange="previewImage(this)" />
-                                    </div>
-                                    <small class="text-muted">Kích thước tối đa: 2MB. Định dạng: JPG, PNG</small>
-                                </div>
-                                <hr />
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Ảnh phụ (tối đa 5 ảnh)</label>
-                                    <input name="AdditionalImages" type="file" accept="image/*" multiple class="form-control" />
-                                    <small class="text-muted">Có thể chọn nhiều ảnh cùng lúc</small>
-                                </div>
+                            <input type="file" name="PrimaryImage" id="mainImageUpload" class="form-control" accept="image/*" required />
+                            <small class="text-muted">Định dạng: JPG, PNG. Kích thước tối đa 2MB</small>
+                        </div>
+
+                        <div class="mb-3 border p-3 rounded bg-light">
+                            <label class="form-label d-block fw-bold">Hình ảnh bổ sung (tùy chọn)</label>
+                            <input type="file" name="AdditionalImages" id="additionalImages" multiple class="form-control" accept="image/*" />
+                            <small class="text-muted d-block mb-2">Có thể chọn nhiều hình ảnh</small>
+                            <div id="additionalImagesPreview" class="mt-2 d-flex flex-wrap gap-2">
+                                <!-- Additional images previews will be added here -->
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-end mt-4">
-                    <a asp-action="Index" class="btn btn-outline-secondary me-2">
-                        <i class="fas fa-arrow-left me-1"></i>Quay lại
-                    </a>
+                <div class="d-flex gap-2 mt-3">
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-1"></i>Lưu sản phẩm
+                        <i class="fas fa-save me-2"></i>Lưu Sản Phẩm
                     </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Quay Lại
+                    </a>
                 </div>
             </form>
         </div>
@@ -98,18 +95,90 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
-        function previewImage(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    $('#preview').attr('src', e.target.result);
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
+        // Main image preview functionality
+        document.getElementById('mainImageUpload').addEventListener('change', function(event) {
+            const preview = document.getElementById('mainPreview');
+            const previewContainer = document.getElementById('mainImagePreview');
 
-        $(document).ready(function () {
-            // Add any additional JavaScript functionality here
+            if (event.target.files && event.target.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                }
+
+                reader.readAsDataURL(event.target.files[0]);
+            } else {
+                preview.src = '/images/no-image.jpg';
+            }
+        });
+
+        // Additional images preview functionality
+        document.getElementById('additionalImages').addEventListener('change', function(event) {
+            const previewContainer = document.getElementById('additionalImagesPreview');
+            previewContainer.innerHTML = ''; // Clear previous previews
+
+            if (event.target.files && event.target.files.length > 0) {
+                Array.from(event.target.files).forEach(file => {
+                    const reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        const previewDiv = document.createElement('div');
+                        previewDiv.className = 'position-relative';
+
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.className = 'img-thumbnail';
+                        img.style.width = '80px';
+                        img.style.height = '80px';
+                        img.style.objectFit = 'cover';
+
+                        const badge = document.createElement('span');
+                        badge.className = 'position-absolute bottom-0 end-0 badge bg-info m-1';
+                        badge.textContent = 'Mới';
+
+                        previewDiv.appendChild(img);
+                        previewDiv.appendChild(badge);
+                        previewContainer.appendChild(previewDiv);
+                    }
+
+                    reader.readAsDataURL(file);
+                });
+            }
+        });
+
+        // Form validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const mainImageUpload = document.getElementById('mainImageUpload');
+
+            // Check if main image is selected
+            if (mainImageUpload.files.length === 0) {
+                e.preventDefault();
+                alert('Vui lòng chọn hình ảnh đại diện cho sản phẩm');
+                return false;
+            }
+
+            // Kiểm tra kích thước file ảnh (max 2MB)
+            const maxSize = 2 * 1024 * 1024; // 2MB
+            if (mainImageUpload.files[0].size > maxSize) {
+                e.preventDefault();
+                alert('Hình ảnh đại diện không được vượt quá 2MB');
+                return false;
+            }
+
+            // Kiểm tra các file ảnh phụ nếu có
+            const additionalImages = document.getElementById('additionalImages');
+            if (additionalImages.files.length > 0) {
+                for (let i = 0; i < additionalImages.files.length; i++) {
+                    if (additionalImages.files[i].size > maxSize) {
+                        e.preventDefault();
+                        alert(`Hình ảnh phụ "${additionalImages.files[i].name}" vượt quá 2MB`);
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         });
     </script>
 }

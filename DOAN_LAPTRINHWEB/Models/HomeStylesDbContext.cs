@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace DOAN_LAPTRINHWEB.Models;
 
-public partial class HomeStylesDbContext : DbContext
+public partial class HomeStylesDbContext : IdentityDbContext<ApplicationUser>
 {
     public HomeStylesDbContext()
     {
@@ -16,28 +17,19 @@ public partial class HomeStylesDbContext : DbContext
     }
 
     public virtual DbSet<Address> Addresses { get; set; }
-
     public virtual DbSet<Category> Categories { get; set; }
-
     public virtual DbSet<Order> Orders { get; set; }
-
     public virtual DbSet<OrderItem> OrderItems { get; set; }
-
     public virtual DbSet<Payment> Payments { get; set; }
-
     public virtual DbSet<Product> Products { get; set; }
-
     public virtual DbSet<ProductImage> ProductImages { get; set; }
-
     public virtual DbSet<Review> Reviews { get; set; }
-
     public virtual DbSet<Tag> Tags { get; set; }
 
-    public virtual DbSet<User> Users { get; set; }
-
-   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<Address>(entity =>
         {
             entity.HasKey(e => e.AddressId).HasName("PK__Addresse__CAA247C86F451D1F");
@@ -66,8 +58,10 @@ public partial class HomeStylesDbContext : DbContext
                 .HasColumnName("street");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Addresses)
+            entity.HasOne(d => d.User)
+                .WithMany(p => p.Addresses)
                 .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull) // Thay đổi thành ClientSetNull thay vì Cascade
                 .HasConstraintName("FK__Addresses__user___6D0D32F4");
         });
 
@@ -106,8 +100,10 @@ public partial class HomeStylesDbContext : DbContext
                 .HasColumnName("updated_at");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Orders)
+            entity.HasOne(d => d.User)
+                .WithMany(p => p.Orders)
                 .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull) // Thay đổi thành ClientSetNull thay vì Cascade
                 .HasConstraintName("FK__Orders__user_id__628FA481");
         });
 
@@ -243,8 +239,10 @@ public partial class HomeStylesDbContext : DbContext
                 .HasForeignKey(d => d.ProductId)
                 .HasConstraintName("FK__Reviews__product__71D1E811");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Reviews)
+            entity.HasOne(d => d.User)
+                .WithMany(p => p.Reviews)
                 .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull) // Thay đổi thành ClientSetNull thay vì Cascade
                 .HasConstraintName("FK__Reviews__user_id__72C60C4A");
         });
 
@@ -256,39 +254,6 @@ public partial class HomeStylesDbContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
                 .HasColumnName("name");
-        });
-
-        modelBuilder.Entity<User>(entity =>
-        {
-            entity.HasKey(e => e.UserId).HasName("PK__Users__B9BE370FD8071B59");
-
-            entity.HasIndex(e => e.Email, "UQ__Users__AB6E6164098A43CE").IsUnique();
-
-            entity.Property(e => e.UserId).HasColumnName("user_id");
-            entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("created_at");
-            entity.Property(e => e.Email)
-                .HasMaxLength(100)
-                .HasColumnName("email");
-            entity.Property(e => e.Name)
-                .HasMaxLength(100)
-                .HasColumnName("name");
-            entity.Property(e => e.Password)
-                .HasMaxLength(255)
-                .HasColumnName("password");
-            entity.Property(e => e.Phone)
-                .HasMaxLength(20)
-                .HasColumnName("phone");
-            entity.Property(e => e.Role)
-                .HasMaxLength(20)
-                .HasDefaultValue("customer")
-                .HasColumnName("role");
-            entity.Property(e => e.UpdatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("updated_at");
         });
 
         OnModelCreatingPartial(modelBuilder);

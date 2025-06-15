@@ -230,20 +230,20 @@ namespace DOAN_LAPTRINHWEB.Controllers
 
         // POST: Products/RemoveImage/5
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveImage(int id)
         {
             var image = await _context.ProductImages.FindAsync(id);
             if (image == null)
             {
-                return Json(new { success = false });
+                return Json(new { success = false, message = "Không tìm thấy ảnh" });
             }
 
             try
             {
-                // Delete file from server
+
                 DeleteImageFile(image.ImageUrl);
 
-                // Remove from database
                 _context.ProductImages.Remove(image);
                 await _context.SaveChangesAsync();
 
@@ -251,6 +251,7 @@ namespace DOAN_LAPTRINHWEB.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error deleting image: {ex.Message}");
                 return Json(new { success = false, message = ex.Message });
             }
         }

@@ -1,80 +1,214 @@
-﻿<!DOCTYPE html>
+﻿@using DOAN_LAPTRINHWEB.Extensions
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - HomeStyles</title>
-    <!-- Bootstrap CSS -->
+    <title>@ViewData["Title"] - HomeStyle - Đồ Decor Phòng</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Bootstrap -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/custom.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/DOAN_LAPTRINHWEB.styles.css" asp-append-version="true" />
+
+    <!-- Toastr CSS for notifications -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="fas fa-home me-2"></i>HomeStyles
+<body class="bg-light">
+    <header class="header-fixed">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm border-bottom">
+            <div class="container-fluid px-4 px-lg-5">
+                <!-- Logo -->
+                <a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="Index">
+                    <span class="brand-name">HomeStyle</span>
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+
+                <!-- Mobile Toggle -->
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                <!-- Navigation -->
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav mx-auto">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Products" asp-action="Index">
-                                <i class="fas fa-box me-1"></i>Sản phẩm
+                            <a class="nav-link px-3 active" asp-controller="Home" asp-action="Index">Trang Chủ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link px-3" asp-controller="Products" asp-action="Index">Sản Phẩm</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle px-3" asp-controller="Categories" asp-action="Index">
+                                Danh Mục
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Categories" asp-action="Index">
-                                <i class="fas fa-tags me-1"></i>Danh mục
-                            </a>
+                            <a class="nav-link px-3" href="#">Ý Tưởng Decor</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Users" asp-action="Index">
-                                <i class="fas fa-users me-1"></i>Tài khoản
-                            </a>
+                            <a class="nav-link px-3" href="#">Liên Hệ</a>
                         </li>
                     </ul>
-                    <form class="d-flex">
-                        <input class="form-control me-2" type="search" placeholder="Tìm kiếm..." aria-label="Search">
-                        <button class="btn btn-outline-light" type="submit">Tìm</button>
-                    </form>
+
+                    <!-- Actions -->
+                    <div class="nav-actions d-flex align-items-center gap-3">
+                        <button class="btn btn-link text-dark p-0" type="button">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <partial name="_LoginPartial" />
+                        <a asp-controller="Cart" asp-action="Index" class="btn btn-dark position-relative rounded-pill px-3">
+                            <i class="fas fa-shopping-cart me-2"></i>
+                            <span>Giỏ hàng</span>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-count">
+                                @{
+                                    var cartCount = 0;
+                                    if (Context.Session.TryGetString("Cart", out var cartJson) && !string.IsNullOrEmpty(cartJson))
+                                    {
+                                        try
+                                        {
+                                            var cart = Newtonsoft.Json.JsonConvert.DeserializeObject<DOAN_LAPTRINHWEB.Models.Cart>(cartJson);
+                                            if (cart?.Items != null)
+                                            {
+                                                cartCount = cart.Items.Sum(i => i.Quantity);
+                                            }
+                                        }
+                                        catch { /* Ignore deserialization errors */ }
+                                    }
+                                }
+                                @if (cartCount > 0)
+                                {
+                                    @cartCount
+                                }
+                            </span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </nav>
     </header>
 
-    <div class="container mt-4">
-        <main role="main" class="pb-3">
+    <main role="main" class="py-4">
+        <div class="container-fluid px-4 px-lg-5">
             @RenderBody()
-        </main>
-    </div>
+        </div>
+    </main>
 
-    <footer class="border-top footer text-muted bg-light py-4 mt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    &copy; 2025 - HomeStyles - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="footer bg-dark text-white py-5">
+        <div class="container-fluid px-4 px-lg-5">
+            <div class="row g-4">
+                <!-- Company Info -->
+                <div class="col-lg-4">
+                    <h5 class="brand-name text-white h4 mb-4">HomeStyle</h5>
+                    <p class="text-light">Biến không gian sống của bạn trở nên đẹp hơn với các sản phẩm decor độc đáo và tinh tế</p>
+                    <div class="social-icons d-flex gap-3 mt-4">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-pinterest-p"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    </div>
                 </div>
-                <div class="col-md-6 text-md-end">
-                    <a href="#" class="text-decoration-none me-3"><i class="fab fa-facebook"></i></a>
-                    <a href="#" class="text-decoration-none me-3"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="text-decoration-none"><i class="fab fa-twitter"></i></a>
+
+                <!-- Quick Links -->
+                <div class="col-lg-2 col-md-4">
+                    <h5 class="h6 text-uppercase mb-4">Thông tin</h5>
+                    <ul class="list-unstyled footer-links">
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Về chúng tôi</a></li>
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Điều khoản sử dụng</a></li>
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Chính sách bảo mật</a></li>
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Blog</a></li>
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Liên hệ</a></li>
+                    </ul>
+                </div>
+
+                <!-- Account -->
+                <div class="col-lg-2 col-md-4">
+                    <h5 class="h6 text-uppercase mb-4">Tài khoản</h5>
+                    <ul class="list-unstyled footer-links">
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Tài khoản của tôi</a></li>
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Giỏ hàng</a></li>
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Yêu thích</a></li>
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Theo dõi đơn hàng</a></li>
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Trợ giúp</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div class="col-lg-4 col-md-4">
+                    <h5 class="h6 text-uppercase mb-4">Liên hệ</h5>
+                    <div class="contact-info">
+                        <div class="d-flex mb-3">
+                            <i class="fas fa-map-marker-alt mt-1 me-3"></i>
+                            <p class="mb-0">Tầng 5, Tòa nhà Landmark, 208 Nguyễn Hữu Cảnh, Quận Bình Thạnh, TP.HCM</p>
+                        </div>
+                        <div class="d-flex mb-3">
+                            <i class="fas fa-phone-alt mt-1 me-3"></i>
+                            <p class="mb-0">+84 28 3827 9999</p>
+                        </div>
+                        <div class="d-flex">
+                            <i class="fas fa-envelope mt-1 me-3"></i>
+                            <p class="mb-0">info@homestyling.vn</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4 opacity-25">
+
+            <!-- Footer Bottom -->
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="small mb-0">&copy; 2025 HomeStyle. Tất cả quyền được bảo lưu.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
+                    <div class="payment-methods">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png" alt="Visa" height="25" class="ms-2">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1280px-Mastercard-logo.svg.png" alt="Mastercard" height="25" class="ms-2">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/PayPal.svg/2560px-PayPal.svg.png" alt="PayPal" height="25" class="ms-2">
+                    </div>
                 </div>
             </div>
         </div>
     </footer>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        // Global notification function
+        window.showNotification = function(message, type) {
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000"
+            };
+
+            switch(type) {
+                case 'success':
+                    toastr.success(message);
+                    break;
+                case 'error':
+                    toastr.error(message);
+                    break;
+                case 'warning':
+                    toastr.warning(message);
+                    break;
+                default:
+                    toastr.info(message);
+            }
+        };
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
