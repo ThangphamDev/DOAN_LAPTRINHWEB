@@ -1,4 +1,5 @@
 using DOAN_LAPTRINHWEB.Models;
+using DOAN_LAPTRINHWEB.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,7 +33,8 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-
+// Thêm vào phần đăng ký service
+builder.Services.AddScoped<CartService>();
 
 var app = builder.Build();
 

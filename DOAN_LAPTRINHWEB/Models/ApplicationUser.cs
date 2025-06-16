@@ -7,7 +7,6 @@ namespace DOAN_LAPTRINHWEB.Models
     {
         [Required]
         public string FullName { get; set; }
-
         public string? Address { get; set; }
         public string? Age { get; set; }
         public DateTime? CreatedAt { get; set; }

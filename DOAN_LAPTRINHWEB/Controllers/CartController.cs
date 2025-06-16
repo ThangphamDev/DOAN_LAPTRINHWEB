@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using DOAN_LAPTRINHWEB.Models;
 using Microsoft.AspNetCore.Authorization;
-using Newtonsoft.Json;
+using DOAN_LAPTRINHWEB.Services;
 
 namespace DOAN_LAPTRINHWEB.Controllers
 {
@@ -15,232 +15,105 @@ namespace DOAN_LAPTRINHWEB.Controllers
     {
         private readonly HomeStylesDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        private const string CartSessionKey = "Cart";
+        private readonly CartService _cartService;
 
-        public CartController(HomeStylesDbContext context, UserManager<ApplicationUser> userManager)
+        public CartController(HomeStylesDbContext context,
+                              UserManager<ApplicationUser> userManager,
+                              CartService cartService)
         {
             _context = context;
             _userManager = userManager;
+            _cartService = cartService;
         }
 
         // GET: Cart
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var cart = GetCartFromSession();
+            var userId = await _cartService.GetCartUserIdAsync();
+            var cart = await _cartService.GetCartAsync(userId);
             return View(cart);
         }
 
         // GET: Cart/AddToCartAjax
         [HttpGet]
-        public async Task<IActionResult> AddToCartAjax(int productId, int quantity = 1)
+        public async Task<IActionResult> AddToCartAjax(int productId, int quantity = 1, int? variantId = null)
         {
-            // Find product in database
-            var product = await _context.Products
-                .Include(p => p.ProductImages)
-                .FirstOrDefaultAsync(p => p.ProductId == productId);
+            var userId = await _cartService.GetCartUserIdAsync();
 
-            if (product == null)
+            // Thêm sản phẩm vào giỏ hàng
+            var cartItem = await _cartService.AddToCartAsync(userId, productId, quantity, variantId);
+
+            if (cartItem == null)
             {
-                return Json(new { success = false, message = "Sản phẩm không tồn tại." });
+                return Json(new { success = false, message = "Không thể thêm sản phẩm vào giỏ hàng. Vui lòng kiểm tra tồn kho." });
             }
 
-            // Check stock
-            if (product.Stock < quantity)
-            {
-                return Json(new
-                {
-                    success = false,
-                    message = $"Chỉ còn {product.Stock} sản phẩm trong kho."
-                });
-            }
-
-            // Get cart from session
-            var cart = GetCartFromSession();
-
-            // Check if product already exists in cart
-            var existingItem = cart.Items.FirstOrDefault(item => item.ProductId == productId);
-            if (existingItem != null)
-            {
-                // Check if new total quantity exceeds stock
-                if (existingItem.Quantity + quantity > product.Stock)
-                {
-                    return Json(new
-                    {
-                        success = false,
-                        message = $"Không thể thêm. Giỏ hàng của bạn đã có {existingItem.Quantity} sản phẩm và kho chỉ còn {product.Stock} sản phẩm."
-                    });
-                }
-
-                // Update quantity if product already exists in cart
-                existingItem.Quantity += quantity;
-                existingItem.UpdateSubtotal();
-            }
-            else
-            {
-                // Add new product to cart
-                var newItem = new CartItem
-                {
-                    ProductId = product.ProductId,
-                    ProductName = product.Name,
-                    Quantity = quantity,
-                    Price = product.Price,
-                    ImageUrl = product.ProductImages?.FirstOrDefault(img => img.IsPrimary == true)?.ImageUrl ?? "/images/no-image.jpg"
-                };
-                newItem.UpdateSubtotal();
-                cart.Items.Add(newItem);
-            }
-
-            // Update cart totals
-            cart.CalculateTotals();
-
-            // Save cart to session
-            SaveCartToSession(cart);
+            // Lấy thông tin giỏ hàng cập nhật
+            var cart = await _cartService.GetCartAsync(userId);
 
             return Json(new
             {
                 success = true,
-                message = $"Đã thêm {product.Name} vào giỏ hàng.",
-                cartCount = cart.TotalItems
+                message = $"Đã thêm {cartItem.ProductName} vào giỏ hàng.",
+                cartCount = cart.UniqueItemsCount
             });
         }
 
         // POST: Cart/AddToCart
         [HttpPost]
-        public async Task<IActionResult> AddToCart(int productId, int quantity = 1)
+        public async Task<IActionResult> AddToCart(int productId, int quantity = 1, int? variantId = null)
         {
-            // Find product in database
-            var product = await _context.Products
-                .Include(p => p.ProductImages)
-                .FirstOrDefaultAsync(p => p.ProductId == productId);
-
-            if (product == null)
-            {
-                return Json(new { success = false, message = "Sản phẩm không tồn tại." });
-            }
-
-            // Check stock
-            if (product.Stock < quantity)
-            {
-                return Json(new
-                {
-                    success = false,
-                    message = $"Chỉ còn {product.Stock} sản phẩm trong kho."
-                });
-            }
-
-            // Get cart from session
-            var cart = GetCartFromSession();
-
-            // Check if product already exists in cart
-            var existingItem = cart.Items.FirstOrDefault(item => item.ProductId == productId);
-            if (existingItem != null)
-            {
-                // Check if new total quantity exceeds stock
-                if (existingItem.Quantity + quantity > product.Stock)
-                {
-                    return Json(new
-                    {
-                        success = false,
-                        message = $"Không thể thêm. Giỏ hàng của bạn đã có {existingItem.Quantity} sản phẩm và kho chỉ còn {product.Stock} sản phẩm."
-                    });
-                }
-
-                // Update quantity if product already exists in cart
-                existingItem.Quantity += quantity;
-                existingItem.UpdateSubtotal();
-            }
-            else
-            {
-                // Add new product to cart
-                var newItem = new CartItem
-                {
-                    ProductId = product.ProductId,
-                    ProductName = product.Name,
-                    Quantity = quantity,
-                    Price = product.Price,
-                    ImageUrl = product.ProductImages?.FirstOrDefault(img => img.IsPrimary == true)?.ImageUrl ?? "/images/no-image.jpg"
-                };
-                newItem.UpdateSubtotal();
-                cart.Items.Add(newItem);
-            }
-
-            // Update cart totals
-            cart.CalculateTotals();
-
-            // Save cart to session
-            SaveCartToSession(cart);
-
-            return Json(new
-            {
-                success = true,
-                message = $"Đã thêm {product.Name} vào giỏ hàng.",
-                cartCount = cart.TotalItems
-            });
+            return await AddToCartAjax(productId, quantity, variantId);
         }
 
         // POST: Cart/UpdateQuantity
         [HttpPost]
-        public async Task<IActionResult> UpdateQuantity(int productId, int quantity)
+        public async Task<IActionResult> UpdateQuantityByProduct(int productId, int quantity, int? variantId = null)
         {
             if (quantity < 1)
             {
                 return Json(new { success = false, message = "Số lượng phải lớn hơn 0" });
             }
 
-            var cart = GetCartFromSession();
-            var item = cart.Items.FirstOrDefault(i => i.ProductId == productId);
+            var userId = await _cartService.GetCartUserIdAsync();
+            var success = await _cartService.UpdateQuantityByProductAsync(userId, productId, quantity, variantId);
 
-            if (item == null)
+            if (!success)
             {
-                return Json(new { success = false, message = "Sản phẩm không tồn tại trong giỏ hàng" });
+                return Json(new { success = false, message = "Không thể cập nhật số lượng. Kiểm tra lại tồn kho." });
             }
 
-            // Check stock availability
-            var product = await _context.Products.FindAsync(productId);
-            if (product == null || product.Stock < quantity)
-            {
-                return Json(new
-                {
-                    success = false,
-                    message = $"Chỉ còn {product?.Stock ?? 0} sản phẩm trong kho."
-                });
-            }
-
-            item.Quantity = quantity;
-            item.UpdateSubtotal();
-
-            cart.CalculateTotals();
-            SaveCartToSession(cart);
+            // Lấy thông tin giỏ hàng cập nhật
+            var cart = await _cartService.GetCartAsync(userId);
+            var item = cart.Items.FirstOrDefault(i => i.ProductId == productId &&
+                                                      ((i.ProductVariantId == null && variantId == null) ||
+                                                       i.ProductVariantId == variantId));
 
             return Json(new
             {
                 success = true,
                 message = "Đã cập nhật số lượng",
-                subtotal = item.Subtotal,
+                subtotal = item?.Subtotal ?? 0,
                 total = cart.TotalAmount,
-                cartCount = cart.TotalItems
+                cartCount = cart.UniqueItemsCount
             });
         }
 
         // POST: Cart/RemoveItem
         [HttpPost]
-        public IActionResult RemoveItem(int productId)
+        public async Task<IActionResult> RemoveItem(int cartItemId)
         {
-            var cart = GetCartFromSession();
-            var item = cart.Items.FirstOrDefault(i => i.ProductId == productId);
+            var userId = await _cartService.GetCartUserIdAsync();
+            await _cartService.RemoveFromCartAsync(userId, cartItemId);
 
-            if (item != null)
-            {
-                cart.Items.Remove(item);
-                cart.CalculateTotals();
-                SaveCartToSession(cart);
-            }
+            // Lấy thông tin giỏ hàng cập nhật
+            var cart = await _cartService.GetCartAsync(userId);
 
             return Json(new
             {
                 success = true,
                 message = "Đã xóa sản phẩm khỏi giỏ hàng",
-                cartCount = cart.TotalItems,
+                cartCount = cart.UniqueItemsCount,
                 total = cart.TotalAmount
             });
         }
@@ -249,7 +122,18 @@ namespace DOAN_LAPTRINHWEB.Controllers
         [Authorize]
         public async Task<IActionResult> Checkout()
         {
-            var cart = GetCartFromSession();
+            var userId = await _cartService.GetCartUserIdAsync();
+            var anonymousId = HttpContext.Session.GetString("AnonymousCartId");
+
+            // Nếu trước đó user đã có giỏ hàng ẩn danh, hợp nhất với giỏ hàng user
+            if (!string.IsNullOrEmpty(anonymousId))
+            {
+                var currentUser = await _userManager.GetUserAsync(User);
+                await _cartService.MergeCartsAsync(anonymousId, currentUser.Id);
+            }
+
+            // Lấy giỏ hàng
+            var cart = await _cartService.GetCartAsync(userId);
 
             if (cart.Items.Count == 0)
             {
@@ -263,11 +147,24 @@ namespace DOAN_LAPTRINHWEB.Controllers
             // Check stock availability before proceeding to checkout
             foreach (var item in cart.Items)
             {
-                var product = await _context.Products.FindAsync(item.ProductId);
-                if (product == null || product.Stock < item.Quantity)
+                // Kiểm tra tồn kho dựa trên biến thể hoặc sản phẩm
+                if (item.ProductVariantId.HasValue)
                 {
-                    TempData["ErrorMessage"] = $"Sản phẩm {item.ProductName} chỉ còn {product?.Stock ?? 0} trong kho.";
-                    return RedirectToAction("Index");
+                    var variant = await _context.ProductVariants.FindAsync(item.ProductVariantId);
+                    if (variant == null || variant.Stock < item.Quantity)
+                    {
+                        TempData["ErrorMessage"] = $"Biến thể của sản phẩm {item.ProductName} không đủ số lượng trong kho.";
+                        return RedirectToAction("Index");
+                    }
+                }
+                else
+                {
+                    var product = await _context.Products.FindAsync(item.ProductId);
+                    if (product == null || product.Stock < item.Quantity)
+                    {
+                        TempData["ErrorMessage"] = $"Sản phẩm {item.ProductName} chỉ còn {product?.Stock ?? 0} trong kho.";
+                        return RedirectToAction("Index");
+                    }
                 }
             }
 
@@ -297,7 +194,7 @@ namespace DOAN_LAPTRINHWEB.Controllers
             return View(checkoutViewModel);
         }
 
-        // POST: Cart/Checkout
+        // POST: Cart/Checkout - Phương thức này sẽ được chỉnh sửa để sử dụng giỏ hàng từ database thay vì session
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -308,23 +205,24 @@ namespace DOAN_LAPTRINHWEB.Controllers
 
             try
             {
-                // Restore Cart from session as it cannot be bound from form
-                model.Cart = GetCartFromSession();
-
-                // Get current user
-                var user = await _userManager.GetUserAsync(User);
-                if (user == null)
+                // Get current user and cart
+                var currentUser = await _userManager.GetUserAsync(User);
+                if (currentUser == null)
                 {
                     TempData["ErrorMessage"] = "Không tìm thấy thông tin người dùng. Vui lòng đăng nhập lại.";
                     return RedirectToAction("Index", "Home");
                 }
 
-                // Restore other required fields
-                model.User = user;
-                model.UserId = user.Id;
+                var userId = currentUser.Id;
+                var cart = await _cartService.GetCartAsync(userId);
+
+                // Restore model info
+                model.Cart = cart;
+                model.User = currentUser;
+                model.UserId = userId;
                 model.Order = new Order();
 
-                if (model.Cart == null || model.Cart.Items.Count == 0)
+                if (cart.Items.Count == 0)
                 {
                     TempData["ErrorMessage"] = "Giỏ hàng của bạn đang trống";
                     return RedirectToAction("Index");
@@ -334,14 +232,27 @@ namespace DOAN_LAPTRINHWEB.Controllers
                 bool stockAvailable = true;
                 string outOfStockMessage = "";
 
-                foreach (var item in model.Cart.Items)
+                foreach (var item in cart.Items)
                 {
-                    var product = await _context.Products.FindAsync(item.ProductId);
-                    if (product == null || product.Stock < item.Quantity)
+                    if (item.ProductVariantId.HasValue)
                     {
-                        stockAvailable = false;
-                        outOfStockMessage = $"Sản phẩm {item.ProductName} chỉ còn {product?.Stock ?? 0} trong kho.";
-                        break;
+                        var variant = await _context.ProductVariants.FindAsync(item.ProductVariantId);
+                        if (variant == null || variant.Stock < item.Quantity)
+                        {
+                            stockAvailable = false;
+                            outOfStockMessage = $"Biến thể của sản phẩm {item.ProductName} không đủ số lượng trong kho.";
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        var product = await _context.Products.FindAsync(item.ProductId);
+                        if (product == null || product.Stock < item.Quantity)
+                        {
+                            stockAvailable = false;
+                            outOfStockMessage = $"Sản phẩm {item.ProductName} chỉ còn {product?.Stock ?? 0} trong kho.";
+                            break;
+                        }
                     }
                 }
 
@@ -362,7 +273,7 @@ namespace DOAN_LAPTRINHWEB.Controllers
 
                     // Pass addresses to ViewBag for dropdown if needed
                     var addresses = await _context.Addresses
-                        .Where(a => a.UserId == user.Id)
+                        .Where(a => a.UserId == currentUser.Id)
                         .ToListAsync();
                     ViewBag.Addresses = addresses;
 
@@ -372,9 +283,9 @@ namespace DOAN_LAPTRINHWEB.Controllers
                 // Create new order
                 var order = new Order
                 {
-                    UserId = user.Id,
+                    UserId = currentUser.Id,
                     OrderStatus = "Chờ xác nhận",
-                    TotalAmount = model.Cart.TotalAmount,
+                    TotalAmount = cart.TotalAmount,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now
                 };
@@ -383,24 +294,37 @@ namespace DOAN_LAPTRINHWEB.Controllers
                 await _context.SaveChangesAsync();
 
                 // Add order items and update product stock
-                foreach (var item in model.Cart.Items)
+                foreach (var item in cart.Items)
                 {
                     // Create order item
                     var orderItem = new OrderItem
                     {
                         OrderId = order.OrderId,
                         ProductId = item.ProductId,
+                        ProductVariantId = item.ProductVariantId,
                         Quantity = item.Quantity,
                         Price = item.Price
                     };
                     _context.OrderItems.Add(orderItem);
 
-                    // Update product stock
-                    var product = await _context.Products.FindAsync(item.ProductId);
-                    if (product != null)
+                    // Update product stock based on whether item has variant or not
+                    if (item.ProductVariantId.HasValue)
                     {
-                        product.Stock -= item.Quantity;
-                        _context.Products.Update(product);
+                        var variant = await _context.ProductVariants.FindAsync(item.ProductVariantId);
+                        if (variant != null)
+                        {
+                            variant.Stock -= item.Quantity;
+                            _context.ProductVariants.Update(variant);
+                        }
+                    }
+                    else
+                    {
+                        var product = await _context.Products.FindAsync(item.ProductId);
+                        if (product != null)
+                        {
+                            product.Stock -= item.Quantity;
+                            _context.Products.Update(product);
+                        }
                     }
                 }
                 await _context.SaveChangesAsync();
@@ -410,7 +334,7 @@ namespace DOAN_LAPTRINHWEB.Controllers
                 {
                     var address = new Address
                     {
-                        UserId = user.Id,
+                        UserId = currentUser.Id,
                         FullName = model.Address.FullName,
                         Phone = model.Address.Phone,
                         Street = model.Address.Street,
@@ -429,7 +353,7 @@ namespace DOAN_LAPTRINHWEB.Controllers
                 {
                     OrderId = order.OrderId,
                     PaymentMethod = model.PaymentMethod,
-                    Amount = model.Cart.TotalAmount,
+                    Amount = cart.TotalAmount,
                     PaymentStatus = model.PaymentMethod == "COD" ? "Chờ thanh toán" : "Đang xử lý",
                     PaidAt = DateTime.Now
                 };
@@ -437,11 +361,11 @@ namespace DOAN_LAPTRINHWEB.Controllers
                 _context.Payments.Add(payment);
                 await _context.SaveChangesAsync();
 
+                // Clear cart after successful order
+                await _cartService.ClearCartAsync(userId);
+
                 // Commit transaction
                 await transaction.CommitAsync();
-
-                // Clear cart after successful order
-                HttpContext.Session.Remove(CartSessionKey);
 
                 return RedirectToAction("OrderConfirmation", new { orderId = order.OrderId });
             }
@@ -457,17 +381,18 @@ namespace DOAN_LAPTRINHWEB.Controllers
 
                 TempData["ErrorMessage"] = $"Có lỗi xảy ra khi xử lý đơn hàng: {errorMessage}";
 
-                model.Cart = GetCartFromSession();
+                // Reload cart and user data for the view
+                var currentUser = await _userManager.GetUserAsync(User);
+                var cart = await _cartService.GetCartAsync(currentUser.Id);
 
-                // Ensure other properties are set when error occurs
-                var user = await _userManager.GetUserAsync(User);
-                model.User = user;
-                model.UserId = user?.Id;
+                model.Cart = cart;
+                model.User = currentUser;
+                model.UserId = currentUser?.Id;
                 model.Order = new Order();
 
                 // Pass addresses to ViewBag for dropdown if needed
                 var addresses = await _context.Addresses
-                    .Where(a => a.UserId == user.Id)
+                    .Where(a => a.UserId == currentUser.Id)
                     .ToListAsync();
                 ViewBag.Addresses = addresses;
 
@@ -475,7 +400,7 @@ namespace DOAN_LAPTRINHWEB.Controllers
             }
         }
 
-        // GET: Cart/OrderConfirmation/5
+        // GET: Cart/OrderConfirmation/5 - Phương thức này gần như không thay đổi
         [Authorize]
         public async Task<IActionResult> OrderConfirmation(int orderId)
         {
@@ -483,6 +408,8 @@ namespace DOAN_LAPTRINHWEB.Controllers
                 .Include(o => o.OrderItems)
                     .ThenInclude(oi => oi.Product)
                         .ThenInclude(p => p.ProductImages)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.ProductVariant)
                 .Include(o => o.User)
                 .Include(o => o.Payments)
                 .FirstOrDefaultAsync(o => o.OrderId == orderId);
@@ -521,28 +448,34 @@ namespace DOAN_LAPTRINHWEB.Controllers
         }
 
         // GET: Cart/CartPartial (to display cart count in navbar)
-        public IActionResult CartPartial()
+        public async Task<IActionResult> CartPartial()
         {
-            var cart = GetCartFromSession();
-            var cartItemCount = cart.TotalItems;
+            var userId = await _cartService.GetCartUserIdAsync();
+            var cart = await _cartService.GetCartAsync(userId);
+            var cartItemCount = cart.UniqueItemsCount;
             return PartialView("_CartPartial", cartItemCount);
         }
-
-        // Helper methods
-        private Cart GetCartFromSession()
+        [HttpPost]
+        public async Task<IActionResult> RemoveItemByProduct(int productId, int? variantId = null)
         {
-            var cartJson = HttpContext.Session.GetString(CartSessionKey);
-            if (string.IsNullOrEmpty(cartJson))
+            var userId = await _cartService.GetCartUserIdAsync();
+            var success = await _cartService.RemoveFromCartByProductAsync(userId, productId, variantId);
+
+            if (!success)
             {
-                return new Cart();
+                return Json(new { success = false, message = "Không thể xóa sản phẩm" });
             }
-            return JsonConvert.DeserializeObject<Cart>(cartJson);
-        }
 
-        private void SaveCartToSession(Cart cart)
-        {
-            var cartJson = JsonConvert.SerializeObject(cart);
-            HttpContext.Session.SetString(CartSessionKey, cartJson);
+            // Lấy thông tin giỏ hàng cập nhật
+            var cart = await _cartService.GetCartAsync(userId);
+
+            return Json(new
+            {
+                success = true,
+                message = "Đã xóa sản phẩm khỏi giỏ hàng",
+                cartCount = cart.UniqueItemsCount,
+                total = cart.TotalAmount
+            });
         }
     }
 }
