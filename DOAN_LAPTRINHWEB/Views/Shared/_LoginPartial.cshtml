@@ -4,36 +4,44 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-<div class="d-flex align-items-center">
-    @if (SignInManager.IsSignedIn(User))
-    {
-        var user = await UserManager.GetUserAsync(User);
-        var displayName = user?.FullName ?? UserManager.GetUserName(User);
+@if (SignInManager.IsSignedIn(User))
+{
+    var user = await UserManager.GetUserAsync(User);
+    var displayName = user?.FullName ?? UserManager.GetUserName(User);
 
-        <div class="dropdown hover-dropdown" id="customDropdown">
-            <button type="button" class="btn btn-link text-dark dropdown-toggle px-0 me-2" id="userDropdownBtn">
-                <span class="me-1">Xin chào</span><span class="fw-medium">@displayName</span>
-            </button>
-            <ul class="dropdown-menu shadow-sm border-0" id="userDropdownMenu">
-                <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index"><i class="fas fa-user-circle me-2"></i>Tài khoản của tôi</a></li>
-                <li><a class="dropdown-item" href="#"><i class="fas fa-heart me-2"></i>Yêu thích</a></li>
-                <li><a class="dropdown-item" href="#"><i class="fas fa-box me-2"></i>Đơn hàng của tôi</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                    <form method="post" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                        <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</button>
-                    </form>
-                </li>
-            </ul>
-        </div>
-    }
-    else
-    {
-        <a class="nav-link btn btn-outline-dark rounded-pill px-3 me-2" id="login" asp-area="Identity" asp-page="/Account/Login">
-            <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
+    <div class="dropdown hover-dropdown" id="customDropdown">
+        <a href="#" class="header-icon dropdown-toggle" id="userDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-user-circle"></i>
         </a>
-        <a class="nav-link btn btn-dark rounded-pill px-3 text-white" id="register" asp-area="Identity" asp-page="/Account/Register">
-            Đăng ký
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" id="userDropdownMenu">
+            <li class="dropdown-item-text">
+                <div class="user-info">
+                    <i class="fas fa-user-circle user-icon me-2"></i>
+                    <span class="user-name">@displayName</span>
+                </div>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index"><i class="fas fa-user me-2"></i>Tài khoản của tôi</a></li>
+            <li><a class="dropdown-item" href="#"><i class="fas fa-heart me-2"></i>Yêu thích</a></li>
+            <li><a class="dropdown-item" href="#"><i class="fas fa-box me-2"></i>Đơn hàng của tôi</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <form method="post" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                    <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+}
+else
+{
+    <div class="dropdown hover-dropdown" id="customDropdown">
+        <a href="#" class="header-icon dropdown-toggle" id="userDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-user-circle"></i>
         </a>
-    }
-</div>
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" id="userDropdownMenu">
+            <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Login"><i class="fas fa-sign-in-alt me-2"></i>Đăng nhập</a></li>
+            <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register"><i class="fas fa-user-plus me-2"></i>Đăng ký</a></li>
+        </ul>
+    </div>
+}

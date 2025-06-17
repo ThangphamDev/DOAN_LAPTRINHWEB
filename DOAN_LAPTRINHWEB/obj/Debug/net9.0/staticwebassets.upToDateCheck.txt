@@ -1,6 +1,5 @@
 wwwroot\css\admin.css
 wwwroot\css\custom.css
-wwwroot\css\site.css
 wwwroot\favicon.ico
 wwwroot\images\3e511c07-dcc8-4bf7-b938-eaaa7a823fbf_Groth.jpg
 wwwroot\images\dashboad\banner.png
@@ -113,9 +112,11 @@ wwwroot\lib\jquery\dist\jquery.js
 wwwroot\lib\jquery\dist\jquery.min.js
 wwwroot\lib\jquery\dist\jquery.min.map
 wwwroot\lib\jquery\LICENSE.txt
+wwwroot\css\site.css
+E:\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\wwwroot\css\admin.css
 E:\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\wwwroot\css\custom.css
-E:\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\wwwroot\css\site.css
 E:\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\wwwroot\favicon.ico
+E:\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\wwwroot\js\admin.js
 E:\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\wwwroot\js\site.js
 E:\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
 E:\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
@@ -173,5 +174,4 @@ E:\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\wwwroot\lib\jquery\dist\jq
 E:\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\wwwroot\lib\jquery\dist\jquery.min.js
 E:\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\wwwroot\lib\jquery\dist\jquery.min.map
 E:\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\wwwroot\lib\jquery\LICENSE.txt
-E:\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\wwwroot\css\admin.css
-E:\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\wwwroot\js\admin.js
+E:\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\wwwroot\css\site.css
