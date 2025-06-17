@@ -12,7 +12,7 @@
     <div class="col-md-4 text-center">
         <div class="profile-avatar mb-3">
             <img id="profile-avatar-img"
-                 src="@(string.IsNullOrEmpty(Model.Input.AvatarUrl) ? "/images/avatars/default.png" : Model.Input.AvatarUrl)"
+                 src="@(string.IsNullOrEmpty(Model.Input.AvatarUrl) ? "/images/default-avatar.png" : Model.Input.AvatarUrl)"
                  alt="Ảnh đại diện"
                  class="img-thumbnail rounded-circle"
                  style="width: 150px; height: 150px; object-fit: cover;" />
@@ -85,8 +85,7 @@
                     <span asp-validation-for="Input.Address" class="text-danger"></span>
                 </div>
 
-                <!-- File ảnh avatar -->
-                <input type="file" id="avatarFileInput" name="avatarFile" accept="image/*" style="display: none;" />
+                <input type="file" id="avatarFileInput" name="UploadAvatar" accept="image/*" style="display: none;" />
                 <input type="hidden" asp-for="Input.AvatarUrl" />
 
                 <div class="col-12 text-end">

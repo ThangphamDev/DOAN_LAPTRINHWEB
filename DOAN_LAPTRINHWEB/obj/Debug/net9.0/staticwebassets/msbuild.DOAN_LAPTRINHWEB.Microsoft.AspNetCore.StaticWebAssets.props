@@ -126,6 +126,24 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\avatars\3e511c07-dcc8-4bf7-b938-eaaa7a823fbf_Groth.jpg'))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\avatars\5daf30da-0cbd-4741-bb6e-e6bc7fe79a03.png'))">
+      <SourceType>Package</SourceType>
+      <SourceId>DOAN_LAPTRINHWEB</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/DOAN_LAPTRINHWEB</BasePath>
+      <RelativePath>images/avatars/5daf30da-0cbd-4741-bb6e-e6bc7fe79a03.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>44ilebbsjg</Fingerprint>
+      <Integrity>9NgyDxsNuNAcpbO6LVkIEXmXd8meLfMWwwE5hSmdpFA=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\avatars\5daf30da-0cbd-4741-bb6e-e6bc7fe79a03.png'))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\dashboad\banner.png'))">
       <SourceType>Package</SourceType>
       <SourceId>DOAN_LAPTRINHWEB</SourceId>
@@ -791,6 +809,24 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\products\3\7a8b5df2-fee4-457b-906e-3728b11bf689.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\products\3\a7435ccd-1aa5-4a94-8c41-42b8194a1ec6.jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>DOAN_LAPTRINHWEB</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/DOAN_LAPTRINHWEB</BasePath>
+      <RelativePath>images/products/3/a7435ccd-1aa5-4a94-8c41-42b8194a1ec6.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>vktst6u96v</Fingerprint>
+      <Integrity>v7nhPuNnKucuCcELFVgOREQ1W0rbFOGmEzt6aiFPihI=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\products\3\a7435ccd-1aa5-4a94-8c41-42b8194a1ec6.jpg'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\products\4\03b994da-198a-4f20-96a8-30ac3fef887a.jpg'))">
       <SourceType>Package</SourceType>

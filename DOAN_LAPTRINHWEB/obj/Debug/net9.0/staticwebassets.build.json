@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "A64HM9IFMTYrMMOObLus5N/GdOI3JctBXR+ZPCxNbR8=",
+  "Hash": "x+T11bRFHRGw2bPG7PwKNChCRJ4ayqKs3/LUIVn+JtI=",
   "Source": "DOAN_LAPTRINHWEB",
   "BasePath": "_content/DOAN_LAPTRINHWEB",
   "Mode": "Default",
@@ -4154,6 +4154,27 @@
       "OriginalItemSpec": "wwwroot\\images\\avatars\\3e511c07-dcc8-4bf7-b938-eaaa7a823fbf_Groth.jpg"
     },
     {
+      "Identity": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\avatars\\5daf30da-0cbd-4741-bb6e-e6bc7fe79a03.png",
+      "SourceId": "DOAN_LAPTRINHWEB",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\",
+      "BasePath": "_content/DOAN_LAPTRINHWEB",
+      "RelativePath": "images/avatars/5daf30da-0cbd-4741-bb6e-e6bc7fe79a03#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "44ilebbsjg",
+      "Integrity": "9NgyDxsNuNAcpbO6LVkIEXmXd8meLfMWwwE5hSmdpFA=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\avatars\\5daf30da-0cbd-4741-bb6e-e6bc7fe79a03.png"
+    },
+    {
       "Identity": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\dashboad\\banner.png",
       "SourceId": "DOAN_LAPTRINHWEB",
       "SourceType": "Discovered",
@@ -4929,6 +4950,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\images\\products\\3\\7a8b5df2-fee4-457b-906e-3728b11bf689.jpg"
+    },
+    {
+      "Identity": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\3\\a7435ccd-1aa5-4a94-8c41-42b8194a1ec6.jpg",
+      "SourceId": "DOAN_LAPTRINHWEB",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\",
+      "BasePath": "_content/DOAN_LAPTRINHWEB",
+      "RelativePath": "images/products/3/a7435ccd-1aa5-4a94-8c41-42b8194a1ec6#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "vktst6u96v",
+      "Integrity": "v7nhPuNnKucuCcELFVgOREQ1W0rbFOGmEzt6aiFPihI=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\products\\3\\a7435ccd-1aa5-4a94-8c41-42b8194a1ec6.jpg"
     },
     {
       "Identity": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\4\\03b994da-198a-4f20-96a8-30ac3fef887a.jpg",
@@ -17023,6 +17065,88 @@
       ]
     },
     {
+      "Route": "images/avatars/5daf30da-0cbd-4741-bb6e-e6bc7fe79a03.44ilebbsjg.png",
+      "AssetFile": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\avatars\\5daf30da-0cbd-4741-bb6e-e6bc7fe79a03.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1545081"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"9NgyDxsNuNAcpbO6LVkIEXmXd8meLfMWwwE5hSmdpFA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 17 Jun 2025 07:34:16 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "44ilebbsjg"
+        },
+        {
+          "Name": "label",
+          "Value": "images/avatars/5daf30da-0cbd-4741-bb6e-e6bc7fe79a03.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-9NgyDxsNuNAcpbO6LVkIEXmXd8meLfMWwwE5hSmdpFA="
+        }
+      ]
+    },
+    {
+      "Route": "images/avatars/5daf30da-0cbd-4741-bb6e-e6bc7fe79a03.png",
+      "AssetFile": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\avatars\\5daf30da-0cbd-4741-bb6e-e6bc7fe79a03.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1545081"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"9NgyDxsNuNAcpbO6LVkIEXmXd8meLfMWwwE5hSmdpFA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 17 Jun 2025 07:34:16 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-9NgyDxsNuNAcpbO6LVkIEXmXd8meLfMWwwE5hSmdpFA="
+        }
+      ]
+    },
+    {
       "Route": "images/dashboad/banner.4dddgyv2h0.png",
       "AssetFile": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\dashboad\\banner.png",
       "Selectors": [],
@@ -20053,6 +20177,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-GUiIqAW0kTYvkS+h88mznhR3XrVq7n9I6T2jbIVqHO8="
+        }
+      ]
+    },
+    {
+      "Route": "images/products/3/a7435ccd-1aa5-4a94-8c41-42b8194a1ec6.jpg",
+      "AssetFile": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\3\\a7435ccd-1aa5-4a94-8c41-42b8194a1ec6.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "20401"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"v7nhPuNnKucuCcELFVgOREQ1W0rbFOGmEzt6aiFPihI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 17 Jun 2025 05:41:28 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-v7nhPuNnKucuCcELFVgOREQ1W0rbFOGmEzt6aiFPihI="
+        }
+      ]
+    },
+    {
+      "Route": "images/products/3/a7435ccd-1aa5-4a94-8c41-42b8194a1ec6.vktst6u96v.jpg",
+      "AssetFile": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\3\\a7435ccd-1aa5-4a94-8c41-42b8194a1ec6.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "20401"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"v7nhPuNnKucuCcELFVgOREQ1W0rbFOGmEzt6aiFPihI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 17 Jun 2025 05:41:28 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "vktst6u96v"
+        },
+        {
+          "Name": "label",
+          "Value": "images/products/3/a7435ccd-1aa5-4a94-8c41-42b8194a1ec6.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-v7nhPuNnKucuCcELFVgOREQ1W0rbFOGmEzt6aiFPihI="
         }
       ]
     },

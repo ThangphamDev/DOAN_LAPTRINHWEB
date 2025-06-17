@@ -66,6 +66,7 @@ wwwroot\css\site.css
 wwwroot\favicon.ico
 wwwroot\images\3e511c07-dcc8-4bf7-b938-eaaa7a823fbf_Groth.jpg
 wwwroot\images\avatars\3e511c07-dcc8-4bf7-b938-eaaa7a823fbf_Groth.jpg
+wwwroot\images\avatars\5daf30da-0cbd-4741-bb6e-e6bc7fe79a03.png
 wwwroot\images\dashboad\banner.png
 wwwroot\images\dashboad\banner2.png
 wwwroot\images\dashboad\bed.png
@@ -103,6 +104,7 @@ wwwroot\images\products\2\8426f73e-23bb-40c6-8c34-3ed1a04323c0.jpg
 wwwroot\images\products\3\279bf334-e302-4ced-b9ac-e540dae01ee3.jpg
 wwwroot\images\products\3\40f076ec-65c6-4a45-bc04-ec8266465a3c.png
 wwwroot\images\products\3\7a8b5df2-fee4-457b-906e-3728b11bf689.jpg
+wwwroot\images\products\3\a7435ccd-1aa5-4a94-8c41-42b8194a1ec6.jpg
 wwwroot\images\products\4\03b994da-198a-4f20-96a8-30ac3fef887a.jpg
 wwwroot\images\products\4\319e6bb2-bb1f-4e09-99ad-f9669908b8ff.jpg
 wwwroot\images\products\4\66765097-10e4-4bb0-949a-dc70a334e1df.jpg

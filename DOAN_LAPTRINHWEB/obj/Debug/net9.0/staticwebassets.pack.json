@@ -29,6 +29,10 @@
       "PackagePath": "staticwebassets\\images\\avatars\\3e511c07-dcc8-4bf7-b938-eaaa7a823fbf_Groth.jpg"
     },
     {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\avatars\\5daf30da-0cbd-4741-bb6e-e6bc7fe79a03.png",
+      "PackagePath": "staticwebassets\\images\\avatars\\5daf30da-0cbd-4741-bb6e-e6bc7fe79a03.png"
+    },
+    {
       "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\dashboad\\banner.png",
       "PackagePath": "staticwebassets\\images\\dashboad\\banner.png"
     },
@@ -175,6 +179,10 @@
     {
       "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\3\\7a8b5df2-fee4-457b-906e-3728b11bf689.jpg",
       "PackagePath": "staticwebassets\\images\\products\\3\\7a8b5df2-fee4-457b-906e-3728b11bf689.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\3\\a7435ccd-1aa5-4a94-8c41-42b8194a1ec6.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\3\\a7435ccd-1aa5-4a94-8c41-42b8194a1ec6.jpg"
     },
     {
       "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\4\\03b994da-198a-4f20-96a8-30ac3fef887a.jpg",
