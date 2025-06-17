@@ -1,13 +1,5 @@
 ﻿@{
-
-    if (ViewData.TryGetValue("ParentLayout", out var parentLayout))
-    {
-        Layout = parentLayout.ToString();
-    }
-    else
-    {
-        Layout = "/Views/Shared/_Layout.cshtml";
-    }
+    Layout = "/Views/Shared/_Layout.cshtml";
 }
 
 <div class="container py-4">
@@ -15,61 +7,14 @@
 
     <div class="row">
         <div class="col-md-3">
-            <div class="card shadow-sm mb-4">
+            <div class="card shadow-sm mb-4 border-0">
                 <div class="card-body p-0">
-                    <ul class="nav flex-column account-manage-sidebar">
-                        <li class="nav-item text-center py-3 border-bottom">
-                            <img src="https://via.placeholder.com/80/E8E8E8/000000?text=AVT" class="rounded-circle mb-2" alt="Avatar" style="width: 80px; height: 80px; object-fit: cover;">
-                            <p class="mb-0 fw-bold">@User.Identity.Name</p> 
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile-link" asp-page="./Index">
-                                <i class="bi bi-person-fill me-2"></i> Hồ sơ
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" id="email-link" asp-page="./Email">
-                                <i class="bi bi-envelope-fill me-2"></i> Email
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password-link" asp-page="./ChangePassword">
-                                <i class="bi bi-key-fill me-2"></i> Đổi mật khẩu
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor-link" asp-page="./TwoFactorAuthentication">
-                                <i class="bi bi-shield-lock-fill me-2"></i> Xác thực 2 yếu tố
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data-link" asp-page="./PersonalData">
-                                <i class="bi bi-file-earmark-person-fill me-2"></i> Dữ liệu cá nhân
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-page="./Orders">
-                                <i class="fas fa-box me-2"></i> Đơn mua
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-page="./Addresses">
-                                <i class="fas fa-map-marked-alt me-2"></i> Địa chỉ
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post" class="w-100">
-                                <button type="submit" class="nav-link btn btn-link text-decoration-none w-100 text-start">
-                                    <i class="fas fa-sign-out-alt me-2"></i> Đăng xuất
-                                </button>
-                            </form>
-                        </li>
-                    </ul>
+                    <partial name="_ManageNav" />
                 </div>
             </div>
         </div>
         <div class="col-md-9">
-            <div class="card shadow-sm mb-4 p-4">
+            <div class="card shadow-sm mb-4 p-4 border-0">
                 @RenderBody()
             </div>
         </div>
