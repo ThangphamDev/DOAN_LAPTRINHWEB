@@ -1,0 +1,38 @@
+﻿@page
+@model DOAN_LAPTRINHWEB.Areas.Identity.Pages.Account.Manage.OrdersModel
+@{
+    ViewData["Title"] = "Đơn mua";
+}
+
+<h2>Đơn mua của bạn</h2>
+
+@if (Model.UserOrders == null || !Model.UserOrders.Any())
+{
+    <p>Bạn chưa có đơn hàng nào.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Ngày đặt</th>
+                <th>Tổng tiền</th>
+                <th>Trạng thái</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model.UserOrders)
+            {
+                <tr>
+                    <td>@order.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@String.Format("{0:N0} VNĐ", order.TotalAmount)</td>
+                    <td>@order.OrderStatus</td>
+                    <td>
+                        <a asp-page="/Account/Manage/OrderDetails" asp-route-id="@order.OrderId" class="btn btn-sm btn-info">Chi tiết</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

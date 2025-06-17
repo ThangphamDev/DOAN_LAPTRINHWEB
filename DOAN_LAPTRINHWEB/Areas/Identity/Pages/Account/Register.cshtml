@@ -5,112 +5,140 @@
     ViewData["Title"] = "Đăng ký";
 }
 
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
-            <div class="card shadow-lg border-0">
-                <div class="card-body p-5">
-                    <!-- Header -->
-                    <div class="text-center mb-4">
-                        <h1 class="h3 mb-3 fw-semibold">Đăng ký tài khoản</h1>
-                        <p class="text-muted">Tạo tài khoản để trải nghiệm mua sắm</p>
+<div class="auth-container">
+    <div class="auth-header">
+        <h1>@ViewData["Title"]</h1>
+        <p>Tạo tài khoản để trải nghiệm mua sắm tốt hơn với HomeStyle</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="auth-form">
+                <h2 class="auth-form-title">Tạo tài khoản mới</h2>
+
+                <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.FullName" class="form-control" autocomplete="fullname" aria-required="true" placeholder="Nhập họ tên" />
+                        <label asp-for="Input.FullName">Họ và tên</label>
+                        <span asp-validation-for="Input.FullName" class="text-danger"></span>
                     </div>
 
-                    <!-- Register Form -->
-                    <form id="registerForm" method="post">
-                        <div asp-validation-summary="ModelOnly" class="text-danger text-center small mb-3"></div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                        <label asp-for="Input.Email">Email</label>
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
 
-                        <!-- Full Name -->
-                        <div class="form-floating mb-3">
-                            <input asp-for="Input.FullName" class="form-control" placeholder="Họ và tên" required />
-                            <label asp-for="Input.FullName">Họ và tên</label>
-                            <span asp-validation-for="Input.FullName" class="text-danger small"></span>
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                        <label asp-for="Input.Password">Mật khẩu</label>
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        <div class="password-strength mt-2">
+                            <div class="progress-bar"></div>
                         </div>
+                    </div>
 
-                        <!-- Email -->
-                        <div class="form-floating mb-3">
-                            <input asp-for="Input.Email" class="form-control" placeholder="name@example.com" required />
-                            <label asp-for="Input.Email">Email</label>
-                            <span asp-validation-for="Input.Email" class="text-danger small"></span>
-                        </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                        <label asp-for="Input.ConfirmPassword">Xác nhận mật khẩu</label>
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                    </div>
 
-                        <!-- Password -->
-                        <div class="form-floating mb-3">
-                            <input asp-for="Input.Password" class="form-control" placeholder="Mật khẩu" required />
-                            <label asp-for="Input.Password">Mật khẩu</label>
-                            <span asp-validation-for="Input.Password" class="text-danger small"></span>
-                        </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="agreeTerms" required />
+                        <label class="form-check-label" for="agreeTerms">
+                            Tôi đồng ý với <a href="#">Điều khoản dịch vụ</a> và <a href="#">Chính sách bảo mật</a>
+                        </label>
+                    </div>
 
-                        <!-- Confirm Password -->
-                        <div class="form-floating mb-4">
-                            <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Xác nhận mật khẩu" required />
-                            <label asp-for="Input.ConfirmPassword">Xác nhận mật khẩu</label>
-                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger small"></span>
-                        </div>
+                    <button id="registerSubmit" type="submit" class="btn-auth">Đăng ký tài khoản</button>
 
-                        <!-- Register Button -->
-                        <button type="submit" class="btn btn-dark w-100 mb-3 py-2">
-                            <i class="fas fa-user-plus me-2"></i>Đăng ký
-                        </button>
+                    <div class="auth-footer">
+                        <p>Đã có tài khoản? <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Đăng nhập</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
 
-                        <!-- Login Link -->
-                        <p class="text-center mb-4">
-                            <span class="text-muted small">Đã có tài khoản?</span>
-                            <a class="text-decoration-none ms-1 small" asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">
-                                Đăng nhập ngay
+        <div class="col-md-6">
+            <div class="auth-form">
+                <h2 class="auth-form-title">Đăng ký bằng mạng xã hội</h2>
+
+                @{
+                    if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                    {
+                        <div class="social-login-buttons">
+                            <a href="#" class="btn-social btn-google">
+                                <i class="fab fa-google me-2"></i> Google
                             </a>
-                        </p>
-
-                        <!-- Social Login Divider -->
-                        <div class="position-relative my-4">
-                            <hr class="text-muted">
-                            <p class="small position-absolute top-50 start-50 translate-middle bg-white px-2 text-muted">
-                                hoặc đăng ký với
-                            </p>
+                            <a href="#" class="btn-social btn-facebook">
+                                <i class="fab fa-facebook-f me-2"></i> Facebook
+                            </a>
                         </div>
-
-                        <!-- Social Login Buttons -->
-                        @if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                        {
-                            <div class="row g-2">
-                                <div class="col">
-                                    <button type="button" class="btn btn-outline-secondary w-100" disabled>
-                                        <i class="fab fa-google me-2"></i>Google
+                    }
+                    else
+                    {
+                        <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                            <div class="social-login-buttons">
+                                @foreach (var provider in Model.ExternalLogins!)
+                                {
+                                    <button type="submit" class="btn-social @(provider.Name.ToLower() == "google" ? "btn-google" : "btn-facebook")"
+                                            name="provider" value="@provider.Name">
+                                        <i class="fab fa-@(provider.Name.ToLower() == "google" ? "google" : "facebook-f") me-2"></i>
+                                        @provider.DisplayName
                                     </button>
-                                </div>
-                                <div class="col">
-                                    <button type="button" class="btn btn-outline-secondary w-100" disabled>
-                                        <i class="fab fa-facebook-f me-2"></i>Facebook
-                                    </button>
-                                </div>
+                                }
                             </div>
-                        }
-                        else
-                        {
-                            <form id="external-account" asp-page="./ExternalLogin"
-                                  asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                                <div class="row g-2">
-                                    @foreach (var provider in Model.ExternalLogins!)
-                                    {
-                                        <div class="col">
-                                            <button type="submit" class="btn btn-outline-secondary w-100"
-                                                    name="provider" value="@provider.Name">
-                                                @{
-                                                    var icon = provider.Name.ToLower() switch
-                                                    {
-                                                        "google" => "fab fa-google",
-                                                        "facebook" => "fab fa-facebook-f",
-                                                        _ => "fas fa-external-link-alt"
-                                                    };
-                                                }
-                                                <i class="@icon me-2"></i>@provider.DisplayName
-                                            </button>
-                                        </div>
-                                    }
-                                </div>
-                            </form>
-                        }
-                    </form>
+                        </form>
+                    }
+                }
+
+                <div class="auth-divider">
+                    <span>Lợi ích khi đăng ký</span>
+                </div>
+
+                <div class="benefits">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="me-3 text-primary">
+                            <i class="fas fa-history fs-4"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-1">Lịch sử đơn hàng</h5>
+                            <p class="text-muted mb-0 small">Dễ dàng theo dõi và quản lý tất cả đơn hàng của bạn</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="me-3 text-primary">
+                            <i class="fas fa-heart fs-4"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-1">Danh sách yêu thích</h5>
+                            <p class="text-muted mb-0 small">Lưu các sản phẩm bạn yêu thích để mua sau</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="me-3 text-primary">
+                            <i class="fas fa-percentage fs-4"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-1">Ưu đãi độc quyền</h5>
+                            <p class="text-muted mb-0 small">Nhận thông tin về khuyến mãi và sản phẩm mới</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start">
+                        <div class="me-3 text-primary">
+                            <i class="fas fa-shipping-fast fs-4"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-1">Thanh toán nhanh chóng</h5>
+                            <p class="text-muted mb-0 small">Lưu thông tin giao hàng để thanh toán nhanh hơn</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -160,4 +188,26 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Password strength meter
+        $(document).ready(function() {
+            $('#Input_Password').on('keyup', function() {
+                var password = $(this).val();
+                var progressBar = $('.password-strength .progress-bar');
+
+                // Remove previous classes
+                progressBar.removeClass('weak medium strong');
+
+                if (password.length === 0) {
+                    progressBar.css('width', '0%');
+                } else if (password.length < 6) {
+                    progressBar.addClass('weak');
+                } else if (password.length < 10) {
+                    progressBar.addClass('medium');
+                } else {
+                    progressBar.addClass('strong');
+                }
+            });
+        });
+    </script>
 }

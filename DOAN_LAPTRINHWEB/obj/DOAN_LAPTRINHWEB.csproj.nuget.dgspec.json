@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\web\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB.csproj": {}
+    "E:\\web\\bai1\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB.csproj": {}
   },
   "projects": {
-    "E:\\web\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB.csproj": {
+    "E:\\web\\bai1\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\web\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB.csproj",
+        "projectUniqueName": "E:\\web\\bai1\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB.csproj",
         "projectName": "DOAN_LAPTRINHWEB",
-        "projectPath": "E:\\web\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB.csproj",
+        "projectPath": "E:\\web\\bai1\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB.csproj",
         "packagesPath": "C:\\Users\\Viet Xuan Nguyen\\.nuget\\packages\\",
-        "outputPath": "E:\\web\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\obj\\",
+        "outputPath": "E:\\web\\bai1\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

@@ -27,24 +27,26 @@
         <!-- Hidden fields for required model properties -->
         <input type="hidden" asp-for="UserId" />
 
-        <!-- The form content remains the same -->
         <div class="row">
             <div class="col-lg-8">
                 <!-- Thông tin giao hàng -->
                 <div class="card shadow-sm mb-4">
                     <div class="card-body">
-                        <h5 class="card-title mb-4">Thông tin giao hàng</h5>
+                        <h5 class="card-title mb-4">
+                            <i class="fas fa-shipping-fast me-2"></i>
+                            Thông tin giao hàng
+                        </h5>
 
                         <div class="mb-3">
-                            <label asp-for="Address.FullName" class="form-label">Họ và tên</label>
-                            <input asp-for="Address.FullName" class="form-control" />
+                            <label asp-for="Address.FullName" class="form-label">Họ và tên *</label>
+                            <input asp-for="Address.FullName" class="form-control" placeholder="Nhập họ và tên đầy đủ" />
                             <span asp-validation-for="Address.FullName" class="text-danger"></span>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label asp-for="Address.Phone" class="form-label">Số điện thoại</label>
-                                <input asp-for="Address.Phone" class="form-control" />
+                                <label asp-for="Address.Phone" class="form-label">Số điện thoại *</label>
+                                <input asp-for="Address.Phone" class="form-control" placeholder="0123456789" />
                                 <span asp-validation-for="Address.Phone" class="text-danger"></span>
                             </div>
                             <div class="col-md-6 mb-3">
@@ -54,33 +56,40 @@
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Address.Street" class="form-label">Địa chỉ</label>
+                            <label asp-for="Address.Street" class="form-label">Địa chỉ *</label>
                             <input asp-for="Address.Street" class="form-control" placeholder="Số nhà, tên đường" />
                             <span asp-validation-for="Address.Street" class="text-danger"></span>
                         </div>
 
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label asp-for="Address.City" class="form-label">Thành phố</label>
-                                <input asp-for="Address.City" class="form-control" />
+                                <label asp-for="Address.City" class="form-label">Thành phố *</label>
+                                <input asp-for="Address.City" class="form-control" placeholder="Hồ Chí Minh" />
                                 <span asp-validation-for="Address.City" class="text-danger"></span>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label asp-for="Address.State" class="form-label">Tỉnh/Thành</label>
-                                <input asp-for="Address.State" class="form-control" />
+                                <label asp-for="Address.State" class="form-label">Tỉnh/Thành *</label>
+                                <input asp-for="Address.State" class="form-control" placeholder="TP.HCM" />
                                 <span asp-validation-for="Address.State" class="text-danger"></span>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label asp-for="Address.PostalCode" class="form-label">Mã bưu điện</label>
-                                <input asp-for="Address.PostalCode" class="form-control" />
+                                <input asp-for="Address.PostalCode" class="form-control" placeholder="70000" />
                                 <span asp-validation-for="Address.PostalCode" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label asp-for="Address.Country" class="form-label">Quốc gia</label>
-                            <input asp-for="Address.Country" class="form-control" value="Việt Nam" />
+                            <input asp-for="Address.Country" class="form-control" value="Việt Nam" readonly />
                             <span asp-validation-for="Address.Country" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" asp-for="SaveAddressToAccount" id="saveAddress">
+                            <label class="form-check-label" for="saveAddress">
+                                Lưu địa chỉ này vào tài khoản của tôi
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -88,38 +97,65 @@
                 <!-- Phương thức thanh toán -->
                 <div class="card shadow-sm mb-4">
                     <div class="card-body">
-                        <h5 class="card-title mb-4">Phương thức thanh toán</h5>
+                        <h5 class="card-title mb-4">
+                            <i class="fas fa-credit-card me-2"></i>
+                            Phương thức thanh toán
+                        </h5>
 
-                        <div class="form-check mb-3">
+                        <div class="form-check mb-3 p-3 border rounded">
                             <input class="form-check-input payment-method-radio" type="radio" asp-for="PaymentMethod" id="payment-cod" value="COD" checked>
                             <label class="form-check-label d-flex align-items-center" for="payment-cod">
-                                <span class="me-2"><i class="fas fa-money-bill-wave"></i></span>
-                                Thanh toán khi nhận hàng (COD)
+                                <span class="me-3">
+                                    <i class="fas fa-money-bill-wave text-success fs-4"></i>
+                                </span>
+                                <div>
+                                    <strong>Thanh toán khi nhận hàng (COD)</strong>
+                                    <small class="d-block text-muted">Thanh toán bằng tiền mặt khi nhận hàng</small>
+                                </div>
                             </label>
                         </div>
 
-                        <div class="form-check mb-3">
+                        <div class="form-check mb-3 p-3 border rounded">
                             <input class="form-check-input payment-method-radio" type="radio" asp-for="PaymentMethod" id="payment-bank" value="Banking">
                             <label class="form-check-label d-flex align-items-center" for="payment-bank">
-                                <span class="me-2"><i class="fas fa-university"></i></span>
-                                Chuyển khoản ngân hàng
+                                <span class="me-3">
+                                    <i class="fas fa-university text-primary fs-4"></i>
+                                </span>
+                                <div>
+                                    <strong>Chuyển khoản ngân hàng</strong>
+                                    <small class="d-block text-muted">Chuyển khoản qua ngân hàng hoặc ví điện tử</small>
+                                </div>
                             </label>
                         </div>
 
-                        <div class="form-check mb-3">
+                        <div class="form-check mb-3 p-3 border rounded">
                             <input class="form-check-input payment-method-radio" type="radio" asp-for="PaymentMethod" id="payment-momo" value="Momo">
                             <label class="form-check-label d-flex align-items-center" for="payment-momo">
-                                <span class="me-2"><i class="fas fa-wallet"></i></span>
-                                Ví Momo
+                                <span class="me-3">
+                                    <i class="fas fa-wallet text-danger fs-4"></i>
+                                </span>
+                                <div>
+                                    <strong>Ví MoMo</strong>
+                                    <small class="d-block text-muted">Thanh toán qua ví điện tử MoMo</small>
+                                </div>
                             </label>
                         </div>
 
-                        <div id="bank-info" class="mt-3 p-3 bg-light rounded" style="display: none;">
-                            <h6>Thông tin chuyển khoản:</h6>
-                            <p class="mb-1">Ngân hàng: <strong>VIETCOMBANK</strong></p>
-                            <p class="mb-1">Số tài khoản: <strong>0123456789</strong></p>
-                            <p class="mb-1">Chủ tài khoản: <strong>CÔNG TY TNHH HOME STYLES</strong></p>
-                            <p class="mb-0">Nội dung: <strong>Thanh toán đơn hàng [Họ tên]</strong></p>
+                        <div id="bank-info" class="mt-3 p-4 bg-light rounded border-start border-primary border-4" style="display: none;">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Thông tin chuyển khoản
+                            </h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="mb-2"><strong>Ngân hàng:</strong> VIETCOMBANK</p>
+                                    <p class="mb-2"><strong>Số tài khoản:</strong> 0123456789</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-2"><strong>Chủ tài khoản:</strong> CÔNG TY TNHH HOME STYLES</p>
+                                    <p class="mb-0"><strong>Nội dung:</strong> Thanh toán đơn hàng [Họ tên]</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -127,47 +163,133 @@
 
             <div class="col-lg-4">
                 <!-- Tóm tắt đơn hàng -->
-                <div class="card shadow-sm mb-4">
+                <div class="card shadow-sm mb-4 sticky-top" style="top: 20px;">
                     <div class="card-body">
-                        <h5 class="card-title mb-4">Đơn hàng của bạn</h5>
+                        <h5 class="card-title mb-4">
+                            <i class="fas fa-shopping-bag me-2"></i>
+                            Đơn hàng của bạn
+                        </h5>
 
-                        <div class="order-summary">
+                        <!-- Hiển thị chi tiết sản phẩm với số lượng -->
+                        <div class="order-summary mb-4" style="max-height: 400px; overflow-y: auto;">
                             @foreach (var item in Model.Cart.Items)
                             {
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>@item.ProductName × @item.Quantity</span>
-                                    <span>@item.Subtotal.ToString("N0")₫</span>
+                                <div class="order-item mb-3 p-3 border rounded bg-light">
+                                    <div class="row align-items-center">
+                                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                        {
+                                            <div class="col-3">
+                                                <img src="@item.ImageUrl" alt="@item.ProductName" class="img-fluid rounded shadow-sm" style="max-height: 60px; object-fit: cover;">
+                                            </div>
+                                            <div class="col-9">
+                                                <div class="product-info">
+                                                    <h6 class="mb-2 text-truncate">@item.ProductName</h6>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div class="quantity-info">
+                                                            <span class="text-muted small">Số lượng: </span>
+                                                            <span class="badge bg-primary rounded-pill">@item.Quantity</span>
+                                                        </div>
+                                                        <div class="price-info text-end">
+                                                            <small class="text-muted d-block">@item.Price.ToString("N0")₫ × @item.Quantity</small>
+                                                            <div class="fw-bold text-success">@item.Subtotal.ToString("N0")₫</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="col-12">
+                                                <div class="product-info">
+                                                    <h6 class="mb-2">@item.ProductName</h6>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div class="quantity-info">
+                                                            <span class="text-muted">Số lượng: </span>
+                                                            <span class="badge bg-primary rounded-pill fs-6">@item.Quantity</span>
+                                                        </div>
+                                                        <div class="price-info text-end">
+                                                            <small class="text-muted d-block">@item.Price.ToString("N0")₫ × @item.Quantity</small>
+                                                            <div class="fw-bold text-success">@item.Subtotal.ToString("N0")₫</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
                                 </div>
                             }
                         </div>
 
-                        <hr>
+                        <!-- Tổng kết đơn hàng -->
+                        <div class="order-totals">
+                            <div class="d-flex justify-content-between mb-2 pb-2">
+                                <span class="text-muted">Tổng số sản phẩm:</span>
+                                <span class="badge bg-secondary rounded-pill">@Model.Cart.TotalItems</span>
+                            </div>
 
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Tạm tính</span>
-                            <span>@Model.Cart.TotalAmount.ToString("N0")₫</span>
+                            <hr class="my-3">
+
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Tạm tính:</span>
+                                <span class="fw-semibold">@Model.Cart.SubTotal.ToString("N0")₫</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Phí vận chuyển:</span>
+                                <span class="text-success fw-semibold">Miễn phí</span>
+                            </div>
+
+                            @if (Model.Cart.Tax > 0)
+                            {
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Thuế:</span>
+                                    <span>@Model.Cart.Tax.ToString("N0")₫</span>
+                                </div>
+                            }
+
+                            <hr class="my-3">
+
+                            <div class="d-flex justify-content-between mb-4">
+                                <span class="fw-bold fs-5">Tổng cộng:</span>
+                                <span class="fw-bold fs-4 text-danger">@Model.Cart.TotalAmount.ToString("N0")₫</span>
+                            </div>
+
+                            <button type="submit" class="btn btn-dark w-100 py-3 mb-3">
+                                <i class="fas fa-lock me-2"></i>
+                                Đặt hàng ngay
+                            </button>
+
+                            <div class="text-center">
+                                <small class="text-muted">
+                                    <i class="fas fa-shield-alt me-1"></i>
+                                    Bằng cách đặt hàng, bạn đồng ý với
+                                    <a href="#" class="text-decoration-none">Điều khoản dịch vụ</a> và
+                                    <a href="#" class="text-decoration-none">Chính sách bảo mật</a> của chúng tôi.
+                                </small>
+                            </div>
                         </div>
+                    </div>
+                </div>
 
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Phí vận chuyển</span>
-                            <span>Miễn phí</span>
-                        </div>
-
-                        <hr>
-
-                        <div class="d-flex justify-content-between mb-4">
-                            <span class="fw-bold">Tổng cộng</span>
-                            <span class="fw-bold fs-5">@Model.Cart.TotalAmount.ToString("N0")₫</span>
-                        </div>
-
-                        <button type="submit" class="btn btn-dark w-100">Đặt hàng</button>
-
-                        <div class="mt-3 text-center">
-                            <small class="text-muted">
-                                Bằng cách đặt hàng, bạn đồng ý với
-                                <a href="#">Điều khoản dịch vụ</a> và
-                                <a href="#">Chính sách bảo mật</a> của chúng tôi.
-                            </small>
+                <!-- Thông tin hỗ trợ -->
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <h6 class="card-title">
+                            <i class="fas fa-headset me-2"></i>
+                            Cần hỗ trợ?
+                        </h6>
+                        <p class="card-text small text-muted mb-3">
+                            Liên hệ với chúng tôi nếu bạn cần hỗ trợ trong quá trình đặt hàng
+                        </p>
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="tel:1900123456" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-phone me-1"></i>
+                                Gọi ngay
+                            </a>
+                            <a href="mailto:support@homestyles.com" class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-envelope me-1"></i>
+                                Email
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -175,6 +297,64 @@
         </div>
     </form>
 </section>
+
+<style>
+    .order-item {
+        transition: all 0.3s ease;
+    }
+
+        .order-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+    .quantity-info .badge {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.6rem;
+    }
+
+    .order-summary::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .order-summary::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+    }
+
+    .order-summary::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 3px;
+    }
+
+        .order-summary::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+    .payment-method-radio:checked + label {
+        background-color: #e3f2fd;
+        border-color: #2196f3 !important;
+    }
+
+    .form-check-label {
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .sticky-top {
+        position: sticky;
+    }
+
+    @@media (max-width: 991px) {
+        .sticky-top
+
+    {
+        position: relative;
+        top: auto !important;
+    }
+
+    }
+</style>
 
 @section Scripts {
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
@@ -184,9 +364,9 @@
             // Hiển thị thông tin ngân hàng khi chọn phương thức chuyển khoản
             $('.payment-method-radio').change(function() {
                 if ($(this).val() === 'Banking') {
-                    $('#bank-info').slideDown();
+                    $('#bank-info').slideDown(300);
                 } else {
-                    $('#bank-info').slideUp();
+                    $('#bank-info').slideUp(300);
                 }
             });
 
@@ -196,19 +376,42 @@
             }
 
             // Prevent double form submission and show loading indicator
-            $('form').submit(function() {
+            $('form').submit(function(e) {
                 var submitButton = $(this).find('button[type="submit"]');
-                submitButton.prop('disabled', true);
-                submitButton.html('<i class="fas fa-spinner fa-spin"></i> Đang xử lý...');
 
-                // Re-enable button after 10 seconds in case of errors
+                // Validate form first
+                if (!$(this).valid()) {
+                    return false;
+                }
+
+                // Show loading state
+                submitButton.prop('disabled', true);
+                submitButton.html('<i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...');
+
+                // Re-enable button after 15 seconds in case of errors
                 setTimeout(function() {
                     submitButton.prop('disabled', false);
-                    submitButton.html('Đặt hàng');
-                }, 10000);
+                    submitButton.html('<i class="fas fa-lock me-2"></i>Đặt hàng ngay');
+                }, 15000);
 
                 return true;
             });
+
+            // Auto-format phone number
+            $('input[asp-for="Address.Phone"]').on('input', function() {
+                var value = $(this).val().replace(/\D/g, '');
+                if (value.length > 10) {
+                    value = value.substring(0, 10);
+                }
+                $(this).val(value);
+            });
+
+            // Smooth scroll to error messages
+            if ($('.text-danger:visible').length > 0) {
+                $('html, body').animate({
+                    scrollTop: $('.text-danger:visible').first().offset().top - 100
+                }, 500);
+            }
         });
     </script>
 }

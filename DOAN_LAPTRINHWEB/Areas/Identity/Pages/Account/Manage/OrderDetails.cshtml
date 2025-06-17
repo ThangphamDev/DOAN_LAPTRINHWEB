@@ -1,0 +1,42 @@
+﻿@page "{id:int}"
+@model DOAN_LAPTRINHWEB.Areas.Identity.Pages.Account.Manage.OrderDetailsModel
+
+@{
+    ViewData["Title"] = "Chi tiết đơn hàng";
+}
+
+<h2>Chi tiết đơn hàng #@Model.Order.OrderId</h2>
+<p><strong>Ngày đặt:</strong> @Model.Order.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
+<p><strong>Trạng thái:</strong> @Model.Order.OrderStatus</p>
+<p><strong>Tổng tiền:</strong> @Model.Order.TotalAmount.ToString("N0") VNĐ</p>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Sản phẩm</th>
+            <th>Số lượng</th>
+            <th>Đơn giá</th>
+            <th>Thành tiền</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Order.OrderItems != null && Model.Order.OrderItems.Any())
+        {
+            foreach (var item in Model.Order.OrderItems)
+            {
+                <tr>
+                    <td>@item.Product?.Name</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.Price.ToString("N0") VNĐ</td>
+                    <td>@((item.Quantity * item.Price).ToString("N0")) VNĐ</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4">Không có sản phẩm nào trong đơn hàng.</td>
+            </tr>
+        }
+    </tbody>
+</table>

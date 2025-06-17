@@ -9,7 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -87,31 +88,54 @@
                         <button class="btn btn-link text-dark p-0" type="button">
                             <i class="fas fa-search"></i>
                         </button>
+                        
+                        <!-- Thay thế phần span hiển thị số lượng trong giỏ hàng -->
+                        <a asp-controller="Cart" asp-action="Index" class="btn position-relative" id="cartButton">
+                            <i class="fas fa-shopping-cart"></i>
+                            @{
+                                var cartCount = 0;
+                                // Cho người dùng đã đăng nhập, ưu tiên lấy từ database
+                                if (User.Identity.IsAuthenticated)
+                                {
+                                    var dbContext = (HomeStylesDbContext)Context.RequestServices.GetService(typeof(HomeStylesDbContext));
+                                    var cartService = (DOAN_LAPTRINHWEB.Services.CartService)Context.RequestServices.GetService(typeof(DOAN_LAPTRINHWEB.Services.CartService));
 
-                        <a asp-controller="Cart" asp-action="Index" class="btn btn-dark position-relative rounded-pill px-3">
-                            <i class="fas fa-shopping-cart me-2"></i>
-                            <span>Giỏ hàng</span>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-count" style="font-size: 0.85rem; min-width: 1.5em;">
-                                @{
-                                    var cartCount = 0;
-                                    if (Context.Session.TryGetString("Cart", out var cartJson) && !string.IsNullOrEmpty(cartJson))
+                                    if (cartService != null)
                                     {
-                                        try
+                                        var userId = cartService.GetCartUserIdAsync().Result;
+                                        var cart = cartService.GetCartAsync(userId).Result;
+                                        if (cart?.Items != null && cart.Items.Any())
                                         {
-                                            var cart = Newtonsoft.Json.JsonConvert.DeserializeObject<DOAN_LAPTRINHWEB.Models.Cart>(cartJson);
-                                            if (cart?.Items != null)
-                                            {
-                                                cartCount = cart.Items.Sum(i => i.Quantity);
-                                            }
+                                            cartCount = cart.UniqueItemsCount;
                                         }
-                                        catch { /* Ignore deserialization errors */ }
                                     }
                                 }
-                                @if (cartCount > 0)
+                                // Cho người dùng chưa đăng nhập, lấy từ session
+                                else if (Context.Session.TryGetString("Cart", out var cartJson) && !string.IsNullOrEmpty(cartJson))
                                 {
-                                    @cartCount
+                                    try
+                                    {
+                                        var cart = Newtonsoft.Json.JsonConvert.DeserializeObject<DOAN_LAPTRINHWEB.Models.Cart>(cartJson);
+                                        if (cart?.Items != null && cart.Items.Any())
+                                        {
+                                            cartCount = cart.UniqueItemsCount;
+                                        }
+                                    }
+                                    catch { /* Bỏ qua lỗi deserialization */ }
                                 }
-                            </span>
+                            }
+                            @if (cartCount > 0)
+                            {
+                                <span class="badge rounded-pill bg-danger cart-count">
+                                    @cartCount
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge rounded-pill bg-danger cart-count" style="display:none">
+                                    0
+                                </span>
+                            }
                         </a>
                         <partial name="_LoginPartial" />
                     </div>
@@ -231,6 +255,82 @@
                     toastr.info(message);
             }
         };
+             document.addEventListener("DOMContentLoaded", function() {
+            // Lấy phần tử badge
+            const cartBadge = document.querySelector('.cart-count');
+            if (cartBadge && cartBadge.textContent && parseInt(cartBadge.textContent) > 0) {
+                cartBadge.style.display = '';
+            } else if (cartBadge) {
+                cartBadge.style.display = 'none';
+            }
+        });
+             // Header scroll behavior
+        let lastScrollTop = 0;
+        const header = document.querySelector('.header-fixed');
+        const scrollThreshold = 100;
+
+        window.addEventListener('scroll', function() {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            // Add box shadow when scrolled
+            if (scrollTop > 0) {
+                header.classList.add('shadow');
+            } else {
+                header.classList.remove('shadow');
+            }
+
+            // Hide/show header based on scroll direction
+            if (scrollTop > scrollThreshold) {
+                if (scrollTop > lastScrollTop) {
+                    // Scrolling down, hide header
+                    header.classList.add('header-hidden');
+                    header.classList.remove('header-visible');
+                } else {
+                    // Scrolling up, show header
+                    header.classList.remove('header-hidden');
+                    header.classList.add('header-visible');
+                }
+            }
+
+            lastScrollTop = scrollTop;
+        });
+                document.addEventListener("DOMContentLoaded", function() {
+            // Kiểm tra xem bootstrap có được tải không
+            if (typeof bootstrap !== 'undefined') {
+                // Khởi tạo tất cả các dropdown
+                var dropdownElementList = document.querySelectorAll('.dropdown-toggle');
+                dropdownElementList.forEach(function(element) {
+                    new bootstrap.Dropdown(element);
+                });
+
+                console.log("Bootstrap dropdowns initialized successfully");
+            } else {
+                console.error("Bootstrap không được tải");
+            }
+        });
+
+                // Thêm xử lý cho dropdown user trên thiết bị di động
+        document.addEventListener("DOMContentLoaded", function() {
+            const userDropdownBtn = document.getElementById('userDropdownBtn');
+            const userDropdownMenu = document.getElementById('userDropdownMenu');
+
+            // Xử lý cho thiết bị di động
+            if (window.innerWidth < 992 && userDropdownBtn && userDropdownMenu) {
+                userDropdownBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    userDropdownMenu.classList.toggle('show');
+                });
+
+                // Đóng dropdown khi click bên ngoài
+                document.addEventListener('click', function(e) {
+                    if (!userDropdownBtn.contains(e.target) && !userDropdownMenu.contains(e.target)) {
+                        userDropdownMenu.classList.remove('show');
+                    }
+                });
+            }
+        });
+
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

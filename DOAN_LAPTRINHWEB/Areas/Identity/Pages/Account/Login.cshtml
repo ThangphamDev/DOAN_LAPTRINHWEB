@@ -5,111 +5,111 @@
     ViewData["Title"] = "Đăng nhập";
 }
 
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
-            <div class="card shadow-lg border-0">
-                <div class="card-body p-5">
-                    <!-- Header -->
-                    <div class="text-center mb-4">
-                        <h1 class="h3 mb-3 fw-semibold">Đăng nhập</h1>
-                        <p class="text-muted">Chào mừng bạn trở lại!</p>
+<div class="auth-container">
+    <div class="auth-header">
+        <h1>@ViewData["Title"]</h1>
+        <p>Đăng nhập để tiếp tục mua sắm với HomeStyle</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="auth-form">
+                <h2 class="auth-form-title">Đăng nhập vào tài khoản</h2>
+
+                <form id="account" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                        <label asp-for="Input.Email">Email</label>
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
                     </div>
 
-                    <!-- Login Form -->
-                    <form id="account" method="post">
-                        <div asp-validation-summary="ModelOnly" class="text-danger text-center small mb-3"></div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
+                        <label asp-for="Input.Password">Mật khẩu</label>
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
 
-                        <!-- Email -->
-                        <div class="form-floating mb-3">
-                            <input asp-for="Input.Email" class="form-control" autocomplete="username"
-                                   placeholder="name@example.com" required />
-                            <label asp-for="Input.Email">Email</label>
-                            <span asp-validation-for="Input.Email" class="text-danger small"></span>
+                    <div class="d-flex justify-content-between mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" asp-for="Input.RememberMe" />
+                            <label class="form-check-label" asp-for="Input.RememberMe">Ghi nhớ đăng nhập</label>
                         </div>
+                        <a id="forgot-password" asp-page="./ForgotPassword">Quên mật khẩu?</a>
+                    </div>
 
-                        <!-- Password -->
-                        <div class="form-floating mb-3">
-                            <input asp-for="Input.Password" class="form-control" autocomplete="current-password"
-                                   placeholder="Mật khẩu" required />
-                            <label asp-for="Input.Password">Mật khẩu</label>
-                            <span asp-validation-for="Input.Password" class="text-danger small"></span>
-                        </div>
+                    <button id="login-submit" type="submit" class="btn-auth">Đăng nhập</button>
 
-                        <!-- Remember Me & Forgot Password -->
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <div class="form-check">
-                                <input asp-for="Input.RememberMe" class="form-check-input" />
-                                <label class="form-check-label text-muted small" asp-for="Input.RememberMe">
-                                    Ghi nhớ đăng nhập
-                                </label>
-                            </div>
-                            <a class="small text-decoration-none" asp-page="./ForgotPassword">Quên mật khẩu?</a>
-                        </div>
+                    <div class="auth-footer">
+                        <p>Chưa có tài khoản? <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Đăng ký ngay</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
 
-                        <!-- Login Button -->
-                        <button type="submit" class="btn btn-dark w-100 mb-3 py-2">
-                            <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
-                        </button>
+        <div class="col-md-6">
+            <div class="auth-form">
+                <h2 class="auth-form-title">Đăng nhập bằng mạng xã hội</h2>
 
-                        <!-- Register Link -->
-                        <p class="text-center mb-4">
-                            <span class="text-muted small">Chưa có tài khoản?</span>
-                            <a class="text-decoration-none ms-1 small" asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">
-                                Đăng ký ngay
+                @{
+                    if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                    {
+                        <div class="social-login-buttons">
+                            <a href="#" class="btn-social btn-google">
+                                <i class="fab fa-google me-2"></i> Google
                             </a>
-                        </p>
-
-                        <!-- Social Login Divider -->
-                        <div class="position-relative my-4">
-                            <hr class="text-muted">
-                            <p class="small position-absolute top-50 start-50 translate-middle bg-white px-2 text-muted">
-                                hoặc đăng nhập với
-                            </p>
+                            <a href="#" class="btn-social btn-facebook">
+                                <i class="fab fa-facebook-f me-2"></i> Facebook
+                            </a>
                         </div>
-
-                        <!-- Social Login Buttons -->
-                        @if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                        {
-                            <div class="row g-2">
-                                <div class="col">
-                                    <button type="button" class="btn btn-outline-secondary w-100" disabled>
-                                        <i class="fab fa-google me-2"></i>Google
+                        <div class="auth-divider">
+                            <span>Hoặc</span>
+                        </div>
+                        <p class="text-center">
+                            Bạn có thể đăng nhập bằng tài khoản mạng xã hội sau khi kết nối với tài khoản HomeStyle.
+                        </p>
+                    }
+                    else
+                    {
+                        <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                            <div class="social-login-buttons">
+                                @foreach (var provider in Model.ExternalLogins!)
+                                {
+                                    <button type="submit" class="btn-social @(provider.Name.ToLower() == "google" ? "btn-google" : "btn-facebook")"
+                                            name="provider" value="@provider.Name">
+                                        <i class="fab fa-@(provider.Name.ToLower() == "google" ? "google" : "facebook-f") me-2"></i>
+                                        @provider.DisplayName
                                     </button>
-                                </div>
-                                <div class="col">
-                                    <button type="button" class="btn btn-outline-secondary w-100" disabled>
-                                        <i class="fab fa-facebook-f me-2"></i>Facebook
-                                    </button>
-                                </div>
+                                }
                             </div>
-                        }
-                        else
-                        {
-                            <form id="external-account" asp-page="./ExternalLogin"
-                                  asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                                <div class="row g-2">
-                                    @foreach (var provider in Model.ExternalLogins!)
-                                    {
-                                        <div class="col">
-                                            <button type="submit" class="btn btn-outline-secondary w-100"
-                                                    name="provider" value="@provider.Name">
-                                                @{
-                                                    var icon = provider.Name.ToLower() switch
-                                                    {
-                                                        "google" => "fab fa-google",
-                                                        "facebook" => "fab fa-facebook-f",
-                                                        _ => "fas fa-external-link-alt"
-                                                    };
-                                                }
-                                                <i class="@icon me-2"></i>@provider.DisplayName
-                                            </button>
-                                        </div>
-                                    }
-                                </div>
-                            </form>
-                        }
-                    </form>
+                        </form>
+                    }
+                }
+
+                <div class="auth-features mt-5">
+                    <h4 class="mb-4">Tại sao chọn HomeStyle?</h4>
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-check-circle text-success me-3 fs-4"></i>
+                        <div>
+                            <h5 class="mb-1">Sản phẩm chất lượng</h5>
+                            <p class="mb-0 small text-muted">Các sản phẩm decor được lựa chọn kỹ lưỡng</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-truck text-success me-3 fs-4"></i>
+                        <div>
+                            <h5 class="mb-1">Giao hàng nhanh chóng</h5>
+                            <p class="mb-0 small text-muted">Giao hàng trong vòng 2-3 ngày trên toàn quốc</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-shield-alt text-success me-3 fs-4"></i>
+                        <div>
+                            <h5 class="mb-1">Bảo mật thông tin</h5>
+                            <p class="mb-0 small text-muted">Thông tin cá nhân của bạn luôn được bảo vệ</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
