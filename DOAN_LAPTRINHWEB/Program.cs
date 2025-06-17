@@ -14,6 +14,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<HomeStylesDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("HomeStylesDb")));
 
+
 // Cấu hình Identity với role
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {

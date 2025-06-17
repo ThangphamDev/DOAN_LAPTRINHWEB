@@ -1,0 +1,113 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Hồ sơ của bạn";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+<h2 class="text-primary mb-4">@ViewData["Title"]</h2>
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+
+<div class="row">
+    <div class="col-md-4 text-center">
+        <div class="profile-avatar mb-3">
+            <img id="profile-avatar-img"
+                 src="@(string.IsNullOrEmpty(Model.Input.AvatarUrl) ? "/images/avatars/default.png" : Model.Input.AvatarUrl)"
+                 alt="Ảnh đại diện"
+                 class="img-thumbnail rounded-circle"
+                 style="width: 150px; height: 150px; object-fit: cover;" />
+            <p class="mt-2 fw-bold">@Model.Username</p>
+            <p class="text-muted">@Model.Input.Email</p>
+        </div>
+        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('avatarFileInput').click();">
+            <i class="bi bi-camera-fill me-2"></i> Thay đổi ảnh
+        </button>
+    </div>
+
+    <div class="col-md-8">
+        <form id="profile-form" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="Username" class="form-label"></label>
+                    <input asp-for="Username" class="form-control" disabled />
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Input.Email" class="form-label"></label>
+                    <input asp-for="Input.Email" class="form-control" />
+                    <div class="input-group-append mt-1">
+                        @if (Model.IsEmailConfirmed)
+                        {
+                            <span class="text-success input-group-text" aria-label="Email đã xác nhận"><i class="bi bi-check-circle-fill me-1"></i> Đã xác nhận</span>
+                        }
+                        else
+                        {
+                            <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-warning btn-sm">Gửi email xác nhận</button>
+                        }
+                    </div>
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Input.FullName" class="form-label"></label>
+                    <input asp-for="Input.FullName" class="form-control" />
+                    <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Input.PhoneNumber" class="form-label"></label>
+                    <input asp-for="Input.PhoneNumber" class="form-control" />
+                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Input.DateOfBirth" class="form-label"></label>
+                    <input asp-for="Input.DateOfBirth" type="date" class="form-control" />
+                    <span asp-validation-for="Input.DateOfBirth" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Input.Gender" class="form-label"></label>
+                    <select asp-for="Input.Gender" class="form-select">
+                        <option value="">-- Chọn giới tính --</option>
+                        <option value="Nam">Nam</option>
+                        <option value="Nữ">Nữ</option>
+                        <option value="Khác">Khác</option>
+                    </select>
+                    <span asp-validation-for="Input.Gender" class="text-danger"></span>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="Input.Address" class="form-label"></label>
+                    <input asp-for="Input.Address" class="form-control" />
+                    <span asp-validation-for="Input.Address" class="text-danger"></span>
+                </div>
+
+                <!-- File ảnh avatar -->
+                <input type="file" id="avatarFileInput" name="avatarFile" accept="image/*" style="display: none;" />
+                <input type="hidden" asp-for="Input.AvatarUrl" />
+
+                <div class="col-12 text-end">
+                    <button id="update-profile-button" type="submit" class="w-auto btn btn-primary mt-3">Lưu thay đổi</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('avatarFileInput').addEventListener('change', function (event) {
+            if (event.target.files && event.target.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('profile-avatar-img').src = e.target.result;
+                };
+                reader.readAsDataURL(event.target.files[0]);
+            }
+        });
+    </script>
+}
