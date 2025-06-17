@@ -1,16 +1,11 @@
 ﻿using DOAN_LAPTRINHWEB.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Administrator")]
     public class UsersController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -36,12 +31,17 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
             foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
+                if (roles.Contains("Admin"))
+                {
+                    continue; // Bỏ qua người dùng có vai trò Admin
+                }
                 userViewModels.Add(new UserViewModel
                 {
                     Id = user.Id,
-                    UserName = user.UserName,
+                    FullName = user.FullName,
                     Email = user.Email,
                     PhoneNumber = user.PhoneNumber,
+                    Status = user.Status,
                     EmailConfirmed = user.EmailConfirmed,
                     Roles = roles.ToList()
                 });
@@ -73,9 +73,10 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
             var viewModel = new UserDetailsViewModel
             {
                 Id = user.Id,
-                UserName = user.UserName,
+                FullName = user.FullName,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
+                Status = user.Status,
                 EmailConfirmed = user.EmailConfirmed,
                 Roles = roles.ToList(),
                 Orders = orders
@@ -104,9 +105,10 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
             var viewModel = new UserEditViewModel
             {
                 Id = user.Id,
-                UserName = user.UserName,
+                FullName = user.FullName,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
+                Status = user.Status,
                 EmailConfirmed = user.EmailConfirmed,
                 Roles = allRoles.Select(r => new RoleViewModel
                 {
@@ -116,6 +118,7 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
                 }).ToList()
             };
 
+            ViewBag.Statuses = new[] { "Đang hoạt động", "Tạm khóa" };
             return View(viewModel);
         }
 
@@ -137,9 +140,10 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
                     return NotFound();
                 }
 
-                user.UserName = model.UserName;
+                user.FullName = model.FullName;
                 user.Email = model.Email;
                 user.PhoneNumber = model.PhoneNumber;
+                user.Status = model.Status;
                 user.EmailConfirmed = model.EmailConfirmed;
 
                 var result = await _userManager.UpdateAsync(user);
@@ -149,6 +153,7 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
                     {
                         ModelState.AddModelError("", error.Description);
                     }
+                    ViewBag.Statuses = new[] { "Đang hoạt động", "Tạm khóa" };
                     return View(model);
                 }
 
@@ -156,6 +161,12 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
                 var userRoles = await _userManager.GetRolesAsync(user);
                 foreach (var role in model.Roles)
                 {
+                    // Bỏ qua vai trò Admin để không thay đổi nó
+                    if (role.Name == "Admin")
+                    {
+                        continue;
+                    }
+
                     if (role.IsSelected && !userRoles.Contains(role.Name))
                     {
                         await _userManager.AddToRoleAsync(user, role.Name);
@@ -170,6 +181,7 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            ViewBag.Statuses = new[] { "Đang hoạt động", "Tạm khóa" };
             return View(model);
         }
     }
@@ -177,9 +189,10 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
     public class UserViewModel
     {
         public string Id { get; set; }
-        public string UserName { get; set; }
+        public string FullName { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
+        public string Status { get; set; }
         public bool EmailConfirmed { get; set; }
         public List<string> Roles { get; set; }
     }
@@ -192,9 +205,10 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
     public class UserEditViewModel
     {
         public string Id { get; set; }
-        public string UserName { get; set; }
+        public string FullName { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
+        public string Status { get; set; }
         public bool EmailConfirmed { get; set; }
         public List<RoleViewModel> Roles { get; set; }
     }

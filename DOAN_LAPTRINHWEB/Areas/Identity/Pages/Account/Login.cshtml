@@ -2,81 +2,152 @@
 @model LoginModel
 
 @{
-    ViewData["Title"] = "Log in";
+    ViewData["Title"] = "Đăng nhập";
 }
 
-<h1>@ViewData["Title"]</h1>
-<div class="row">
-    <div class="col-md-4">
-        <section>
-            <form id="account" method="post">
-                <h2>Use a local account to log in.</h2>
-                <hr />
-                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                    <label asp-for="Input.Email" class="form-label">Email</label>
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
-                </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
-                    <label asp-for="Input.Password" class="form-label">Password</label>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-                <div class="checkbox mb-3">
-                    <label asp-for="Input.RememberMe" class="form-label">
-                        <input class="form-check-input" asp-for="Input.RememberMe" />
-                        @Html.DisplayNameFor(m => m.Input.RememberMe)
-                    </label>
-                </div>
-                <div>
-                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                </div>
-                <div>
-                    <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                    </p>
-                    <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
-                    </p>
-                    <p>
-                        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
-                    </p>
-                </div>
-            </form>
-        </section>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to log in.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5">
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <h1 class="h3 mb-3 fw-semibold">Đăng nhập</h1>
+                        <p class="text-muted">Chào mừng bạn trở lại!</p>
                     </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
+
+                    <!-- Login Form -->
+                    <form id="account" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger text-center small mb-3"></div>
+
+                        <!-- Email -->
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Email" class="form-control" autocomplete="username"
+                                   placeholder="name@example.com" required />
+                            <label asp-for="Input.Email">Email</label>
+                            <span asp-validation-for="Input.Email" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Password" class="form-control" autocomplete="current-password"
+                                   placeholder="Mật khẩu" required />
+                            <label asp-for="Input.Password">Mật khẩu</label>
+                            <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Remember Me & Forgot Password -->
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="form-check">
+                                <input asp-for="Input.RememberMe" class="form-check-input" />
+                                <label class="form-check-label text-muted small" asp-for="Input.RememberMe">
+                                    Ghi nhớ đăng nhập
+                                </label>
+                            </div>
+                            <a class="small text-decoration-none" asp-page="./ForgotPassword">Quên mật khẩu?</a>
+                        </div>
+
+                        <!-- Login Button -->
+                        <button type="submit" class="btn btn-dark w-100 mb-3 py-2">
+                            <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
+                        </button>
+
+                        <!-- Register Link -->
+                        <p class="text-center mb-4">
+                            <span class="text-muted small">Chưa có tài khoản?</span>
+                            <a class="text-decoration-none ms-1 small" asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">
+                                Đăng ký ngay
+                            </a>
+                        </p>
+
+                        <!-- Social Login Divider -->
+                        <div class="position-relative my-4">
+                            <hr class="text-muted">
+                            <p class="small position-absolute top-50 start-50 translate-middle bg-white px-2 text-muted">
+                                hoặc đăng nhập với
                             </p>
                         </div>
+
+                        <!-- Social Login Buttons -->
+                        @if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                        {
+                            <div class="row g-2">
+                                <div class="col">
+                                    <button type="button" class="btn btn-outline-secondary w-100" disabled>
+                                        <i class="fab fa-google me-2"></i>Google
+                                    </button>
+                                </div>
+                                <div class="col">
+                                    <button type="button" class="btn btn-outline-secondary w-100" disabled>
+                                        <i class="fab fa-facebook-f me-2"></i>Facebook
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <form id="external-account" asp-page="./ExternalLogin"
+                                  asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                                <div class="row g-2">
+                                    @foreach (var provider in Model.ExternalLogins!)
+                                    {
+                                        <div class="col">
+                                            <button type="submit" class="btn btn-outline-secondary w-100"
+                                                    name="provider" value="@provider.Name">
+                                                @{
+                                                    var icon = provider.Name.ToLower() switch
+                                                    {
+                                                        "google" => "fab fa-google",
+                                                        "facebook" => "fab fa-facebook-f",
+                                                        _ => "fas fa-external-link-alt"
+                                                    };
+                                                }
+                                                <i class="@icon me-2"></i>@provider.DisplayName
+                                            </button>
+                                        </div>
+                                    }
+                                </div>
+                            </form>
+                        }
                     </form>
-                }
-            }
-        </section>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<style>
+    .card {
+        border-radius: 1rem;
+    }
+
+    .form-floating > label {
+        color: #6c757d;
+    }
+
+    .form-control:focus {
+        border-color: #212529;
+        box-shadow: 0 0 0 0.25rem rgba(33, 37, 41, 0.15);
+    }
+
+    .btn-dark {
+        font-weight: 500;
+    }
+
+        .btn-dark:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+    .btn-outline-secondary {
+        font-weight: 500;
+    }
+
+        .btn-outline-secondary:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-1px);
+        }
+</style>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

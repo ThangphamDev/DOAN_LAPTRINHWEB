@@ -12,7 +12,8 @@ namespace DOAN_LAPTRINHWEB.Models
         public string? Age { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-
+        public string? Avatar { get; set; }
+        public string Status { get; set; } = "Đang hoạt động"; // Trạng thái mặc định là "Đang hoạt động"
         public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
         public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();

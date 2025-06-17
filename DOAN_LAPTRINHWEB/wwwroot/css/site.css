@@ -41,6 +41,11 @@ body {
     .navbar-nav .nav-link.active {
         color: var(--primary-color);
     }
+.navbar .dropdown:hover > .dropdown-menu {
+    display: block;
+    margin-top: 0;
+    animation: fadeIn 0.3s ease;
+}
 
 .dropdown-menu {
     border: none;

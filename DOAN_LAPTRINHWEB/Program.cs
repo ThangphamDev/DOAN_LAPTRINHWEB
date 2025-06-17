@@ -59,12 +59,13 @@ app.UseAuthorization();
 app.MapRazorPages();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+      name: "areas",
+      pattern: "{area:exists}/{controller=Admin}/{action=Dashboard}/{id?}"
+    );
 
 app.MapControllerRoute(
-    name: "areas",
-    pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 using (var scope = app.Services.CreateScope())
 {
