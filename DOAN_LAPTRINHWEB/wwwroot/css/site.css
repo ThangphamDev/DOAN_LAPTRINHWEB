@@ -1670,3 +1670,45 @@ body {
         justify-content: center;
     }
 }
+
+
+
+
+/* CSS để căn giữa menu navigation */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+}
+
+.navbar-collapse {
+    display: flex;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+.navbar-nav-container {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+}
+
+.navbar-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Cải thiện responsive cho mobile */
+@media (max-width: 991.98px) {
+    .navbar-nav-container {
+        position: static;
+        transform: none;
+        width: 100%;
+    }
+
+    .navbar-collapse {
+        justify-content: flex-start;
+    }
+}

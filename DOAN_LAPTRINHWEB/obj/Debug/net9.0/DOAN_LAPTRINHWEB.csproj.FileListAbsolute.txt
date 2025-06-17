@@ -1291,4 +1291,4 @@ C:\Users\thang\OneDrive\Desktop\Việt\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\obj\Deb
 C:\Users\thang\OneDrive\Desktop\Việt\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\obj\Debug\net9.0\DOAN_LAPTRINHWEB.pdb
 C:\Users\thang\OneDrive\Desktop\Việt\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\obj\Debug\net9.0\DOAN_LAPTRINHWEB.genruntimeconfig.cache
 C:\Users\thang\OneDrive\Desktop\Việt\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\obj\Debug\net9.0\ref\DOAN_LAPTRINHWEB.dll
-C:\Users\thang\OneDrive\Desktop\Việt\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\obj\Debug\net9.0\compressed\p3ll3drabw-ez2zoub4r1.gz
+C:\Users\thang\OneDrive\Desktop\Việt\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\obj\Debug\net9.0\compressed\p3ll3drabw-kasdheoqg6.gz
