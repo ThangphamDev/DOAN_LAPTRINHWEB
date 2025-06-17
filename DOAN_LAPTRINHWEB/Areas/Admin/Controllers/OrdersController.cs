@@ -31,7 +31,7 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
             var orders = await ordersQuery.ToListAsync();
 
             // For status filter dropdown
-            ViewBag.Statuses = new[] { "Chờ xử lý", "Đang xử lý", "Đã giao hàng", "Hoàn thành", "Đã hủy" };
+            ViewBag.Statuses = new[] { "Chờ xử lý", "Đang xử lý", "Đang giao hàng", "Hoàn thành", "Đã hủy" };
 
             return View(orders);
         }
@@ -55,7 +55,7 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            ViewBag.Statuses = new[] { "Chờ xử lý", "Đang xử lý", "Đã giao hàng", "Hoàn thành", "Đã hủy" };
+            ViewBag.Statuses = new[] { "Chờ xử lý", "Đang xử lý", "Đang giao hàng", "Hoàn thành", "Đã hủy" };
             return View(order);
         }
 

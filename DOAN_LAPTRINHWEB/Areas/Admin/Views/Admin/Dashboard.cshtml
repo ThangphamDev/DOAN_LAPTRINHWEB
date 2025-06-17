@@ -290,7 +290,7 @@
                                 <tr>
                                     <th>Tháng/Năm</th>
                                     <th>Số đơn hàng</th>
-                                    <th>Doanh thu</th>
+                                    <th>Doanh thu (Chỉ tính đơn đã nhận)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -307,6 +307,26 @@
                                     </tr>
                                 }
                             </tbody>
+
+                            <tfoot>
+                                <tr class="table-active">
+                                    <td class="text-right font-weight-bold">TỔNG CỘNG (6 THÁNG)</td>
+                                    <td class="font-weight-bold">
+                                        @{
+                                            // Tính tổng số đơn hàng từ danh sách
+                                            var totalOrderCount = ((IEnumerable<dynamic>)ViewBag.MonthlyStats).Sum(s => (int)s.OrderCount);
+                                        }
+                                        <span class="badge badge-dark">@totalOrderCount</span>
+                                    </td>
+                                    <td class="font-weight-bold text-danger">
+                                        @{
+                                            // Tính tổng doanh thu từ danh sách
+                                            var totalRevenue = ((IEnumerable<dynamic>)ViewBag.MonthlyStats).Sum(s => (decimal)s.Revenue);
+                                        }
+                                        @totalRevenue.ToString("N0") ₫
+                                    </td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>

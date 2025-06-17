@@ -1,3 +1,4 @@
+using DOAN_LAPTRINHWEB.Filters;
 using DOAN_LAPTRINHWEB.Models;
 using DOAN_LAPTRINHWEB.Services;
 using Microsoft.AspNetCore.Identity;
@@ -13,7 +14,6 @@ builder.Services.AddControllersWithViews();
 // Cấu hình DbContext
 builder.Services.AddDbContext<HomeStylesDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("HomeStylesDb")));
-
 
 // Cấu hình Identity với role
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -36,6 +36,12 @@ builder.Services.AddSession(options =>
 
 // Thêm vào phần đăng ký service
 builder.Services.AddScoped<CartService>();
+
+// Đăng ký global filter với điều kiện loại trừ
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add<RedirectAdminAttribute>();
+});
 
 var app = builder.Build();
 

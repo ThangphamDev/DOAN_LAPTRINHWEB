@@ -1088,15 +1088,9 @@ body {
                 }
                 else
                 {
-                    <h1 class="display-4 fw-bold">Quản Lý Sản Phẩm</h1>
-                    <p class="lead">Khám phá và quản lý bộ sưu tập sản phẩm trang trí nội thất của bạn</p>
+                    <h1 class="display-4 fw-bold">Danh Sách Sản Phẩm</h1>
+                    <p class="lead">Khám phá và xây dựng bộ sưu tập sản phẩm trang trí nội thất của riêng bạn</p>
                 }
-                <div class="d-flex gap-3 justify-content-center">
-                    <a asp-action="Create" class="btn btn-dark btn-lg">
-                        <i class="fas fa-plus me-2"></i>Thêm Sản Phẩm Mới
-                    </a>
-                    <a href="#products" class="btn btn-outline-dark btn-lg">Xem Sản Phẩm</a>
-                </div>
             </div>
         </div>
     </div>
@@ -1111,10 +1105,6 @@ body {
                 <i class="fas fa-box-open"></i>
             </div>
             <h2 class="empty-title">Chưa có sản phẩm nào</h2>
-            <p class="empty-text">Bắt đầu xây dựng cửa hàng trang trí nội thất của bạn bằng cách thêm sản phẩm đầu tiên.</p>
-            <a asp-action="Create" class="btn btn-dark btn-lg">
-                <i class="fas fa-plus me-2"></i>Thêm Sản Phẩm Đầu Tiên
-            </a>
         </div>
     }
     else
@@ -1287,19 +1277,6 @@ body {
                                 <!-- Wishlist -->
                                 <div class="product-wishlist">
                                     <i class="far fa-heart"></i>
-                                </div>
-                                
-                                <!-- Actions - Changed to icon only -->
-                                <div class="product-actions">
-                                    <a asp-action="Edit" asp-route-id="@product.ProductId" class="icon-action-btn edit-btn" title="Chỉnh sửa">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a asp-action="Details" asp-route-id="@product.ProductId" class="icon-action-btn view-btn" title="Xem chi tiết">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@product.ProductId" class="icon-action-btn delete-btn" title="Xóa sản phẩm" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </a>
                                 </div>
                             </div>
                             

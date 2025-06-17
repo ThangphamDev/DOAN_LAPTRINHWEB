@@ -39,11 +39,10 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
                 var currentMonth = DateTime.Now.Month;
                 var currentYear = DateTime.Now.Year;
 
-                // Lọc các đơn hàng có trạng thái 'delivered' hoặc 'Delivered' và có ngày tháng hợp lệ
                 ViewBag.MonthlyRevenue = await _context.Orders
                     .Where(o => o.CreatedAt.Month == currentMonth &&
-                               o.CreatedAt.Year == currentYear &&
-                               (o.OrderStatus.ToLower() == "delivered"))
+                                o.CreatedAt.Year == currentYear &&
+                                (o.OrderStatus.ToLower() == "delivered"))
                     .SumAsync(o => (decimal?)o.TotalAmount) ?? 0;
 
                 // Đơn hàng gần đây (10 đơn gần nhất)
@@ -72,8 +71,8 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
                     {
                         Product = new
                         {
-                            g.First().Product.Name,
-                            g.First().Product.Price
+                            Name = g.First().Product.Name,
+                            Price = g.First().Product.Price
                         },
                         TotalSold = g.Sum(oi => oi.Quantity)
                     })
@@ -106,9 +105,10 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
                     ViewBag.OrderStatusStats = new List<dynamic>();
                 }
 
+                // *** SỬA ĐỔI CHÍNH Ở ĐÂY ***
                 // Thống kê theo tháng (6 tháng gần nhất)
-                var sixMonthsAgo = DateTime.Now.AddMonths(-6);
-                ViewBag.MonthlyStats = await _context.Orders
+                var sixMonthsAgo = DateTime.Now.AddMonths(-6).Date;
+                var monthlyStatsData = await _context.Orders
                     .Where(o => o.CreatedAt >= sixMonthsAgo)
                     .GroupBy(o => new { o.CreatedAt.Year, o.CreatedAt.Month })
                     .Select(g => new
@@ -116,11 +116,22 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
                         Year = g.Key.Year,
                         Month = g.Key.Month,
                         OrderCount = g.Count(),
-                        Revenue = g.Where(o => o.OrderStatus == "delivered" || o.OrderStatus == "Delivered")
-                                  .Sum(o => o.TotalAmount)
+                        // SỬA ĐỔI: Đảm bảo so sánh không phân biệt hoa thường để tính doanh thu chính xác
+                        Revenue = g.Where(o => o.OrderStatus.ToLower() == "delivered")
+                                     .Sum(o => (decimal?)o.TotalAmount) ?? 0
                     })
-                    .OrderBy(x => x.Year).ThenBy(x => x.Month)
+                    .OrderBy(x => x.Year)
+                    .ThenBy(x => x.Month)
                     .ToListAsync();
+
+                // Chuyển đổi dữ liệu để dễ sử dụng trong View
+                ViewBag.MonthlyStats = monthlyStatsData.Select(s => new
+                {
+                    s.Year,
+                    s.Month,
+                    s.OrderCount,
+                    s.Revenue
+                }).ToList();
 
             }
             catch (Exception ex)
@@ -129,7 +140,7 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
                 ViewBag.TotalProducts = 0;
                 ViewBag.TotalOrders = 0;
                 ViewBag.TotalUsers = 0;
-                ViewBag.MonthlyRevenue = 0;
+                ViewBag.MonthlyRevenue = 0m; // Sử dụng 0m cho decimal
                 ViewBag.RecentOrders = new List<dynamic>();
                 ViewBag.TopProducts = new List<dynamic>();
                 ViewBag.OrderStatusStats = new List<dynamic>();
@@ -142,15 +153,14 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
             return View();
         }
 
-
         private string GetStatusDisplayName(string status)
         {
             return status?.ToLower() switch
             {
                 "pending" => "Chờ xử lý",
                 "processing" => "Đang xử lý",
-                "shipped" => "Đã giao hàng",
-                "delivered" => "Đã nhận hàng",
+                "shipped" => "Đang giao hàng",
+                "delivered" => "Đã nhận hàng", // Trạng thái này được tính là doanh thu
                 "cancelled" => "Đã hủy",
                 _ => status ?? "Không xác định"
             };
