@@ -1,4 +1,4 @@
-/* Custom CSS for HomeStyling - Decor Shop */
+﻿/* Custom CSS for HomeStyling - Decor Shop */
 
 :root {
     --primary-color: #212529;
@@ -41,6 +41,11 @@ body {
     .navbar-nav .nav-link.active {
         color: var(--primary-color);
     }
+.navbar .dropdown:hover > .dropdown-menu {
+    display: block;
+    margin-top: 0;
+    animation: fadeIn 0.3s ease;
+}
 
 .dropdown-menu {
     border: none;
@@ -474,71 +479,997 @@ body {
             -moz-appearance: textfield;
         }
 
-.product-description {
-    line-height: 1.6;
-}
-
-.product-attributes .row {
-    margin-bottom: 10px;
-}
-
-.additional-info {
-    font-size: 0.9rem;
-}
-
-.review-item:last-child {
-    border-bottom: none !important;
-    padding-bottom: 0 !important;
-}
-
-.review-item img {
-    object-fit: cover;
-}
-
-#product-full-description {
-    line-height: 1.7;
-}
-
-    #product-full-description ul {
-        padding-left: 20px;
+    .product-description {
+        line-height: 1.6;
     }
 
-    #product-full-description h4 {
-        margin-top: 1.5rem;
-        margin-bottom: 1rem;
+    .product-attributes .row {
+        margin-bottom: 10px;
     }
 
-.nav-tabs .nav-link {
-    color: #212529;
+    .additional-info {
+        font-size: 0.9rem;
+    }
+
+    .review-item:last-child {
+        border-bottom: none !important;
+        padding-bottom: 0 !important;
+    }
+
+    .review-item img {
+        object-fit: cover;
+    }
+
+    #product-full-description {
+        line-height: 1.7;
+    }
+
+        #product-full-description ul {
+            padding-left: 20px;
+        }
+
+        #product-full-description h4 {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+    .nav-tabs .nav-link {
+        color: #212529;
+        font-weight: 500;
+    }
+
+        .nav-tabs .nav-link.active {
+            font-weight: 600;
+            color: #000;
+            border-bottom: 2px solid #212529;
+        }
+
+    @media (max-width: 767px) {
+        .product-image-container {
+            margin-bottom: 2rem;
+        }
+
+        .quantity-selector {
+            width: 110px;
+        }
+    }
+    /* Force main content to full width */
+    body > .container,
+    body > .container-lg,
+    body > .container-fluid,
+    main.container,
+    main.container-lg,
+    main.container-fluid {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: calc(-50vw + 50%) !important;
+        margin-right: calc(-50vw + 50%) !important;
+    }
+/* CSS cho menu dropdown danh mục */
+.category-dropdown-wrapper {
+    position: relative;
+}
+
+.category-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 220px;
+    background: var(--light-color);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    border-radius: var(--border-radius);
+    padding: 10px 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    z-index: 999;
+}
+
+.category-dropdown-wrapper:hover .category-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.category-dropdown-inner {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.category-dropdown .dropdown-item {
+    padding: 10px 20px;
+    font-size: 0.95rem;
+    color: var(--text-color);
+    transition: all 0.2s ease;
+    display: block;
+    text-decoration: none;
+}
+
+    .category-dropdown .dropdown-item:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+        transform: translateX(5px);
+        color: var(--primary-color);
+    }
+
+/* CSS cho mũi tên dropdown */
+.category-dropdown:before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 30px;
+    width: 16px;
+    height: 16px;
+    background-color: white;
+    transform: rotate(45deg);
+    border-top: 1px solid rgba(0,0,0,0.05);
+    border-left: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Animation cho các item trong dropdown */
+.category-dropdown .dropdown-item {
+    opacity: 0;
+    transform: translateX(-10px);
+    animation: fadeInRight 0.3s ease forwards;
+}
+
+@keyframes fadeInRight {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Delay cho mỗi item */
+.category-dropdown .dropdown-item:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.category-dropdown .dropdown-item:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.category-dropdown .dropdown-item:nth-child(3) {
+    animation-delay: 0.15s;
+}
+
+.category-dropdown .dropdown-item:nth-child(4) {
+    animation-delay: 0.2s;
+}
+
+.category-dropdown .dropdown-item:nth-child(5) {
+    animation-delay: 0.25s;
+}
+
+.category-dropdown .dropdown-item:nth-child(6) {
+    animation-delay: 0.3s;
+}
+
+.category-dropdown .dropdown-item:nth-child(7) {
+    animation-delay: 0.35s;
+}
+
+.category-dropdown .dropdown-item:nth-child(8) {
+    animation-delay: 0.4s;
+}
+
+.category-dropdown .dropdown-item:nth-child(n+9) {
+    animation-delay: 0.45s;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+    .category-dropdown {
+        position: static;
+        width: 100%;
+        box-shadow: none;
+        opacity: 0;
+        visibility: hidden;
+        height: 0;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+    }
+
+    .category-dropdown-wrapper:hover .category-dropdown,
+    .category-dropdown-wrapper:focus-within .category-dropdown {
+        opacity: 1;
+        visibility: visible;
+        height: auto;
+        padding: 5px 0;
+    }
+
+    .category-dropdown:before {
+        display: none;
+    }
+
+    .category-dropdown .dropdown-item {
+        padding-left: 2rem;
+    }
+}
+/* Header Fixed Styles */
+.header-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: var(--light-color);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+/* Ẩn header khi scroll xuống */
+.header-hidden {
+    transform: translateY(-100%);
+}
+
+/* Thêm animation cho header khi xuất hiện lại */
+.header-visible {
+    transform: translateY(0);
+    animation: fadeInDown 0.5s;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive cho header fixed */
+@media (max-width: 991.98px) {
+    body {
+        padding-top: 66px; /* Giảm padding cho mobile */
+    }
+}
+
+/* Auth Forms Styles */
+.auth-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 40px;
+    border-radius: var(--border-radius);
+    background-color: var(--light-color);
+    box-shadow: var(--box-shadow);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+    .auth-header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 10px;
+    }
+
+    .auth-header p {
+        color: #6c757d;
+        font-size: 1rem;
+    }
+
+.auth-form {
+    background-color: var(--light-color);
+    padding: 30px;
+    border-radius: var(--border-radius);
+}
+
+.auth-form-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 25px;
+    color: var(--primary-color);
+}
+
+.auth-divider {
+    text-align: center;
+    margin: 30px 0;
+    position: relative;
+}
+
+    .auth-divider::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 45%;
+        height: 1px;
+        background-color: #dee2e6;
+    }
+
+    .auth-divider::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 50%;
+        width: 45%;
+        height: 1px;
+        background-color: #dee2e6;
+    }
+
+    .auth-divider span {
+        background-color: var(--light-color);
+        padding: 0 15px;
+        position: relative;
+        z-index: 1;
+        color: #6c757d;
+    }
+
+.social-login-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.btn-social {
+    flex: 1;
+    text-align: center;
+    padding: 12px;
+    border-radius: 8px;
     font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
 }
 
-    .nav-tabs .nav-link.active {
-        font-weight: 600;
-        color: #000;
-        border-bottom: 2px solid #212529;
+.btn-google {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    color: #333;
+}
+
+    .btn-google:hover {
+        background-color: #f1f1f1;
     }
 
-@media (max-width: 767px) {
-    .product-image-container {
-        margin-bottom: 2rem;
+.btn-facebook {
+    background-color: #1877f2;
+    color: white;
+}
+
+    .btn-facebook:hover {
+        background-color: #0e63c9;
     }
 
-    .quantity-selector {
-        width: 110px;
+.auth-footer {
+    text-align: center;
+    margin-top: 30px;
+}
+
+    .auth-footer a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+/* Form input enhancements */
+.form-floating > label {
+    padding: 0.5rem 0.75rem;
+}
+
+.form-floating > .form-control {
+    padding: 0.5rem 0.75rem;
+    height: calc(3.5rem + 2px);
+    line-height: 1.25;
+}
+
+    .form-floating > .form-control:focus ~ label,
+    .form-floating > .form-control:not(:placeholder-shown) ~ label {
+        opacity: 0.65;
+        transform: scale(0.9) translateY(-0.5rem) translateX(0.15rem);
+    }
+
+.form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Buttons */
+.btn-auth {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+    font-weight: 500;
+    border-radius: var(--border-radius);
+    margin-top: 15px;
+    margin-bottom: 15px;
+    transition: var(--transition);
+}
+
+    .btn-auth:hover {
+        background-color: #000;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+/* Password strength and validation */
+.password-strength {
+    margin-top: 5px;
+    height: 5px;
+    border-radius: 3px;
+    background-color: #eee;
+}
+
+    .password-strength .progress-bar {
+        height: 100%;
+        border-radius: 3px;
+        transition: width 0.3s ease;
+    }
+
+.weak {
+    width: 30%;
+    background-color: #dc3545;
+}
+
+.medium {
+    width: 60%;
+    background-color: #ffc107;
+}
+
+.strong {
+    width: 100%;
+    background-color: #198754;
+}
+
+/* User Profile Dropdown */
+.user-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.user-dropdown-toggle {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+}
+
+    .user-dropdown-toggle:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .user-dropdown-toggle img {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 8px;
+    }
+
+    .user-dropdown-toggle .user-name {
+        font-weight: 500;
+        margin-right: 5px;
+    }
+
+.user-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: var(--light-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    min-width: 200px;
+    padding: 10px 0;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+}
+
+.user-dropdown:hover .user-dropdown-menu,
+.user-dropdown:focus-within .user-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.user-dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    color: var(--text-color);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+    .user-dropdown-item:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .user-dropdown-item i {
+        margin-right: 10px;
+        width: 20px;
+        text-align: center;
+    }
+
+.user-dropdown-divider {
+    height: 1px;
+    background-color: #dee2e6;
+    margin: 8px 0;
+}
+
+.logout-form {
+    margin: 0;
+    padding: 0;
+}
+
+.logout-button {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+    .logout-button:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .logout-button i {
+        margin-right: 10px;
+        width: 20px;
+        text-align: center;
+        color: #dc3545;
+    }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .auth-container {
+        padding: 20px;
+        margin: 20px;
+    }
+
+    .social-login-buttons {
+        flex-direction: column;
     }
 }
-/* Force main content to full width */
-body > .container,
-body > .container-lg,
-body > .container-fluid,
-main.container,
-main.container-lg,
-main.container-fluid {
-    width: 100vw !important;
-    max-width: 100vw !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    margin-left: calc(-50vw + 50%) !important;
-    margin-right: calc(-50vw + 50%) !important;
+
+/* Cải thiện hiển thị dropdown */
+.dropdown-menu {
+    display: none;
+}
+
+    .dropdown-menu.show {
+        display: block;
+        animation: fadeIn 0.3s;
+    }
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.btn-link.dropdown-toggle {
+    text-decoration: none;
+}
+
+    .btn-link.dropdown-toggle:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+        border-radius: 5px;
+    }
+
+
+
+    .hover-dropdown .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 1000;
+        min-width: 220px;
+        padding: 0.5rem 0;
+        margin: 0.125rem 0 0;
+        font-size: 1rem;
+        color: #212529;
+        text-align: left;
+        list-style: none;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        border-radius: 0.25rem;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
+        animation: fadeIn 0.2s ease-in-out;
+    }
+
+    .hover-dropdown:hover .dropdown-menu {
+        display: block;
+    }
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Improve dropdown item styling */
+.dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 1.5rem;
+    clear: both;
+    font-weight: 400;
+    color: #212529;
+    text-align: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;
+    transition: background-color 0.15s ease-in-out;
+}
+
+    .dropdown-item:hover, .dropdown-item:focus {
+        color: #16181b;
+        text-decoration: none;
+        background-color: #f8f9fa;
+    }
+
+/* Ensure dropdown doesn't disappear when moving cursor to dropdown menu */
+.hover-dropdown .dropdown-menu {
+    margin-top: 0;
+}
+
+    .hover-dropdown .dropdown-toggle:hover + .dropdown-menu,
+    .hover-dropdown .dropdown-menu:hover {
+        display: block;
+    }
+
+
+/* Sửa lỗi dropdown user */
+.hover-dropdown {
+    position: relative;
+}
+
+    /* Định vị dropdown menu đúng vị trí */
+    .hover-dropdown #userDropdownMenu {
+        position: absolute;
+        right: 0; /* Căn phải để dropdown không bị tràn khỏi màn hình */
+        left: auto;
+        top: 100%;
+        margin-top: 10px;
+        min-width: 220px;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        z-index: 1000;
+    }
+
+        /* Tạo mũi tên nhỏ ở đỉnh dropdown */
+        .hover-dropdown #userDropdownMenu:before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            right: 20px;
+            width: 16px;
+            height: 16px;
+            background-color: #fff;
+            transform: rotate(45deg);
+            z-index: -1;
+            box-shadow: -2px -2px 5px rgba(0,0,0,0.03);
+        }
+
+    /* Cải thiện nút dropdown toggle */
+    .hover-dropdown #userDropdownBtn {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 15px;
+        border-radius: 20px;
+        background-color: transparent;
+        transition: all 0.3s ease;
+    }
+
+        .hover-dropdown #userDropdownBtn:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+
+    /* Đảm bảo dropdown hiển thị khi hover */
+    .hover-dropdown:hover #userDropdownMenu {
+        display: block;
+        animation: fadeInDown 0.3s ease;
+    }
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Cải thiện các mục trong dropdown */
+#userDropdownMenu .dropdown-item {
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+}
+
+    #userDropdownMenu .dropdown-item i {
+        width: 24px;
+        margin-right: 8px;
+        text-align: center;
+    }
+
+/* Responsive cho màn hình nhỏ */
+@media (max-width: 767.98px) {
+    .hover-dropdown #userDropdownMenu {
+        position: static;
+        width: 100%;
+        margin-top: 5px;
+        box-shadow: none;
+        border: 1px solid #eee;
+    }
+
+        .hover-dropdown #userDropdownMenu:before {
+            display: none;
+        }
+}
+
+/* Ẩn mũi tên dropdown */
+.dropdown-toggle::after,
+.nav-link.dropdown-toggle::after {
+    display: none !important;
+}
+
+/* Ẩn mũi tên cho nút Danh Mục */
+.nav-item .dropdown-toggle::after {
+    display: none !important;
+}
+
+/* Ẩn mũi tên cho nút user dropdown */
+#userDropdownBtn::after,
+.btn-link.dropdown-toggle::after {
+    display: none !important;
+}
+
+/* Cải thiện vị trí badge giỏ hàng */
+.btn.position-relative {
+    padding: 8px 12px;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .btn.position-relative .fa-shopping-cart {
+        margin-right: 0 !important; /* Loại bỏ margin-right */
+    }
+
+.cart-count {
+    position: absolute !important;
+    top: -8px !important;
+    right: -8px !important;
+    transform: none !important; /* Loại bỏ translate-middle để tự kiểm soát vị trí */
+    font-size: 0.7rem;
+    min-width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* Điều chỉnh khoảng cách giữa giỏ hàng và user dropdown */
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px !important; /* Tăng khoảng cách giữa các phần tử */
+}
+
+    /* Cải thiện nút giỏ hàng */
+    .nav-actions .btn.position-relative {
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background-color: #f5f5f5;
+        transition: all 0.3s ease;
+        position: relative;
+        margin-right: 10px; /* Thêm margin bên phải */
+    }
+
+        /* Điều chỉnh vị trí của icon giỏ hàng */
+        .nav-actions .btn.position-relative .fa-shopping-cart {
+            margin-right: 0 !important;
+            font-size: 1.1rem;
+        }
+
+/* Điều chỉnh vị trí badge giỏ hàng */
+.cart-count {
+    position: absolute !important;
+    top: -5px !important;
+    right: -5px !important;
+    transform: none !important;
+    font-size: 0.7rem;
+    min-width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Đảm bảo dropdown user có khoảng cách phù hợp */
+.hover-dropdown {
+    margin-left: 5px;
+}
+
+/* Cải thiện hiển thị nút "Xin chào Thắng" */
+#userDropdownBtn {
+    padding: 8px 12px !important;
+    border-radius: 20px;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+/* Đảm bảo dropdown menu hiển thị đúng vị trí */
+.hover-dropdown #userDropdownMenu {
+    right: 0 !important;
+    left: auto !important;
+    margin-top: 10px;
+    min-width: 220px;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+    /* Điều chỉnh vị trí mũi tên dropdown */
+    .hover-dropdown #userDropdownMenu:before {
+        right: 20px;
+    }
+
+
+
+
+
+
+    /* Thêm vùng đệm ảo để giữ dropdown hiển thị */
+    .hover-dropdown::after {
+        content: '';
+        position: absolute;
+        height: 20px; /* Chiều cao vùng đệm */
+        width: 100%;
+        bottom: -20px;
+        left: 0;
+    }
+
+    /* Đảm bảo dropdown luôn hiển thị khi hover vào nút hoặc menu */
+    .hover-dropdown:hover #userDropdownMenu,
+    #userDropdownMenu:hover {
+        display: block;
+        visibility: visible;
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    /* Thêm vùng đệm cho dropdown menu để tạo không gian di chuyển chuột */
+    .hover-dropdown #userDropdownMenu {
+        padding-top: 10px;
+        margin-top: 0;
+        pointer-events: none; /* Ban đầu tắt pointer events */
+        transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+    }
+
+    .hover-dropdown:hover #userDropdownMenu {
+        pointer-events: auto; /* Bật lại pointer events khi hover */
+    }
+
+    /* Điều chỉnh vị trí mũi tên để tránh khoảng trống */
+    .hover-dropdown #userDropdownMenu:before {
+        top: 4px;
+        right: 20px;
+    }
+
+    /* Thêm hiệu ứng transition mượt mà */
+    .hover-dropdown #userDropdownBtn,
+    .hover-dropdown #userDropdownMenu {
+        transition: all 0.3s ease;
+    }
+
+
+
+/* Cải thiện hiển thị giỏ hàng */
+.nav-actions .btn.position-relative {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #f5f5f5;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+    .nav-actions .btn.position-relative:hover {
+        background-color: #e9e9e9;
+        transform: translateY(-2px);
+    }
+
+    .nav-actions .btn.position-relative .fa-shopping-cart {
+        font-size: 1rem;
+        color: #212529;
+        margin: 0 !important;
+    }
+
+/* Cải thiện hiển thị badge giỏ hàng */
+.cart-count {
+    position: absolute !important;
+    top: -6px !important;
+    right: -6px !important;
+    transform: none !important;
+    width: 22px !important;
+    height: 22px !important;
+    border-radius: 50% !important;
+    font-size: 0.7rem !important;
+    font-weight: 600 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 2px solid white !important; /* Thêm viền trắng */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) !important; /* Thêm bóng đổ */
+    z-index: 5 !important;
+}
+
+/* Thêm hiệu ứng đẹp khi số lượng thay đổi */
+@keyframes cartBadgePulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.3);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.cart-count.updated {
+    animation: cartBadgePulse 0.5s;
 }

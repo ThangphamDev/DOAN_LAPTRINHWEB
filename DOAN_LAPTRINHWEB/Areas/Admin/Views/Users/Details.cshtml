@@ -1,0 +1,72 @@
+﻿@model DOAN_LAPTRINHWEB.Areas.Admin.Controllers.UserDetailsViewModel
+
+@{
+    ViewData["Title"] = "Chi tiết người dùng";
+}
+
+<h1>Chi tiết người dùng</h1>
+
+<div class="card">
+    <div class="card-header">
+        <h4>Người dùng: @Model.FullName</h4>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Họ và tên</dt>
+            <dd class="col-sm-9">@Model.FullName</dd>
+
+            <dt class="col-sm-3">Email</dt>
+            <dd class="col-sm-9">@Model.Email</dd>
+
+            <dt class="col-sm-3">Số điện thoại</dt>
+            <dd class="col-sm-9">@Model.PhoneNumber</dd>
+
+            <dt class="col-sm-3">Trạng thái</dt>
+            <dd class="col-sm-9">@Model.Status</dd>
+
+            <dt class="col-sm-3">Xác nhận Email</dt>
+            <dd class="col-sm-9">@(Model.EmailConfirmed ? "Đã xác nhận" : "Chưa xác nhận")</dd>
+
+            <dt class="col-sm-3">Vai trò</dt>
+            <dd class="col-sm-9">@string.Join(", ", Model.Roles)</dd>
+        </dl>
+
+        <h4>Danh sách đơn hàng</h4>
+        @if (Model.Orders.Any())
+        {
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Mã đơn hàng</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model.Orders)
+                    {
+                        <tr>
+                            <td>@order.OrderId</td>
+                            <td>@order.TotalAmount.ToString("C")</td>
+                            <td>@order.OrderStatus</td>
+                            <td>@order.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>
+                                <a asp-controller="Orders" asp-action="Details" asp-route-id="@order.OrderId" class="btn btn-info btn-sm">Chi tiết</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>Người dùng này chưa có đơn hàng nào.</p>
+        }
+    </div>
+    <div class="card-footer">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Chỉnh sửa</a>
+        <a asp-action="Index" class="btn btn-secondary">Quay lại danh sách</a>
+    </div>
+</div>

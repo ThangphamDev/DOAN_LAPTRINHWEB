@@ -4,8 +4,6 @@
     ViewData["Title"] = "Danh Sách Sản Phẩm";
 }
 
-
-
 <style>
 /* Sử dụng cùng color scheme và variables với trang chủ */
 :root {
@@ -144,12 +142,201 @@ body {
     font-weight: 500;
 }
 
+/* Product Sidebar Filter Styles */
+.products-layout {
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.products-sidebar {
+    width: 280px;
+    flex-shrink: 0;
+}
+
+.products-content {
+    flex-grow: 1;
+    min-width: 0; /* Prevent content from expanding beyond container */
+}
+
+.sidebar-block {
+    background-color: var(--light-color);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--box-shadow);
+}
+
+.sidebar-block h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+/* Category Filter Styles */
+.sidebar-categories {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-categories li {
+    margin-bottom: 10px;
+}
+
+.sidebar-categories a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--text-color);
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.sidebar-categories a:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    transform: translateX(5px);
+}
+
+.sidebar-categories a.active {
+    background-color: var(--primary-color);
+    color: var(--light-color);
+}
+
+.sidebar-categories .count {
+    background-color: rgba(0, 0, 0, 0.08);
+    padding: 2px 8px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.sidebar-categories a.active .count {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Price Range Slider */
+.price-slider {
+    margin-top: 20px;
+}
+
+.price-range {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.price-input {
+    width: 100px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 6px 8px;
+    font-size: 0.9rem;
+}
+
+.price-separator {
+    margin: 0 10px;
+    color: #6c757d;
+}
+
+/* Filter Checkboxes */
+.sidebar-filter-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.sidebar-filter-item .form-check {
+    margin-bottom: 0;
+    width: 100%;
+}
+
+.sidebar-filter-item .form-check-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    cursor: pointer;
+}
+
+.sidebar-filter-item .count {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+/* Color filters */
+.color-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+.color-filter {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    border: 1px solid #dee2e6;
+    transition: all 0.2s ease;
+}
+
+.color-filter:hover {
+    transform: scale(1.1);
+}
+
+.color-filter.active::after {
+    content: '\f00c';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    font-size: 0.8rem;
+}
+
+/* Filter Clear Button */
+.filter-clear {
+    color: var(--danger-color);
+    font-size: 0.9rem;
+    text-decoration: none;
+    display: block;
+    margin-top: 15px;
+    text-align: center;
+}
+
+.filter-clear:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Filters */
+.filter-toggle {
+    display: none;
+    width: 100%;
+    padding: 10px;
+    background-color: var(--primary-color);
+    color: var(--light-color);
+    border: none;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+    font-weight: 500;
+    text-align: center;
+}
+
 /* Product Grid giống style trang chủ */
 .products-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 30px;
-    margin-top: 40px;
 }
 
 /* Animation cho sản phẩm */
@@ -657,8 +844,119 @@ body {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
+
+/* CSS nâng cao cho 3 nút hành động */
+.product-actions {
+    display: flex;
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+}
+
+.product-card:hover .product-actions {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.icon-action-btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%; /* Làm tròn các nút */
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    color: #333;
+    font-size: 1rem;
+    backdrop-filter: blur(5px);
+}
+
+.icon-action-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.icon-action-btn.edit-btn {
+    background: linear-gradient(145deg, #ffffff, #f0f0f0);
+    border: 1px solid rgba(33, 150, 243, 0.2);
+}
+
+.icon-action-btn.view-btn {
+    background: linear-gradient(145deg, #ffffff, #f0f0f0);
+    border: 1px solid rgba(76, 175, 80, 0.2);
+}
+
+.icon-action-btn.delete-btn {
+    background: linear-gradient(145deg, #ffffff, #f0f0f0);
+    border: 1px solid rgba(244, 67, 54, 0.2);
+}
+
+.icon-action-btn.edit-btn:hover {
+    background: #2196F3;
+    color: white;
+    border-color: #2196F3;
+}
+
+.icon-action-btn.view-btn:hover {
+    background: #4CAF50;
+    color: white;
+    border-color: #4CAF50;
+}
+
+.icon-action-btn.delete-btn:hover {
+    background: #F44336;
+    color: white;
+    border-color: #F44336;
+}
+
+/* Hiệu ứng khi hover vào biểu tượng */
+.icon-action-btn i {
+    transition: transform 0.3s ease;
+}
+
+.icon-action-btn:hover i {
+    transform: scale(1.2);
+}
+
+/* Animation for sidebar on small screens */
+@@keyframes sidebarSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.sidebar-collapsible.show {
+    animation: sidebarSlideDown 0.3s ease forwards;
+}
+
+/* Hiển thị các nút trên thiết bị di động */
+@@media (max-width: 576px) {
+    .product-actions {
+        opacity: 1;
+        transform: translateY(0);
+        position: relative;
+        bottom: auto;
+        margin-top: 10px;
+    }
+}
+
 /* Responsive */
-@@media (max-width: 991.98px) {
+@@media (max-width: 991px) {
     .products-hero {
         padding: 60px 0;
         text-align: center;
@@ -667,6 +965,27 @@ body {
     .products-grid {
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
         gap: 20px;
+    }
+
+    .products-layout {
+        flex-direction: column;
+    }
+
+    .products-sidebar {
+        width: 100%;
+        margin-bottom: 30px;
+    }
+
+    .filter-toggle {
+        display: block;
+    }
+
+    .sidebar-collapsible {
+        display: none;
+    }
+
+    .sidebar-collapsible.show {
+        display: block;
     }
 }
 
@@ -715,15 +1034,63 @@ body {
         transform: scale(1);
     }
 }
+/* Sticky Sidebar */
+.sticky-sidebar {
+    position: sticky;
+    top: 80px; /* Điều chỉnh khoảng cách từ trên xuống */
+    max-height: calc(100vh - 100px); /* Chiều cao tối đa để tránh quá dài */
+    overflow-y: auto; /* Cho phép cuộn nếu nội dung quá dài */
+}
+
+/* Tùy chỉnh thanh cuộn cho sidebar */
+.sticky-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sticky-sidebar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.sticky-sidebar::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+
+.sticky-sidebar::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Hiệu ứng khi cuộn */
+.sticky-sidebar {
+    transition: top 0.2s ease;
+}
+
+/* Đảm bảo thanh sidebar không bị che khuất trên thiết bị di động */
+@@media (max-width: 991px) {
+    .sticky-sidebar {
+        position: static;
+        max-height: none;
+    }
+}
+
 </style>
 
-<!-- Hero Section giống trang chủ -->
+<!-- Hero Section với tiêu đề động dựa trên danh mục được chọn -->
 <section class="products-hero">
     <div class="container">
         <div class="row">
             <div class="col-lg-8 mx-auto text-center">
-                <h1 class="display-4 fw-bold">Quản Lý Sản Phẩm</h1>
-                <p class="lead">Khám phá và quản lý bộ sưu tập sản phẩm trang trí nội thất của bạn</p>
+                @if (ViewBag.SelectedCategoryName != null)
+                {
+                    <h1 class="display-4 fw-bold">@ViewBag.SelectedCategoryName</h1>
+                    <p class="lead">Danh sách sản phẩm trong danh mục @ViewBag.SelectedCategoryName</p>
+                }
+                else
+                {
+                    <h1 class="display-4 fw-bold">Quản Lý Sản Phẩm</h1>
+                    <p class="lead">Khám phá và quản lý bộ sưu tập sản phẩm trang trí nội thất của bạn</p>
+                }
                 <div class="d-flex gap-3 justify-content-center">
                     <a asp-action="Create" class="btn btn-dark btn-lg">
                         <i class="fas fa-plus me-2"></i>Thêm Sản Phẩm Mới
@@ -791,113 +1158,221 @@ body {
             </div>
         </div>
 
-        <div class="filter-tags" id="categoryFilters">
-            <div class="filter-tag active" data-category="all">
-                <span>Tất cả</span>
-                <span class="count">(@Model.Count())</span>
-            </div>
-    
-            @foreach (var item in Model.Where(p => p.Category != null).Select(p => p.Category.Name).Distinct())
-            {
-                if (item != null)
-                {
-                    var itemCount = Model.Count(p => p.Category?.Name == item);
-                    <div class="filter-tag" data-category="@item.ToLower()">
-                        <span>@item</span>
-                        <span class="count">(@itemCount)</span>
+        <!-- Toggle button for mobile filters -->
+        <button class="filter-toggle" id="filterToggle">
+            <i class="fas fa-filter me-2"></i> Lọc Sản Phẩm
+        </button>
+
+        <!-- New products layout with sidebar -->
+        <div class="products-layout">
+            <!-- Products Sidebar -->
+            <div class="products-sidebar">
+               <div class="sidebar-collapsible sticky-sidebar" id="sidebarContent">
+                    <!-- Categories Filter -->
+                    <div class="sidebar-block">
+                        <h4>Danh Mục</h4>
+                        <ul class="sidebar-categories">
+                            <li>
+                                <a href="javascript:void(0)" class="category-link @(ViewBag.SelectedCategoryId == null ? "active" : "")" 
+                                   data-category-id="0">
+                                    <span>Tất cả sản phẩm</span>
+                                    <span class="count">@Model.Count()</span>
+                                </a>
+                            </li>
+        
+                            @foreach (var category in Model.Where(p => p.Category != null).Select(p => p.Category).Distinct())
+                            {
+                                if (category != null)
+                                {
+                                    var itemCount = Model.Count(p => p.CategoryId == category.CategoryId);
+                                    <li>
+                                        <a href="javascript:void(0)" 
+                                           class="category-link @(ViewBag.SelectedCategoryId == category.CategoryId ? "active" : "")"
+                                           data-category-id="@category.CategoryId"
+                                           data-category-name="@category.Name.ToLower()">
+                                            <span>@category.Name</span>
+                                            <span class="count">@itemCount</span>
+                                        </a>
+                                    </li>
+                                }
+                            }
+                        </ul>
                     </div>
-                }
-            }
-        </div>
-
-
-        <!-- Products Grid -->
-        <div class="products-grid" id="productsContainer">
-            @foreach (var product in Model)
-            {
-                <div class="product-card" data-name="@product.Name.ToLower()" data-category="@(product.Category?.Name?.ToLower() ?? "")" data-price="@product.Price">
-                    <div class="product-image">
-                        @{
-                            var primaryImage = product.ProductImages?.FirstOrDefault(img => img.IsPrimary == true);
-                            var imageUrl = primaryImage?.ImageUrl ?? "/images/no-image.jpg";
-                        }
-                        <img src="@imageUrl" alt="@product.Name">
-                        
-                        <!-- Badges -->
-                        <div class="product-badge badge-new">Mới</div>
-                        
-                        <!-- Wishlist -->
-                        <div class="product-wishlist">
-                            <i class="far fa-heart"></i>
-                        </div>
-                        
-                        <!-- Actions -->
-                        <div class="product-actions">
-                            <a asp-action="Edit" asp-route-id="@product.ProductId" class="action-btn">
-                                <i class="fas fa-edit"></i> Sửa
-                            </a>
-                            <a asp-action="Details" asp-route-id="@product.ProductId" class="action-btn">
-                                <i class="fas fa-eye"></i> Xem
-                            </a>
-                            <a asp-action="Delete" asp-route-id="@product.ProductId" class="action-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')">
-                                <i class="fas fa-trash-alt"></i> Xóa
-                            </a>
+                    
+                    <!-- Price Filter -->
+                    <div class="sidebar-block">
+                        <h4>Khoảng Giá</h4>
+                        <div class="price-slider">
+                            <input type="range" class="form-range" min="0" max="5000000" step="100000" id="priceRange">
+                            <div class="price-range mt-2">
+                                <input type="text" class="price-input form-control" id="minPrice" placeholder="Min">
+                                <span class="price-separator">-</span>
+                                <input type="text" class="price-input form-control" id="maxPrice" placeholder="Max">
+                            </div>
+                            <button class="btn btn-sm btn-dark w-100 mt-3" id="applyPriceFilter">Áp dụng</button>
                         </div>
                     </div>
                     
-                    <div class="product-info">
-                        <div class="product-category">@(product.Category?.Name ?? "Chưa phân loại")</div>
-                        <h3 class="product-title">
-                            <a asp-action="Details" asp-route-id="@product.ProductId">@product.Name</a>
-                        </h3>
-                        <div class="product-rating">
-                            <div class="rating-stars">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>
+                    <!-- Availability Filter -->
+                    <div class="sidebar-block">
+                        <h4>Trạng thái</h4>
+                        <div class="sidebar-filter-item">
+                            <div class="form-check">
+                                <input class="form-check-input filter-checkbox" type="checkbox" id="inStock" value="inStock">
+                                <label class="form-check-label" for="inStock">
+                                    <span>Còn hàng</span>
+                                    <span class="count">@Model.Count(p => p.Stock > 0)</span>
+                                </label>
                             </div>
-                            <span class="rating-text">(4.5)</span>
                         </div>
-                        <p class="product-description">
-                            @(product.Description?.Length > 80
-                                ? product.Description.Substring(0, 77) + "..."
-                                : product.Description ?? "Chưa có mô tả cho sản phẩm này.")
-                        </p>
-                        <div class="product-footer">
-                            <div class="product-price">
-                                @(product.Price.ToString("N0"))₫
+                        <div class="sidebar-filter-item">
+                            <div class="form-check">
+                                <input class="form-check-input filter-checkbox" type="checkbox" id="outOfStock" value="outOfStock">
+                                <label class="form-check-label" for="outOfStock">
+                                    <span>Hết hàng</span>
+                                    <span class="count">@Model.Count(p => p.Stock == 0)</span>
+                                </label>
                             </div>
-                            <a href="#" class="btn-cart add-to-cart" data-id="@product.ProductId" data-name="@product.Name">
-                                <i class="fas fa-shopping-cart"></i>
-                                Thêm vào giỏ
-                            </a>
                         </div>
                     </div>
+                    
+                    <!-- Reset Filters -->
+                    <a href="javascript:void(0)" class="filter-clear" id="clearFilters">
+                        <i class="fas fa-times-circle me-2"></i> Xóa tất cả bộ lọc
+                    </a>
                 </div>
-            }
-        </div>
+            </div>
+            
+            <!-- Products Content -->
+            <div class="products-content">
+                <!-- The filter tags now for mobile view only -->
+                <div class="filter-tags d-md-none mb-3" id="categoryFilters">
+                    <div class="filter-tag active" data-category="all">
+                        <span>Tất cả</span>
+                        <span class="count">(@Model.Count())</span>
+                    </div>
+            
+                    @foreach (var item in Model.Where(p => p.Category != null).Select(p => p.Category.Name).Distinct())
+                    {
+                        if (item != null)
+                        {
+                            var itemCount = Model.Count(p => p.Category?.Name == item);
+                            <div class="filter-tag" data-category="@item.ToLower()">
+                                <span>@item</span>
+                                <span class="count">(@itemCount)</span>
+                            </div>
+                        }
+                    }
+                </div>
 
-        <!-- Pagination -->
-        <div class="pagination-container">
-            <nav aria-label="Product navigation">
-                <ul class="pagination">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <i class="fas fa-chevron-left"></i>
-                        </a>
-                    </li>
-                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <i class="fas fa-chevron-right"></i>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+                <!-- Products Grid -->
+                <div class="products-grid" id="productsContainer">
+                    @foreach (var product in Model)
+                    {
+                        <div class="product-card" 
+                             data-name="@product.Name.ToLower()" 
+                             data-category="@(product.Category?.Name?.ToLower() ?? "")" 
+                             data-price="@product.Price"
+                             data-stock="@product.Stock">
+                            <div class="product-image">
+                                @{
+                                    var primaryImage = product.ProductImages?.FirstOrDefault(img => img.IsPrimary == true);
+                                    var imageUrl = primaryImage?.ImageUrl ?? "/images/no-image.jpg";
+                                }
+                                <img src="@imageUrl" alt="@product.Name">
+                                
+                                <!-- Badges -->
+                                <div class="product-badge badge-new">Mới</div>
+                                
+                                <!-- Wishlist -->
+                                <div class="product-wishlist">
+                                    <i class="far fa-heart"></i>
+                                </div>
+                                
+                                <!-- Actions - Changed to icon only -->
+                                <div class="product-actions">
+                                    <a asp-action="Edit" asp-route-id="@product.ProductId" class="icon-action-btn edit-btn" title="Chỉnh sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@product.ProductId" class="icon-action-btn view-btn" title="Xem chi tiết">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@product.ProductId" class="icon-action-btn delete-btn" title="Xóa sản phẩm" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <div class="product-info">
+                                <div class="product-category">@(product.Category?.Name ?? "Chưa phân loại")</div>
+                                <h3 class="product-title">
+                                    <a asp-action="Details" asp-route-id="@product.ProductId">@product.Name</a>
+                                </h3>
+                                <div class="product-rating">
+                                    @{
+                                        // Calculate average rating from the reviews
+                                        var avgRating = product.Reviews?.Any() == true ? product.Reviews.Average(r => r.Rating) : 0;
+                                        var ratingCount = product.Reviews?.Count() ?? 0;
+                                        var fullStars = (int)Math.Floor(avgRating);
+                                        var halfStar = avgRating - fullStars >= 0.5;
+                                        var emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+                                    }
+                                    <div class="rating-stars">
+                                        @for (int i = 0; i < fullStars; i++)
+                                        {
+                                            <i class="fas fa-star"></i>
+                                        }
+                                        @if (halfStar)
+                                        {
+                                            <i class="fas fa-star-half-alt"></i>
+                                        }
+                                        @for (int i = 0; i < emptyStars; i++)
+                                        {
+                                            <i class="far fa-star"></i>
+                                        }
+                                    </div>
+                                    <span class="rating-text">(@(avgRating > 0 ? avgRating.ToString("0.0") : "0"))</span>
+                                </div>
+                                <p class="product-description">
+                                    @(product.Description?.Length > 80
+                                        ? product.Description.Substring(0, 77) + "..."
+                                        : product.Description ?? "Chưa có mô tả cho sản phẩm này.")
+                                </p>
+                                <div class="product-footer">
+                                    <div class="product-price">
+                                        @(product.Price.ToString("N0"))₫
+                                    </div>
+                                    <a href="#" class="btn-cart add-to-cart" data-id="@product.ProductId" data-name="@product.Name">
+                                        <i class="fas fa-shopping-cart"></i>
+                                        Thêm vào giỏ
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-container">
+                    <nav aria-label="Product navigation">
+                        <ul class="pagination">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" aria-label="Previous">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#" aria-label="Next">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
         </div>
     }
 </div>
@@ -922,6 +1397,8 @@ body {
             const gridViewBtn = document.getElementById('gridViewBtn');
             const listViewBtn = document.getElementById('listViewBtn');
             const productsContainer = document.getElementById('productsContainer');
+            const productCards = document.querySelectorAll('.product-card');
+            const originalTitle = document.title;
 
             if (gridViewBtn && listViewBtn && productsContainer) {
                 gridViewBtn.addEventListener('click', function() {
@@ -945,59 +1422,142 @@ body {
                 }
             }
 
-            // Category filtering
+            // Category filtering - Sidebar links
+            const categoryLinks = document.querySelectorAll('.category-link');
+            
+            if (categoryLinks && productCards) {
+                categoryLinks.forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        // Remove active class from all links
+                        categoryLinks.forEach(l => l.classList.remove('active'));
+                        
+                        // Add active class to clicked link
+                        this.classList.add('active');
+                        
+                        const categoryId = this.dataset.categoryId;
+                        const categoryName = this.dataset.categoryName || 'all';
+                        
+                        // Apply all filters 
+                        applyAllFilters();
+                        
+                        // Update browser URL without reloading page (for bookmarking)
+                        const url = new URL(window.location.href);
+                        if (categoryId == 0) {
+                            url.searchParams.delete('categoryId');
+                        } else {
+                            url.searchParams.set('categoryId', categoryId);
+                        }
+                        window.history.pushState({}, '', url);
+                        
+                        // Update mobile view filter tags to match selection
+                        if (categoryId == 0) {
+                            document.querySelectorAll('#categoryFilters .filter-tag').forEach(tag => {
+                                tag.classList.toggle('active', tag.dataset.category === 'all');
+                            });
+                        } else {
+                            document.querySelectorAll('#categoryFilters .filter-tag').forEach(tag => {
+                                tag.classList.toggle('active', tag.dataset.category === categoryName);
+                            });
+                        }
+                        
+                        // Update page title based on category selection
+                        if (categoryId != 0) {
+                            const categoryText = this.querySelector('span').textContent;
+                            document.title = categoryText + ' - ' + originalTitle;
+                        } else {
+                            document.title = originalTitle;
+                        }
+                    });
+                });
+            }
+
+            // Mobile category filtering
             const categoryFilters = document.querySelectorAll('#categoryFilters .filter-tag');
-            const productCards = document.querySelectorAll('.product-card');
             
             categoryFilters.forEach(filter => {
                 filter.addEventListener('click', function() {
-                    // Remove active class from all filters
-                    categoryFilters.forEach(f => f.classList.remove('active'));
+                    const categoryName = this.dataset.category;
                     
-                    // Add active class to clicked filter
-                    this.classList.add('active');
-                    
-                    const selectedCategory = this.dataset.category;
-                    
-                    // Filter products
-                    productCards.forEach(card => {
-                        if (selectedCategory === 'all' || card.dataset.category === selectedCategory) {
-                            card.style.display = '';
-                        } else {
-                            card.style.display = 'none';
-                        }
-                    });
-                    
-                    // Update products count in toolbar
-                    const visibleProducts = [...productCards].filter(card => card.style.display !== 'none');
-                    updateProductCount(visibleProducts.length);
+                    if (categoryName === 'all') {
+                        // Find and click the "All Products" link in sidebar
+                        document.querySelector('.category-link[data-category-id="0"]').click();
+                    } else {
+                        // Find and click the matching category link in sidebar
+                        const matchingLink = Array.from(document.querySelectorAll('.category-link')).find(
+                            link => link.dataset.categoryName === categoryName
+                        );
+                        if (matchingLink) matchingLink.click();
+                    }
                 });
             });
+
+            // Combine all filters in one function
+            function applyAllFilters() {
+                // Get all filter values
+                const activeLink = document.querySelector('.category-link.active');
+                const categoryId = activeLink ? activeLink.dataset.categoryId : 0;
+                const categoryName = categoryId == 0 ? 'all' : activeLink.dataset.categoryName;
+                const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+                const minPriceValue = document.getElementById('minPrice').value.replace(/[^0-9]/g, '');
+                const maxPriceValue = document.getElementById('maxPrice').value.replace(/[^0-9]/g, '');
+                const minPrice = minPriceValue ? parseInt(minPriceValue) : 0;
+                const maxPrice = maxPriceValue ? parseInt(maxPriceValue) : Number.MAX_SAFE_INTEGER;
+                const inStockChecked = document.getElementById('inStock').checked;
+                const outOfStockChecked = document.getElementById('outOfStock').checked;
+                
+                // Apply all filters at once
+                let visibleCount = 0;
+                productCards.forEach(card => {
+                    // Category filter
+                    const matchesCategory = categoryId == 0 || card.dataset.category === categoryName;
+                    
+                    // Search filter
+                    const productName = card.dataset.name;
+                    const productCategory = card.dataset.category;
+                    const productDescription = card.querySelector('.product-description').textContent.toLowerCase();
+                    const matchesSearch = !searchTerm || 
+                                        productName.includes(searchTerm) || 
+                                        productCategory.includes(searchTerm) || 
+                                        productDescription.includes(searchTerm);
+                    
+                    // Price filter
+                    const price = parseInt(card.dataset.price);
+                    const matchesPrice = price >= minPrice && price <= maxPrice;
+                    
+                    // Stock filter
+                    const stock = parseInt(card.dataset.stock) || 0;
+                    const matchesStock = (!inStockChecked && !outOfStockChecked) || 
+                                        (inStockChecked && stock > 0) || 
+                                        (outOfStockChecked && stock === 0);
+                    
+                    // Show only if it matches ALL filters
+                    if (matchesCategory && matchesSearch && matchesPrice && matchesStock) {
+                        card.style.display = '';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                // Update products count
+                updateProductCount(visibleCount);
+                
+                return visibleCount;
+            }
 
             // Search functionality
             const searchInput = document.getElementById('searchInput');
 
             if (searchInput) {
+                // Use debounce for better performance
+                let searchTimer;
                 searchInput.addEventListener('input', function() {
-                    const searchTerm = this.value.toLowerCase().trim();
-
-                    productCards.forEach(card => {
-                        const productName = card.dataset.name;
-                        const productCategory = card.dataset.category;
-                        const productDescription = card.querySelector('.product-description').textContent.toLowerCase();
-
-                        if (productName.includes(searchTerm) ||
-                            productCategory.includes(searchTerm) ||
-                            productDescription.includes(searchTerm)) {
-                            card.style.display = '';
-                        } else {
-                            card.style.display = 'none';
-                        }
-                    });
-                    
-                    // Update products count in toolbar
-                    const visibleProducts = [...productCards].filter(card => card.style.display !== 'none');
-                    updateProductCount(visibleProducts.length);
+                    clearTimeout(searchTimer);
+                    searchTimer = setTimeout(() => {
+                        applyAllFilters();
+                    }, 300);
                 });
             }
 
@@ -1016,7 +1576,7 @@ body {
             if (sortSelect && productCards.length) {
                 sortSelect.addEventListener('change', function() {
                     const sortValue = this.value;
-                    const productsArray = Array.from(productCards);
+                    const productsArray = Array.from(productCards).filter(card => card.style.display !== 'none');
 
                     productsArray.sort((a, b) => {
                         const nameA = a.dataset.name;
@@ -1041,11 +1601,104 @@ body {
                     // Animation for sorting
                     productsContainer.classList.add('sorting');
                     
-                    // Re-append in new order with delay for animation
+                    // Re-append only visible products in new order with delay for animation
                     setTimeout(() => {
+                        // First, keep track of all hidden products
+                        const hiddenProducts = Array.from(productCards).filter(card => card.style.display === 'none');
+                        
+                        // Then append sorted visible products
                         productsArray.forEach(card => productsContainer.appendChild(card));
+                        
+                        // Finally append hidden products so they stay at the end
+                        hiddenProducts.forEach(card => productsContainer.appendChild(card));
+                        
                         productsContainer.classList.remove('sorting');
                     }, 200);
+                });
+            }
+
+            // Price range slider functionality
+            const priceRange = document.getElementById('priceRange');
+            const minPrice = document.getElementById('minPrice');
+            const maxPrice = document.getElementById('maxPrice');
+            const applyPriceFilter = document.getElementById('applyPriceFilter');
+            
+            if (priceRange && minPrice && maxPrice && applyPriceFilter) {
+                priceRange.addEventListener('input', function() {
+                    const value = this.value;
+                    maxPrice.value = parseInt(value).toLocaleString('vi-VN');
+                });
+                
+                applyPriceFilter.addEventListener('click', function() {
+                    applyAllFilters();
+                });
+            }
+            
+            // Availability filter functionality
+            const availabilityCheckboxes = document.querySelectorAll('.filter-checkbox');
+            
+            availabilityCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    applyAllFilters();
+                });
+            });
+
+            // Clear all filters
+            document.getElementById('clearFilters')?.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Reset category filter
+                document.querySelector('.category-link[data-category-id="0"]')?.classList.add('active');
+                document.querySelectorAll('.category-link[data-category-id]:not([data-category-id="0"])').forEach(link => {
+                    link.classList.remove('active');
+                });
+                
+                // Reset category filters in mobile view
+                document.querySelectorAll('#categoryFilters .filter-tag').forEach(tag => {
+                    tag.classList.toggle('active', tag.dataset.category === 'all');
+                });
+                
+                // Reset price filter
+                if (minPrice) minPrice.value = '';
+                if (maxPrice) maxPrice.value = '';
+                if (priceRange) priceRange.value = priceRange.max;
+                
+                // Reset stock filters
+                if (document.getElementById('inStock')) document.getElementById('inStock').checked = false;
+                if (document.getElementById('outOfStock')) document.getElementById('outOfStock').checked = false;
+                
+                // Reset search
+                if (searchInput) searchInput.value = '';
+                
+                // Reset sorting
+                if (sortSelect) sortSelect.value = 'default';
+                
+                // Reset product display (show all)
+                productCards.forEach(card => {
+                    card.style.display = '';
+                });
+                
+                // Reset URL
+                window.history.pushState({}, '', window.location.pathname);
+                
+                // Update count
+                updateProductCount(productCards.length);
+                
+                // Show notification
+                showNotification('Đã xóa tất cả bộ lọc', 'success');
+            });
+
+            // Filter toggle for mobile
+            const filterToggle = document.getElementById('filterToggle');
+            const sidebarContent = document.getElementById('sidebarContent');
+            
+            if (filterToggle && sidebarContent) {
+                filterToggle.addEventListener('click', function() {
+                    sidebarContent.classList.toggle('show');
+                    const isExpanded = sidebarContent.classList.contains('show');
+                    this.innerHTML = isExpanded 
+                        ? '<i class="fas fa-times me-2"></i> Đóng bộ lọc'
+                        : '<i class="fas fa-filter me-2"></i> Lọc Sản Phẩm';
                 });
             }
 
@@ -1075,8 +1728,6 @@ body {
                 });
             });
             
-            
-            
             // Notification functionality
             const notification = document.getElementById('notification');
             const notificationIcon = document.getElementById('notification-icon');
@@ -1085,7 +1736,7 @@ body {
             const notificationClose = document.getElementById('notification-close');
             let notificationTimeout;
             
-            function showNotification(message, type = 'success') {
+            window.showNotification = function(message, type = 'success') {
                 // Clear existing timeout if any
                 if (notificationTimeout) {
                     clearTimeout(notificationTimeout);
@@ -1131,10 +1782,7 @@ body {
                     card.style.opacity = '1';
                 });
             }, 100);
-        });
-
-                        // Add to cart functionality
-           // Add to cart functionality
+            
             // Add to cart functionality
             document.querySelectorAll('.add-to-cart').forEach(btn => {
                 btn.addEventListener('click', function(e) {
@@ -1168,19 +1816,32 @@ body {
                                 });
                     
                                 // Hiển thị thông báo thành công
-                                window.showNotification(data.message || `Đã thêm "${productName}" vào giỏ hàng`, 'success');
+                                showNotification(data.message || `Đã thêm "${productName}" vào giỏ hàng`, 'success');
                             } else {
                                 // Hiển thị thông báo lỗi
-                                window.showNotification(data.message || 'Không thể thêm vào giỏ hàng', 'error');
+                                showNotification(data.message || 'Không thể thêm vào giỏ hàng', 'error');
                             }
                         })
                         .catch(error => {
                             console.error('Error:', error);
                             this.innerHTML = originalText;
                             this.disabled = false;
-                            window.showNotification('Đã xảy ra lỗi khi thêm vào giỏ hàng', 'error');
+                            showNotification('Đã xảy ra lỗi khi thêm vào giỏ hàng', 'error');
                         });
                 });
             });
+            
+            // Apply filters on page load (in case there are URL parameters)
+            setTimeout(() => {
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.has('categoryId')) {
+                    const categoryId = urlParams.get('categoryId');
+                    const categoryLink = document.querySelector(`.category-link[data-category-id="${categoryId}"]`);
+                    if (categoryLink) {
+                        categoryLink.click();
+                    }
+                }
+            }, 200);
+        });
     </script>
 }

@@ -1,0 +1,154 @@
+﻿@model IEnumerable<DOAN_LAPTRINHWEB.Models.Category>
+
+@{
+    ViewData["Title"] = "Quản Lý Danh Mục";
+    Layout = "/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="categories-container">
+    <div class="page-header mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="header-title">Quản Lý Danh Mục Sản Phẩm</h1>
+                <p class="header-subtitle mb-0">Thêm, chỉnh sửa hoặc xóa các danh mục để sắp xếp sản phẩm của bạn.</p>
+            </div>
+            <div class="header-actions">
+                <a asp-area="Admin" asp-controller="Categories" asp-action="Create" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Thêm Danh Mục Mới
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            @if (!Model.Any())
+            {
+                <div class="empty-state text-center py-5">
+                    <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+                    <h2 class="empty-state-title h4">Chưa có danh mục nào</h2>
+                    <p class="empty-state-text text-muted">Bắt đầu sắp xếp sản phẩm của bạn bằng cách thêm danh mục đầu tiên.</p>
+                    <a asp-area="Admin" asp-controller="Categories" asp-action="Create" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Thêm Danh Mục Đầu Tiên
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="d-flex align-items-center">
+                            <span class="me-2">Tổng số:</span>
+                            <span class="badge bg-primary">@Model.Count()</span>
+                        </div>
+                        <div class="search-box">
+                            <input type="text" id="searchInputCategory" class="form-control" placeholder="Tìm kiếm danh mục...">
+                        </div>
+                    </div>
+
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Tên Danh Mục</th>
+                                <th>Loại</th>
+                                <th style="width: 150px;">Hành Động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.Name</td>
+									<td>@item.Type</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="Edit" asp-route-id="@item.CategoryId" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-edit"></i> Sửa
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@item.CategoryId" class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-trash"></i> Xóa
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .categories-container {
+        padding: 20px;
+    }
+
+    .page-header {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,.05);
+    }
+
+    .header-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .header-subtitle {
+        color: #6c757d;
+    }
+
+    .card {
+        border: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,.05);
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+
+        .table th {
+            border-top: none;
+            background-color: #f8f9fa;
+        }
+
+    .search-box {
+        max-width: 300px;
+    }
+
+    .empty-state {
+        padding: 40px 20px;
+    }
+
+    .btn-group .btn {
+        padding: 0.25rem 0.5rem;
+    }
+
+    .table-responsive {
+        margin: 0 -1rem;
+        padding: 0 1rem;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInputCategory');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    const tableRows = document.querySelectorAll('tbody tr');
+
+                    tableRows.forEach(row => {
+                        const text = row.textContent.toLowerCase();
+                        row.style.display = text.includes(searchTerm) ? '' : 'none';
+                    });
+                });
+            }
+        });
+    </script>
+}

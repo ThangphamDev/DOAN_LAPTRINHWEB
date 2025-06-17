@@ -1,0 +1,61 @@
+﻿@model IEnumerable<DOAN_LAPTRINHWEB.Models.Order>
+
+@{
+    ViewData["Title"] = "Quản lý đơn hàng";
+}
+
+<h1>Quản lý đơn hàng</h1>
+
+<div class="mb-3">
+    <form asp-action="Index" method="get">
+        <div class="form-group">
+            <label for="status">Lọc theo trạng thái:</label>
+            <select name="status" id="status" class="form-control d-inline w-auto" onchange="this.form.submit()">
+                <option value="">Tất cả</option>
+                @foreach (var status in ViewBag.Statuses)
+                {
+                    <option value="@status" selected="@(status == ViewBag.CurrentStatus)">@status</option>
+                }
+            </select>
+        </div>
+    </form>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Mã đơn hàng</th>
+            <th>Người dùng</th>
+            <th>Tổng tiền</th>
+            <th>Trạng thái</th>
+            <th>Ngày tạo</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>@order.OrderId</td>
+                <td>@order.User?.FullName</td>
+                <td>@order.TotalAmount.ToString("C")</td>
+                <td>@order.OrderStatus</td>
+                <td>@order.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@order.OrderId" class="btn btn-info btn-sm">Chi tiết</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('.table').DataTable({
+                "order": [[0, "desc"]],
+                "pageLength": 10
+            });
+        });
+    </script>
+}

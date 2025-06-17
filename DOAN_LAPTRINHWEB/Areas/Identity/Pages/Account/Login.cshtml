@@ -2,81 +2,152 @@
 @model LoginModel
 
 @{
-    ViewData["Title"] = "Log in";
+    ViewData["Title"] = "Đăng nhập";
 }
 
-<h1>@ViewData["Title"]</h1>
-<div class="row">
-    <div class="col-md-4">
-        <section>
-            <form id="account" method="post">
-                <h2>Use a local account to log in.</h2>
-                <hr />
-                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                    <label asp-for="Input.Email" class="form-label">Email</label>
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
-                </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
-                    <label asp-for="Input.Password" class="form-label">Password</label>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-                <div class="checkbox mb-3">
-                    <label asp-for="Input.RememberMe" class="form-label">
-                        <input class="form-check-input" asp-for="Input.RememberMe" />
-                        @Html.DisplayNameFor(m => m.Input.RememberMe)
-                    </label>
-                </div>
-                <div>
-                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                </div>
-                <div>
-                    <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                    </p>
-                    <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
-                    </p>
-                    <p>
-                        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
-                    </p>
-                </div>
-            </form>
-        </section>
+<div class="auth-container">
+    <div class="auth-header">
+        <h1>@ViewData["Title"]</h1>
+        <p>Đăng nhập để tiếp tục mua sắm với HomeStyle</p>
     </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to log in.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="auth-form">
+                <h2 class="auth-form-title">Đăng nhập vào tài khoản</h2>
+
+                <form id="account" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                        <label asp-for="Input.Email">Email</label>
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
                     </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
+                        <label asp-for="Input.Password">Mật khẩu</label>
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" asp-for="Input.RememberMe" />
+                            <label class="form-check-label" asp-for="Input.RememberMe">Ghi nhớ đăng nhập</label>
+                        </div>
+                        <a id="forgot-password" asp-page="./ForgotPassword">Quên mật khẩu?</a>
+                    </div>
+
+                    <button id="login-submit" type="submit" class="btn-auth">Đăng nhập</button>
+
+                    <div class="auth-footer">
+                        <p>Chưa có tài khoản? <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Đăng ký ngay</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="auth-form">
+                <h2 class="auth-form-title">Đăng nhập bằng mạng xã hội</h2>
+
+                @{
+                    if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                    {
+                        <div class="social-login-buttons">
+                            <a href="#" class="btn-social btn-google">
+                                <i class="fab fa-google me-2"></i> Google
+                            </a>
+                            <a href="#" class="btn-social btn-facebook">
+                                <i class="fab fa-facebook-f me-2"></i> Facebook
+                            </a>
+                        </div>
+                        <div class="auth-divider">
+                            <span>Hoặc</span>
+                        </div>
+                        <p class="text-center">
+                            Bạn có thể đăng nhập bằng tài khoản mạng xã hội sau khi kết nối với tài khoản HomeStyle.
+                        </p>
+                    }
+                    else
+                    {
+                        <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                            <div class="social-login-buttons">
                                 @foreach (var provider in Model.ExternalLogins!)
                                 {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                    <button type="submit" class="btn-social @(provider.Name.ToLower() == "google" ? "btn-google" : "btn-facebook")"
+                                            name="provider" value="@provider.Name">
+                                        <i class="fab fa-@(provider.Name.ToLower() == "google" ? "google" : "facebook-f") me-2"></i>
+                                        @provider.DisplayName
+                                    </button>
                                 }
-                            </p>
-                        </div>
-                    </form>
+                            </div>
+                        </form>
+                    }
                 }
-            }
-        </section>
+
+                <div class="auth-features mt-5">
+                    <h4 class="mb-4">Tại sao chọn HomeStyle?</h4>
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-check-circle text-success me-3 fs-4"></i>
+                        <div>
+                            <h5 class="mb-1">Sản phẩm chất lượng</h5>
+                            <p class="mb-0 small text-muted">Các sản phẩm decor được lựa chọn kỹ lưỡng</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-truck text-success me-3 fs-4"></i>
+                        <div>
+                            <h5 class="mb-1">Giao hàng nhanh chóng</h5>
+                            <p class="mb-0 small text-muted">Giao hàng trong vòng 2-3 ngày trên toàn quốc</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-shield-alt text-success me-3 fs-4"></i>
+                        <div>
+                            <h5 class="mb-1">Bảo mật thông tin</h5>
+                            <p class="mb-0 small text-muted">Thông tin cá nhân của bạn luôn được bảo vệ</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<style>
+    .card {
+        border-radius: 1rem;
+    }
+
+    .form-floating > label {
+        color: #6c757d;
+    }
+
+    .form-control:focus {
+        border-color: #212529;
+        box-shadow: 0 0 0 0.25rem rgba(33, 37, 41, 0.15);
+    }
+
+    .btn-dark {
+        font-weight: 500;
+    }
+
+        .btn-dark:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+    .btn-outline-secondary {
+        font-weight: 500;
+    }
+
+        .btn-outline-secondary:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-1px);
+        }
+</style>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

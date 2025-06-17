@@ -9,7 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -45,10 +46,25 @@
                         <li class="nav-item">
                             <a class="nav-link px-3" asp-controller="Products" asp-action="Index">Sản Phẩm</a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle px-3" asp-controller="Categories" asp-action="Index">
+                        <li class="nav-item dropdown category-dropdown-wrapper">
+                            <a class="nav-link dropdown-toggle px-3" href="#">
                                 Danh Mục
                             </a>
+                            <div class="category-dropdown">
+                                <div class="category-dropdown-inner">
+                                    @{
+                                        // Lấy danh sách danh mục từ database
+                                        var dbContext = (HomeStylesDbContext)Context.RequestServices.GetService(typeof(HomeStylesDbContext));
+                                        var categories = dbContext?.Categories.ToList() ?? new List<Category>();
+                                    }
+                                    @foreach (var category in categories)
+                                    {
+                                        <a class="dropdown-item" asp-controller="Products" asp-action="Index" asp-route-categoryId="@category.CategoryId">
+                                            @category.Name
+                                        </a>
+                                    }
+                                </div>
+                            </div>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link px-3" href="#">Ý Tưởng Decor</a>
@@ -56,39 +72,72 @@
                         <li class="nav-item">
                             <a class="nav-link px-3" href="#">Liên Hệ</a>
                         </li>
+                        @if (User.IsInRole("Administrator"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link px-3" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                                    <i class="fas fa-tachometer-alt me-1"></i> Quản trị Admin
+                                </a>
+                            </li>
+                        }
                     </ul>
+
 
                     <!-- Actions -->
                     <div class="nav-actions d-flex align-items-center gap-3">
                         <button class="btn btn-link text-dark p-0" type="button">
                             <i class="fas fa-search"></i>
                         </button>
-                        <partial name="_LoginPartial" />
-                        <a asp-controller="Cart" asp-action="Index" class="btn btn-dark position-relative rounded-pill px-3">
-                            <i class="fas fa-shopping-cart me-2"></i>
-                            <span>Giỏ hàng</span>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-count">
-                                @{
-                                    var cartCount = 0;
-                                    if (Context.Session.TryGetString("Cart", out var cartJson) && !string.IsNullOrEmpty(cartJson))
+                        
+                        <!-- Thay thế phần span hiển thị số lượng trong giỏ hàng -->
+                        <a asp-controller="Cart" asp-action="Index" class="btn position-relative" id="cartButton">
+                            <i class="fas fa-shopping-cart"></i>
+                            @{
+                                var cartCount = 0;
+                                // Cho người dùng đã đăng nhập, ưu tiên lấy từ database
+                                if (User.Identity.IsAuthenticated)
+                                {
+                                    var dbContext = (HomeStylesDbContext)Context.RequestServices.GetService(typeof(HomeStylesDbContext));
+                                    var cartService = (DOAN_LAPTRINHWEB.Services.CartService)Context.RequestServices.GetService(typeof(DOAN_LAPTRINHWEB.Services.CartService));
+
+                                    if (cartService != null)
                                     {
-                                        try
+                                        var userId = cartService.GetCartUserIdAsync().Result;
+                                        var cart = cartService.GetCartAsync(userId).Result;
+                                        if (cart?.Items != null && cart.Items.Any())
                                         {
-                                            var cart = Newtonsoft.Json.JsonConvert.DeserializeObject<DOAN_LAPTRINHWEB.Models.Cart>(cartJson);
-                                            if (cart?.Items != null)
-                                            {
-                                                cartCount = cart.Items.Sum(i => i.Quantity);
-                                            }
+                                            cartCount = cart.UniqueItemsCount;
                                         }
-                                        catch { /* Ignore deserialization errors */ }
                                     }
                                 }
-                                @if (cartCount > 0)
+                                // Cho người dùng chưa đăng nhập, lấy từ session
+                                else if (Context.Session.TryGetString("Cart", out var cartJson) && !string.IsNullOrEmpty(cartJson))
                                 {
-                                    @cartCount
+                                    try
+                                    {
+                                        var cart = Newtonsoft.Json.JsonConvert.DeserializeObject<DOAN_LAPTRINHWEB.Models.Cart>(cartJson);
+                                        if (cart?.Items != null && cart.Items.Any())
+                                        {
+                                            cartCount = cart.UniqueItemsCount;
+                                        }
+                                    }
+                                    catch { /* Bỏ qua lỗi deserialization */ }
                                 }
-                            </span>
+                            }
+                            @if (cartCount > 0)
+                            {
+                                <span class="badge rounded-pill bg-danger cart-count">
+                                    @cartCount
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge rounded-pill bg-danger cart-count" style="display:none">
+                                    0
+                                </span>
+                            }
                         </a>
+                        <partial name="_LoginPartial" />
                     </div>
                 </div>
             </div>
@@ -101,78 +150,76 @@
         </div>
     </main>
 
-    <footer class="footer bg-dark text-white py-5">
-        <div class="container-fluid px-4 px-lg-5">
-            <div class="row g-4">
-                <!-- Company Info -->
-                <div class="col-lg-4">
-                    <h5 class="brand-name text-white h4 mb-4">HomeStyle</h5>
-                    <p class="text-light">Biến không gian sống của bạn trở nên đẹp hơn với các sản phẩm decor độc đáo và tinh tế</p>
-                    <div class="social-icons d-flex gap-3 mt-4">
-                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-pinterest-p"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+    <!-- Footer section remains the same -->
+    <footer class="bg-dark text-white py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <h5 class="brand-name text-white mb-4">HomeStyle</h5>
+                    <p>Biến không gian sống của bạn trở nên đẹp hơn với các sản phẩm decor độc đáo và tinh tế</p>
+                    <div class="social-icons mt-4">
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook-f fa-lg"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-instagram fa-lg"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-pinterest-p fa-lg"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-youtube fa-lg"></i></a>
+                    </div>
+                    <!-- Newsletter Section with Smaller Font Size -->
+                    <div class="mt-4">
+                        <h2 class="mb-4 fs-5">Đăng ký nhận thông tin</h2> <!-- Reduced from h2 default to fs-5 -->
+                        <p class="mb-4 text-small">Nhận thông tin về sản phẩm mới, khuyến mãi và ý tưởng trang trí từ chúng tôi</p> <!-- Added text-small class -->
+                        <form class="newsletter-form">
+                            <div class="input-group mb-3">
+                                <input type="email" class="form-control" placeholder="Email của bạn" aria-label="Email của bạn" style="font-size: 0.9rem;"> <!-- Reduced font size -->
+                                <button class="btn btn-light" type="submit" style="font-size: 0.9rem;">Đăng ký</button> <!-- Reduced font size -->
+                            </div>
+                        </form>
                     </div>
                 </div>
-
-                <!-- Quick Links -->
-                <div class="col-lg-2 col-md-4">
-                    <h5 class="h6 text-uppercase mb-4">Thông tin</h5>
+                <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                    <h5 class="mb-4">Thông tin</h5>
                     <ul class="list-unstyled footer-links">
-                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Về chúng tôi</a></li>
-                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Điều khoản sử dụng</a></li>
-                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Chính sách bảo mật</a></li>
-                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Blog</a></li>
-                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Liên hệ</a></li>
+                        <li><a href="#">Về chúng tôi</a></li>
+                        <li><a href="#">Điều khoản sử dụng</a></li>
+                        <li><a href="#">Chính sách bảo mật</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Liên hệ</a></li>
                     </ul>
                 </div>
-
-                <!-- Account -->
-                <div class="col-lg-2 col-md-4">
-                    <h5 class="h6 text-uppercase mb-4">Tài khoản</h5>
+                <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                    <h5 class="mb-4">Tài khoản</h5>
                     <ul class="list-unstyled footer-links">
-                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Tài khoản của tôi</a></li>
-                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Giỏ hàng</a></li>
-                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Yêu thích</a></li>
-                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Theo dõi đơn hàng</a></li>
-                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Trợ giúp</a></li>
+                        <li><a href="#">Tài khoản của tôi</a></li>
+                        <li><a href="#">Giỏ hàng</a></li>
+                        <li><a href="#">Yêu thích</a></li>
+                        <li><a href="#">Theo dõi đơn hàng</a></li>
+                        <li><a href="#">Trợ giúp</a></li>
                     </ul>
                 </div>
-
-                <!-- Contact -->
                 <div class="col-lg-4 col-md-4">
-                    <h5 class="h6 text-uppercase mb-4">Liên hệ</h5>
-                    <div class="contact-info">
-                        <div class="d-flex mb-3">
-                            <i class="fas fa-map-marker-alt mt-1 me-3"></i>
-                            <p class="mb-0">Tầng 5, Tòa nhà Landmark, 208 Nguyễn Hữu Cảnh, Quận Bình Thạnh, TP.HCM</p>
-                        </div>
-                        <div class="d-flex mb-3">
-                            <i class="fas fa-phone-alt mt-1 me-3"></i>
-                            <p class="mb-0">+84 28 3827 9999</p>
-                        </div>
-                        <div class="d-flex">
-                            <i class="fas fa-envelope mt-1 me-3"></i>
-                            <p class="mb-0">info@homestyling.vn</p>
-                        </div>
+                    <h5 class="mb-4">Liên hệ</h5>
+                    <div class="d-flex align-items-start mb-3">
+                        <i class="fas fa-map-marker-alt mt-1 me-3"></i>
+                        <p class="mb-0">Tầng 5, Tòa nhà Landmark, 208 Nguyễn Hữu Cảnh, Quận Bình Thạnh, TP.HCM</p>
+                    </div>
+                    <div class="d-flex align-items-start mb-3">
+                        <i class="fas fa-phone-alt mt-1 me-3"></i>
+                        <p class="mb-0">+84 28 3827 9999</p>
+                    </div>
+                    <div class="d-flex align-items-start">
+                        <i class="fas fa-envelope mt-1 me-3"></i>
+                        <p class="mb-0">info@homestyling.vn</p>
                     </div>
                 </div>
             </div>
-
-            <hr class="my-4 opacity-25">
-
-            <!-- Footer Bottom -->
+            <hr class="my-4 bg-secondary">
             <div class="row align-items-center">
                 <div class="col-md-6 text-center text-md-start">
-                    <p class="small mb-0">&copy; 2025 HomeStyle. Tất cả quyền được bảo lưu.</p>
+                    <p class="mb-0">© 2025 HomeStyle. Tất cả quyền được bảo lưu.</p>
                 </div>
                 <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
-                    <div class="payment-methods">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png" alt="Visa" height="25" class="ms-2">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1280px-Mastercard-logo.svg.png" alt="Mastercard" height="25" class="ms-2">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/PayPal.svg/2560px-PayPal.svg.png" alt="PayPal" height="25" class="ms-2">
-                    </div>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png" alt="Visa" height="30" class="me-3">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1280px-Mastercard-logo.svg.png" alt="Mastercard" height="30" class="me-3">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/PayPal.svg/2560px-PayPal.svg.png" alt="PayPal" height="30">
                 </div>
             </div>
         </div>
@@ -208,6 +255,82 @@
                     toastr.info(message);
             }
         };
+             document.addEventListener("DOMContentLoaded", function() {
+            // Lấy phần tử badge
+            const cartBadge = document.querySelector('.cart-count');
+            if (cartBadge && cartBadge.textContent && parseInt(cartBadge.textContent) > 0) {
+                cartBadge.style.display = '';
+            } else if (cartBadge) {
+                cartBadge.style.display = 'none';
+            }
+        });
+             // Header scroll behavior
+        let lastScrollTop = 0;
+        const header = document.querySelector('.header-fixed');
+        const scrollThreshold = 100;
+
+        window.addEventListener('scroll', function() {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            // Add box shadow when scrolled
+            if (scrollTop > 0) {
+                header.classList.add('shadow');
+            } else {
+                header.classList.remove('shadow');
+            }
+
+            // Hide/show header based on scroll direction
+            if (scrollTop > scrollThreshold) {
+                if (scrollTop > lastScrollTop) {
+                    // Scrolling down, hide header
+                    header.classList.add('header-hidden');
+                    header.classList.remove('header-visible');
+                } else {
+                    // Scrolling up, show header
+                    header.classList.remove('header-hidden');
+                    header.classList.add('header-visible');
+                }
+            }
+
+            lastScrollTop = scrollTop;
+        });
+                document.addEventListener("DOMContentLoaded", function() {
+            // Kiểm tra xem bootstrap có được tải không
+            if (typeof bootstrap !== 'undefined') {
+                // Khởi tạo tất cả các dropdown
+                var dropdownElementList = document.querySelectorAll('.dropdown-toggle');
+                dropdownElementList.forEach(function(element) {
+                    new bootstrap.Dropdown(element);
+                });
+
+                console.log("Bootstrap dropdowns initialized successfully");
+            } else {
+                console.error("Bootstrap không được tải");
+            }
+        });
+
+                // Thêm xử lý cho dropdown user trên thiết bị di động
+        document.addEventListener("DOMContentLoaded", function() {
+            const userDropdownBtn = document.getElementById('userDropdownBtn');
+            const userDropdownMenu = document.getElementById('userDropdownMenu');
+
+            // Xử lý cho thiết bị di động
+            if (window.innerWidth < 992 && userDropdownBtn && userDropdownMenu) {
+                userDropdownBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    userDropdownMenu.classList.toggle('show');
+                });
+
+                // Đóng dropdown khi click bên ngoài
+                document.addEventListener('click', function(e) {
+                    if (!userDropdownBtn.contains(e.target) && !userDropdownMenu.contains(e.target)) {
+                        userDropdownMenu.classList.remove('show');
+                    }
+                });
+            }
+        });
+
     </script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

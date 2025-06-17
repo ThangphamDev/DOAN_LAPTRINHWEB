@@ -1,4 +1,5 @@
 using DOAN_LAPTRINHWEB.Models;
+using DOAN_LAPTRINHWEB.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +13,7 @@ builder.Services.AddControllersWithViews();
 // Cấu hình DbContext
 builder.Services.AddDbContext<HomeStylesDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("HomeStylesDb")));
+
 
 // Cấu hình Identity với role
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -32,6 +34,8 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+// Thêm vào phần đăng ký service
+builder.Services.AddScoped<CartService>();
 
 var app = builder.Build();
 
@@ -58,7 +62,27 @@ app.UseAuthorization();
 app.MapRazorPages();
 
 app.MapControllerRoute(
+      name: "areas",
+      pattern: "{area:exists}/{controller=Admin}/{action=Dashboard}/{id?}"
+    );
+
+app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+    string[] roleNames = { "Administrator", "Customer" };
+    foreach (var roleName in roleNames)
+    {
+        if (!await roleManager.RoleExistsAsync(roleName))
+        {
+            await roleManager.CreateAsync(new IdentityRole(roleName));
+        }
+    }
+}
 
 app.Run();

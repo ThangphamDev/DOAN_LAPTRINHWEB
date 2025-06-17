@@ -1,0 +1,18 @@
+[
+  {
+    "ContainingType": "DOAN_LAPTRINHWEB.Controllers.ReviewsController",
+    "Method": "PostReview",
+    "RelativePath": "api/Reviews",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "DOAN_LAPTRINHWEB.Controllers.ReviewViewModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

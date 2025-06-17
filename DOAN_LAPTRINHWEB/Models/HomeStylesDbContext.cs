@@ -25,6 +25,9 @@ public partial class HomeStylesDbContext : IdentityDbContext<ApplicationUser>
     public virtual DbSet<ProductImage> ProductImages { get; set; }
     public virtual DbSet<Review> Reviews { get; set; }
     public virtual DbSet<Tag> Tags { get; set; }
+    public virtual DbSet<Cart> Carts { get; set; }
+    public virtual DbSet<CartItem> CartItems { get; set; }
+    public virtual DbSet<ProductVariant> ProductVariants { get; set; }
 
 
     // Thêm các DbSet mới
@@ -67,7 +70,7 @@ public partial class HomeStylesDbContext : IdentityDbContext<ApplicationUser>
             entity.HasOne(d => d.User)
                 .WithMany(p => p.Addresses)
                 .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull) // Thay đổi thành ClientSetNull thay vì Cascade
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Addresses__user___6D0D32F4");
         });
 
@@ -109,7 +112,7 @@ public partial class HomeStylesDbContext : IdentityDbContext<ApplicationUser>
             entity.HasOne(d => d.User)
                 .WithMany(p => p.Orders)
                 .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull) // Thay đổi thành ClientSetNull thay vì Cascade
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Orders__user_id__628FA481");
         });
 
@@ -123,6 +126,7 @@ public partial class HomeStylesDbContext : IdentityDbContext<ApplicationUser>
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("price");
             entity.Property(e => e.ProductId).HasColumnName("product_id");
+            entity.Property(e => e.ProductVariantId).HasColumnName("product_variant_id");
             entity.Property(e => e.Quantity).HasColumnName("quantity");
 
             entity.HasOne(d => d.Order).WithMany(p => p.OrderItems)
@@ -132,6 +136,11 @@ public partial class HomeStylesDbContext : IdentityDbContext<ApplicationUser>
             entity.HasOne(d => d.Product).WithMany(p => p.OrderItems)
                 .HasForeignKey(d => d.ProductId)
                 .HasConstraintName("FK__OrderItem__produ__66603565");
+
+            entity.HasOne(d => d.ProductVariant)
+                .WithMany(p => p.OrderItems)
+                .HasForeignKey(d => d.ProductVariantId)
+                .HasConstraintName("FK__OrderItem__product_variant_id");
         });
 
         modelBuilder.Entity<Payment>(entity =>
@@ -173,6 +182,9 @@ public partial class HomeStylesDbContext : IdentityDbContext<ApplicationUser>
                 .HasColumnType("datetime")
                 .HasColumnName("created_at");
             entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.HasVariants)
+                .HasDefaultValue(false)
+                .HasColumnName("has_variants");
             entity.Property(e => e.Name)
                 .HasMaxLength(150)
                 .HasColumnName("name");
@@ -248,7 +260,7 @@ public partial class HomeStylesDbContext : IdentityDbContext<ApplicationUser>
             entity.HasOne(d => d.User)
                 .WithMany(p => p.Reviews)
                 .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull) // Thay đổi thành ClientSetNull thay vì Cascade
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Reviews__user_id__72C60C4A");
         });
 
@@ -260,6 +272,99 @@ public partial class HomeStylesDbContext : IdentityDbContext<ApplicationUser>
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
                 .HasColumnName("name");
+        });
+
+        modelBuilder.Entity<Cart>(entity =>
+        {
+            entity.HasKey(e => e.CartId).HasName("PK__Carts__CartId");
+            entity.ToTable("Carts");
+
+            entity.Property(e => e.CartId).HasColumnName("cart_id");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("updated_at");
+
+            entity.HasOne(d => d.User)
+                .WithMany()
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK__Carts__user_id");
+        });
+
+        modelBuilder.Entity<CartItem>(entity =>
+        {
+            entity.HasKey(e => e.CartItemId).HasName("PK__CartItems__CartItemId");
+            entity.ToTable("CartItems");
+
+            entity.Property(e => e.CartItemId).HasColumnName("cart_item_id");
+            entity.Property(e => e.CartId).HasColumnName("cart_id");
+            entity.Property(e => e.ProductId).HasColumnName("product_id");
+            entity.Property(e => e.ProductVariantId).HasColumnName("product_variant_id");
+            entity.Property(e => e.ProductName)
+                .HasMaxLength(150)
+                .HasColumnName("product_name");
+            entity.Property(e => e.Quantity).HasColumnName("quantity");
+            entity.Property(e => e.Price)
+                .HasColumnType("decimal(10, 2)")
+                .HasColumnName("price");
+            entity.Property(e => e.Subtotal)
+                .HasColumnType("decimal(10, 2)")
+                .HasColumnName("subtotal");
+            entity.Property(e => e.ImageUrl)
+                .HasMaxLength(255)
+                .HasColumnName("image_url");
+            entity.Property(e => e.AddedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("added_at");
+
+            entity.HasOne(d => d.Cart)
+                .WithMany(p => p.Items)
+                .HasForeignKey(d => d.CartId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK__CartItems__cart_id");
+
+            entity.HasOne(d => d.Product)
+                .WithMany()
+                .HasForeignKey(d => d.ProductId)
+                .HasConstraintName("FK__CartItems__product_id");
+
+            entity.HasOne(d => d.ProductVariant)
+                .WithMany()
+                .HasForeignKey(d => d.ProductVariantId)
+                .HasConstraintName("FK__CartItems__product_variant_id");
+        });
+
+        modelBuilder.Entity<ProductVariant>(entity =>
+        {
+            entity.HasKey(e => e.VariantId).HasName("PK__ProductVariants__VariantId");
+            entity.ToTable("ProductVariants");
+
+            entity.Property(e => e.VariantId).HasColumnName("variant_id");
+            entity.Property(e => e.ProductId).HasColumnName("product_id");
+            entity.Property(e => e.Size)
+                .HasMaxLength(50)
+                .HasColumnName("size");
+            entity.Property(e => e.Color)
+                .HasMaxLength(50)
+                .HasColumnName("color");
+            entity.Property(e => e.Stock).HasColumnName("stock");
+            entity.Property(e => e.AdditionalPrice)
+                .HasColumnType("decimal(10, 2)")
+                .HasColumnName("additional_price");
+            entity.Property(e => e.SKU)
+                .HasMaxLength(100)
+                .HasColumnName("sku");
+
+            entity.HasOne(d => d.Product)
+                .WithMany(p => p.ProductVariants)
+                .HasForeignKey(d => d.ProductId)
+                .HasConstraintName("FK__ProductVariants__product_id");
         });
 
         // Thêm cấu hình bổ sung cho Post
