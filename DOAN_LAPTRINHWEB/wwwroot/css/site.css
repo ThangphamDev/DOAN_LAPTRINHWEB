@@ -1,5 +1,4 @@
-﻿/* Custom CSS for HomeStyling - Decor Shop */
-
+﻿﻿ /* Custom CSS for HomeStyling - Decor Shop */
 :root {
     --primary-color: #212529;
     --secondary-color: #f8f9fa;
@@ -41,11 +40,6 @@ body {
     .navbar-nav .nav-link.active {
         color: var(--primary-color);
     }
-.navbar .dropdown:hover > .dropdown-menu {
-    display: block;
-    margin-top: 0;
-    animation: fadeIn 0.3s ease;
-}
 
 .dropdown-menu {
     border: none;
@@ -479,74 +473,74 @@ body {
             -moz-appearance: textfield;
         }
 
-    .product-description {
-        line-height: 1.6;
+.product-description {
+    line-height: 1.6;
+}
+
+.product-attributes .row {
+    margin-bottom: 10px;
+}
+
+.additional-info {
+    font-size: 0.9rem;
+}
+
+.review-item:last-child {
+    border-bottom: none !important;
+    padding-bottom: 0 !important;
+}
+
+.review-item img {
+    object-fit: cover;
+}
+
+#product-full-description {
+    line-height: 1.7;
+}
+
+    #product-full-description ul {
+        padding-left: 20px;
     }
 
-    .product-attributes .row {
-        margin-bottom: 10px;
+    #product-full-description h4 {
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
     }
 
-    .additional-info {
-        font-size: 0.9rem;
+.nav-tabs .nav-link {
+    color: #212529;
+    font-weight: 500;
+}
+
+    .nav-tabs .nav-link.active {
+        font-weight: 600;
+        color: #000;
+        border-bottom: 2px solid #212529;
     }
 
-    .review-item:last-child {
-        border-bottom: none !important;
-        padding-bottom: 0 !important;
+@media (max-width: 767px) {
+    .product-image-container {
+        margin-bottom: 2rem;
     }
 
-    .review-item img {
-        object-fit: cover;
+    .quantity-selector {
+        width: 110px;
     }
-
-    #product-full-description {
-        line-height: 1.7;
-    }
-
-        #product-full-description ul {
-            padding-left: 20px;
-        }
-
-        #product-full-description h4 {
-            margin-top: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-    .nav-tabs .nav-link {
-        color: #212529;
-        font-weight: 500;
-    }
-
-        .nav-tabs .nav-link.active {
-            font-weight: 600;
-            color: #000;
-            border-bottom: 2px solid #212529;
-        }
-
-    @media (max-width: 767px) {
-        .product-image-container {
-            margin-bottom: 2rem;
-        }
-
-        .quantity-selector {
-            width: 110px;
-        }
-    }
-    /* Force main content to full width */
-    body > .container,
-    body > .container-lg,
-    body > .container-fluid,
-    main.container,
-    main.container-lg,
-    main.container-fluid {
-        width: 100vw !important;
-        max-width: 100vw !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        margin-left: calc(-50vw + 50%) !important;
-        margin-right: calc(-50vw + 50%) !important;
-    }
+}
+/* Force main content to full width */
+body > .container,
+body > .container-lg,
+body > .container-fluid,
+main.container,
+main.container-lg,
+main.container-fluid {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: calc(-50vw + 50%) !important;
+    margin-right: calc(-50vw + 50%) !important;
+}
 /* CSS cho menu dropdown danh mục */
 .category-dropdown-wrapper {
     position: relative;
@@ -1082,30 +1076,30 @@ body {
 
 
 
-    .hover-dropdown .dropdown-menu {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        z-index: 1000;
-        min-width: 220px;
-        padding: 0.5rem 0;
-        margin: 0.125rem 0 0;
-        font-size: 1rem;
-        color: #212529;
-        text-align: left;
-        list-style: none;
-        background-color: #fff;
-        background-clip: padding-box;
-        border: 1px solid rgba(0, 0, 0, 0.15);
-        border-radius: 0.25rem;
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
-        animation: fadeIn 0.2s ease-in-out;
-    }
+.hover-dropdown .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    min-width: 220px;
+    padding: 0.5rem 0;
+    margin: 0.125rem 0 0;
+    font-size: 1rem;
+    color: #212529;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 0.25rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
+    animation: fadeIn 0.2s ease-in-out;
+}
 
-    .hover-dropdown:hover .dropdown-menu {
-        display: block;
-    }
+.hover-dropdown:hover .dropdown-menu {
+    display: block;
+}
 
 @keyframes fadeIn {
     from {
@@ -1366,48 +1360,48 @@ body {
 
 
 
-    /* Thêm vùng đệm ảo để giữ dropdown hiển thị */
-    .hover-dropdown::after {
-        content: '';
-        position: absolute;
-        height: 20px; /* Chiều cao vùng đệm */
-        width: 100%;
-        bottom: -20px;
-        left: 0;
-    }
+/* Thêm vùng đệm ảo để giữ dropdown hiển thị */
+.hover-dropdown::after {
+    content: '';
+    position: absolute;
+    height: 20px; /* Chiều cao vùng đệm */
+    width: 100%;
+    bottom: -20px;
+    left: 0;
+}
 
-    /* Đảm bảo dropdown luôn hiển thị khi hover vào nút hoặc menu */
-    .hover-dropdown:hover #userDropdownMenu,
-    #userDropdownMenu:hover {
-        display: block;
-        visibility: visible;
-        opacity: 1;
-        pointer-events: auto;
-    }
+/* Đảm bảo dropdown luôn hiển thị khi hover vào nút hoặc menu */
+.hover-dropdown:hover #userDropdownMenu,
+#userDropdownMenu:hover {
+    display: block;
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+}
 
-    /* Thêm vùng đệm cho dropdown menu để tạo không gian di chuyển chuột */
-    .hover-dropdown #userDropdownMenu {
-        padding-top: 10px;
-        margin-top: 0;
-        pointer-events: none; /* Ban đầu tắt pointer events */
-        transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
-    }
+/* Thêm vùng đệm cho dropdown menu để tạo không gian di chuyển chuột */
+.hover-dropdown #userDropdownMenu {
+    padding-top: 10px;
+    margin-top: 0;
+    pointer-events: none; /* Ban đầu tắt pointer events */
+    transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+}
 
-    .hover-dropdown:hover #userDropdownMenu {
-        pointer-events: auto; /* Bật lại pointer events khi hover */
-    }
+.hover-dropdown:hover #userDropdownMenu {
+    pointer-events: auto; /* Bật lại pointer events khi hover */
+}
 
-    /* Điều chỉnh vị trí mũi tên để tránh khoảng trống */
-    .hover-dropdown #userDropdownMenu:before {
-        top: 4px;
-        right: 20px;
-    }
+/* Điều chỉnh vị trí mũi tên để tránh khoảng trống */
+.hover-dropdown #userDropdownMenu:before {
+    top: 4px;
+    right: 20px;
+}
 
-    /* Thêm hiệu ứng transition mượt mà */
-    .hover-dropdown #userDropdownBtn,
-    .hover-dropdown #userDropdownMenu {
-        transition: all 0.3s ease;
-    }
+/* Thêm hiệu ứng transition mượt mà */
+.hover-dropdown #userDropdownBtn,
+.hover-dropdown #userDropdownMenu {
+    transition: all 0.3s ease;
+}
 
 
 
@@ -1472,4 +1466,246 @@ body {
 
 .cart-count.updated {
     animation: cartBadgePulse 0.5s;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Cập nhật style cho header */
+.navbar {
+    padding: 12px 0;
+}
+
+.navbar-brand {
+    margin-right: 30px;
+    display: flex;
+    align-items: center;
+}
+
+/* Cải thiện căn chỉnh cho menu chính */
+.navbar-nav {
+    margin-right: auto;
+}
+
+    .navbar-nav .nav-link {
+        padding: 8px 15px;
+        font-weight: 500;
+    }
+
+/* Cải thiện header actions */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    margin-left: 20px;
+}
+
+/* Cải thiện search bar */
+.search-container {
+    position: relative;
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 220px;
+}
+
+.search-input {
+    padding: 8px 35px 8px 15px;
+    border-radius: 50px;
+    border: 1px solid #e0e0e0;
+    width: 100%;
+    font-size: 0.9rem;
+    height: 38px;
+    background-color: #f5f5f5;
+}
+
+.search-button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 0;
+    color: #6c757d;
+    cursor: pointer;
+}
+
+/* Cải thiện icon header */
+.header-icon-wrapper {
+    position: relative;
+}
+
+.header-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+    .header-icon:hover {
+        background-color: #e9ecef;
+        color: var(--primary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-icon i {
+        font-size: 1.1rem;
+    }
+
+/* Cải thiện dropdown user */
+.hover-dropdown {
+    position: relative;
+}
+
+    .hover-dropdown .dropdown-menu {
+        right: 0;
+        left: auto;
+        margin-top: 10px;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        border-radius: 8px;
+        padding: 10px 0;
+        min-width: 220px;
+        z-index: 1001;
+    }
+
+/* Căn chỉnh responsive */
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        margin-top: 10px;
+    }
+
+    .header-actions {
+        width: 100%;
+        margin-top: 15px;
+        justify-content: center;
+        gap: 20px;
+        margin-left: 0;
+    }
+
+    .search-form {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .header-actions {
+        gap: 15px;
+    }
+
+    .search-form {
+        width: 180px;
+    }
+
+    .navbar-brand {
+        margin-right: 0;
+    }
+}
+
+/* Cập nhật badge giỏ hàng */
+.cart-count {
+    position: absolute !important;
+    top: -5px !important;
+    right: -5px !important;
+    min-width: 18px;
+    height: 18px;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    z-index: 5;
+}
+
+
+/* Thêm CSS cho menu căn giữa */
+.navbar {
+    position: relative;
+}
+
+.navbar-collapse {
+    display: flex;
+    justify-content: space-between;
+}
+
+.navbar-nav-container {
+    display: flex;
+    justify-content: center;
+    flex-grow: 1;
+    flex-basis: 0;
+}
+
+.navbar-nav {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto; /* Căn giữa menu */
+}
+
+/* Header actions */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    margin-left: auto;
+}
+
+/* Responsive */
+@media (max-width: 991.98px) {
+    .navbar-nav-container {
+        justify-content: flex-start;
+    }
+
+    .navbar-collapse {
+        flex-direction: column;
+    }
+
+    .header-actions {
+        margin-top: 15px;
+        margin-left: 0;
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Style search container */
+.search-container {
+    position: relative;
+}
+
+.search-form {
+    width: 220px;
+}
+
+.search-input {
+    padding-right: 35px;
+    border-radius: 50px;
+    height: 38px;
+    background-color: #f5f5f5;
+    border: 1px solid #e0e0e0;
+}
+
+.search-button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 0;
 }

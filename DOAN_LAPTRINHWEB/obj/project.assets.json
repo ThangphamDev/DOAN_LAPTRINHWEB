@@ -8424,23 +8424,26 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Viet Xuan Nguyen\\.nuget\\packages\\": {},
+    "C:\\Users\\MINH QUYEN\\.nuget\\packages\\": {},
+    "D:\\DEV EXPRESS\\Components\\Offline Packages": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\web\\bai1\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB.csproj",
+      "projectUniqueName": "D:\\STUDY_IT\\web\\doanmon\\banmerge\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB.csproj",
       "projectName": "DOAN_LAPTRINHWEB",
-      "projectPath": "E:\\web\\bai1\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB.csproj",
-      "packagesPath": "C:\\Users\\Viet Xuan Nguyen\\.nuget\\packages\\",
-      "outputPath": "E:\\web\\bai1\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\obj\\",
+      "projectPath": "D:\\STUDY_IT\\web\\doanmon\\banmerge\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB.csproj",
+      "packagesPath": "C:\\Users\\MINH QUYEN\\.nuget\\packages\\",
+      "outputPath": "D:\\STUDY_IT\\web\\doanmon\\banmerge\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
+        "D:\\DEV EXPRESS\\Components\\Offline Packages",
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Viet Xuan Nguyen\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\MINH QUYEN\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 22.2.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -8449,6 +8452,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "D:\\DEV EXPRESS\\Components\\System\\Components\\Packages": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -8523,7 +8527,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
