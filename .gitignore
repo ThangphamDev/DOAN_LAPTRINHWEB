@@ -1,2 +1,9 @@
-# VS folder
+﻿# VS folder
+# Bỏ qua thư mục .vs của Visual Studio
 .vs/
+
+# Bỏ qua thư mục bin và obj (mọi cấp)
+**/bin/
+**/obj/
+
+# Nếu bạn ghi là .bin hoặc .obj thì Git hiểu là file chấm .bin, chấm .obj chứ không phải thư mục!

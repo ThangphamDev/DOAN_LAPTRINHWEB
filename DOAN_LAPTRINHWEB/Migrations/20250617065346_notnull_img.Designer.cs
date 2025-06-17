@@ -4,6 +4,7 @@ using DOAN_LAPTRINHWEB.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DOAN_LAPTRINHWEB.Migrations
 {
     [DbContext(typeof(HomeStylesDbContext))]
-    partial class HomeStylesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250617065346_notnull_img")]
+    partial class notnull_img
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,10 +100,7 @@ namespace DOAN_LAPTRINHWEB.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Avatar")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AvatarUrl")
+                    b.Property<string>("Age")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -108,9 +108,6 @@ namespace DOAN_LAPTRINHWEB.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
@@ -122,9 +119,6 @@ namespace DOAN_LAPTRINHWEB.Migrations
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Gender")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
@@ -153,10 +147,6 @@ namespace DOAN_LAPTRINHWEB.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -178,103 +168,6 @@ namespace DOAN_LAPTRINHWEB.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("DOAN_LAPTRINHWEB.Models.Cart", b =>
-                {
-                    b.Property<int>("CartId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("cart_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartId"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("(getdate())");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasColumnName("updated_at")
-                        .HasDefaultValueSql("(getdate())");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("CartId")
-                        .HasName("PK__Carts__CartId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Carts", (string)null);
-                });
-
-            modelBuilder.Entity("DOAN_LAPTRINHWEB.Models.CartItem", b =>
-                {
-                    b.Property<int>("CartItemId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("cart_item_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartItemId"));
-
-                    b.Property<DateTime>("AddedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasColumnName("added_at")
-                        .HasDefaultValueSql("(getdate())");
-
-                    b.Property<int>("CartId")
-                        .HasColumnType("int")
-                        .HasColumnName("cart_id");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("image_url");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(10, 2)")
-                        .HasColumnName("price");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int")
-                        .HasColumnName("product_id");
-
-                    b.Property<string>("ProductName")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)")
-                        .HasColumnName("product_name");
-
-                    b.Property<int?>("ProductVariantId")
-                        .HasColumnType("int")
-                        .HasColumnName("product_variant_id");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int")
-                        .HasColumnName("quantity");
-
-                    b.Property<decimal>("Subtotal")
-                        .HasColumnType("decimal(10, 2)")
-                        .HasColumnName("subtotal");
-
-                    b.HasKey("CartItemId")
-                        .HasName("PK__CartItems__CartItemId");
-
-                    b.HasIndex("CartId");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("ProductVariantId");
-
-                    b.ToTable("CartItems", (string)null);
                 });
 
             modelBuilder.Entity("DOAN_LAPTRINHWEB.Models.Category", b =>
@@ -407,10 +300,6 @@ namespace DOAN_LAPTRINHWEB.Migrations
                         .HasColumnType("int")
                         .HasColumnName("product_id");
 
-                    b.Property<int?>("ProductVariantId")
-                        .HasColumnType("int")
-                        .HasColumnName("product_variant_id");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int")
                         .HasColumnName("quantity");
@@ -421,8 +310,6 @@ namespace DOAN_LAPTRINHWEB.Migrations
                     b.HasIndex("OrderId");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("ProductVariantId");
 
                     b.ToTable("OrderItems");
                 });
@@ -592,12 +479,6 @@ namespace DOAN_LAPTRINHWEB.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("description");
 
-                    b.Property<bool>("HasVariants")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false)
-                        .HasColumnName("has_variants");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(150)
@@ -656,52 +537,6 @@ namespace DOAN_LAPTRINHWEB.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductImages");
-                });
-
-            modelBuilder.Entity("DOAN_LAPTRINHWEB.Models.ProductVariant", b =>
-                {
-                    b.Property<int>("VariantId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("variant_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VariantId"));
-
-                    b.Property<decimal>("AdditionalPrice")
-                        .HasColumnType("decimal(10, 2)")
-                        .HasColumnName("additional_price");
-
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("color");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int")
-                        .HasColumnName("product_id");
-
-                    b.Property<string>("SKU")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("sku");
-
-                    b.Property<string>("Size")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("size");
-
-                    b.Property<int>("Stock")
-                        .HasColumnType("int")
-                        .HasColumnName("stock");
-
-                    b.HasKey("VariantId")
-                        .HasName("PK__ProductVariants__VariantId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductVariants", (string)null);
                 });
 
             modelBuilder.Entity("DOAN_LAPTRINHWEB.Models.Review", b =>
@@ -929,46 +764,6 @@ namespace DOAN_LAPTRINHWEB.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("DOAN_LAPTRINHWEB.Models.Cart", b =>
-                {
-                    b.HasOne("DOAN_LAPTRINHWEB.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK__Carts__user_id");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("DOAN_LAPTRINHWEB.Models.CartItem", b =>
-                {
-                    b.HasOne("DOAN_LAPTRINHWEB.Models.Cart", "Cart")
-                        .WithMany("Items")
-                        .HasForeignKey("CartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK__CartItems__cart_id");
-
-                    b.HasOne("DOAN_LAPTRINHWEB.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK__CartItems__product_id");
-
-                    b.HasOne("DOAN_LAPTRINHWEB.Models.ProductVariant", "ProductVariant")
-                        .WithMany()
-                        .HasForeignKey("ProductVariantId")
-                        .HasConstraintName("FK__CartItems__product_variant_id");
-
-                    b.Navigation("Cart");
-
-                    b.Navigation("Product");
-
-                    b.Navigation("ProductVariant");
-                });
-
             modelBuilder.Entity("DOAN_LAPTRINHWEB.Models.Comment", b =>
                 {
                     b.HasOne("DOAN_LAPTRINHWEB.Models.Comment", "ParentComment")
@@ -1022,16 +817,9 @@ namespace DOAN_LAPTRINHWEB.Migrations
                         .IsRequired()
                         .HasConstraintName("FK__OrderItem__produ__66603565");
 
-                    b.HasOne("DOAN_LAPTRINHWEB.Models.ProductVariant", "ProductVariant")
-                        .WithMany("OrderItems")
-                        .HasForeignKey("ProductVariantId")
-                        .HasConstraintName("FK__OrderItem__product_variant_id");
-
                     b.Navigation("Order");
 
                     b.Navigation("Product");
-
-                    b.Navigation("ProductVariant");
                 });
 
             modelBuilder.Entity("DOAN_LAPTRINHWEB.Models.Payment", b =>
@@ -1091,18 +879,6 @@ namespace DOAN_LAPTRINHWEB.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK__ProductIm__produ__571DF1D5");
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("DOAN_LAPTRINHWEB.Models.ProductVariant", b =>
-                {
-                    b.HasOne("DOAN_LAPTRINHWEB.Models.Product", "Product")
-                        .WithMany("ProductVariants")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK__ProductVariants__product_id");
 
                     b.Navigation("Product");
                 });
@@ -1202,11 +978,6 @@ namespace DOAN_LAPTRINHWEB.Migrations
                     b.Navigation("Reviews");
                 });
 
-            modelBuilder.Entity("DOAN_LAPTRINHWEB.Models.Cart", b =>
-                {
-                    b.Navigation("Items");
-                });
-
             modelBuilder.Entity("DOAN_LAPTRINHWEB.Models.Category", b =>
                 {
                     b.Navigation("Products");
@@ -1235,14 +1006,7 @@ namespace DOAN_LAPTRINHWEB.Migrations
 
                     b.Navigation("ProductImages");
 
-                    b.Navigation("ProductVariants");
-
                     b.Navigation("Reviews");
-                });
-
-            modelBuilder.Entity("DOAN_LAPTRINHWEB.Models.ProductVariant", b =>
-                {
-                    b.Navigation("OrderItems");
                 });
 #pragma warning restore 612, 618
         }

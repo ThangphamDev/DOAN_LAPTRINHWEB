@@ -1,0 +1,49 @@
+﻿@model IEnumerable<DOAN_LAPTRINHWEB.Models.Post>
+@{
+    ViewData["Title"] = "Bài viết của tôi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
+    <div class="row mb-4 align-items-center">
+        <!-- Cột bên trái: Bộ lọc -->
+        <div class="col-auto">
+            <form method="get" asp-action="MyPosts">
+                <div class="input-group">
+                    <label for="statusFilter" class="input-group-text">Lọc theo trạng thái:</label>
+                    <select id="statusFilter" name="status" class="form-select">
+                        <option value="">Tất cả</option>
+                        <option value="Approved">Đã duyệt</option>
+                        <option value="Rejected">Bị từ chối</option>
+                        <option value="Pending">Chờ duyệt</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+
+        <!-- Cột bên phải: Nút tạo bài viết -->
+        <div class="col text-end">
+            <a asp-controller="Posts" asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Tạo bài viết
+            </a>
+        </div>
+    </div>
+
+    <div id="postList">
+        @await Html.PartialAsync("_PostListPartial", Model)
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $('#statusFilter').on('change', function () {
+            var selectedStatus = $(this).val();
+
+            $.get('/Posts/FilterByStatus', { statusFilter: selectedStatus }, function (data) {
+                $('#postList').html(data);
+            });
+        });
+    </script>
+}

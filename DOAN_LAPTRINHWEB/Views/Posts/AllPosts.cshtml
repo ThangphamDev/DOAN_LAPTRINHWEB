@@ -1,0 +1,48 @@
+﻿
+@model IEnumerable<DOAN_LAPTRINHWEB.Models.Post>
+
+@{
+    ViewData["Title"] = "Tất cả bài đăng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<div class="container mt-5">
+    <h1 class="mb-4">@ViewData["Title"]</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Tiêu đề</th>
+                <th>Tác giả</th>
+                <th>Loại</th>
+                <th>Trạng thái</th>
+                <th>Ngày tạo</th>
+                <th>Đã xóa</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Title</td>
+                    <td>@item.User?.UserName</td>
+                    <td>@item.PostType?.Name</td>
+                    <td>@item.ApprovalStatus</td>
+                    <td>@item.CreatedDate.ToString("dd/MM/yyyy")</td>
+                    <td>@(item.IsDeleted ? "Có" : "Không")</td>
+                    <td>
+                        <a asp-action="Approve" asp-route-id="@item.Id" class="btn btn-secondary btn-sm">Duyệt</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Xóa</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+}
+

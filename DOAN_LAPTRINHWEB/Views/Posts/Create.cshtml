@@ -1,0 +1,62 @@
+﻿@model DOAN_LAPTRINHWEB.Models.CreatePostDto
+
+@{
+    ViewData["Title"] = "Tạo bài viết mới";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<div class="container mt-5">
+    <h1 class="mb-4">@ViewData["Title"]</h1>
+
+    <form asp-action="Create" method="post">
+        <div class="mb-3">
+            <label asp-for="Title" class="form-label">Tiêu đề</label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Content" class="form-label" style="display:none">Nội dung</label>
+            <textarea asp-for="Content" class="form-control" rows="5"></textarea>
+            <span asp-validation-for="Content" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ImageUrls" class="form-label">URL hình ảnh</label>
+            <input asp-for="ImageUrls" class="form-control" />
+            <span asp-validation-for="ImageUrls" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="PostTypeId" class="form-label">Loại bài viết</label>
+            <select asp-for="PostTypeId" class="form-select" asp-items="@(new SelectList(ViewData["PostTypes"] as List<DOAN_LAPTRINHWEB.Models.PostType>, "Id", "Name"))">
+                <option value="">Chọn loại bài viết</option>
+            </select>
+            <span asp-validation-for="PostTypeId" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Tạo bài viết</button>
+        <a asp-action="MyPosts" class="btn btn-secondary">Quay lại</a>
+    </form>
+</div>
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.tiny.cloud/1/dlw5y4nq5zad9avo50yhqzcfkodnsankzz7bh511nmbds50d/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        tinymce.init({
+            selector: 'textarea[name="Content"]',
+            height: 500,
+            plugins: 'image link media code table lists',
+            toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright | bullist numlist | image link media | code',
+            images_upload_url: '/Posts/UploadImage',
+            automatic_uploads: true,
+            images_upload_credentials: true,
+            resize: true, // Cho phép resize editor
+            image_caption: true,
+            image_title: true,
+            image_dimensions: true, // Bật input width/height
+            object_resizing: 'img', // QUAN TRỌNG: Cho phép resize ảnh bằng chuột
+            content_style: "img { max-width: 100%; height: auto; }"
+        });
+    </script>
+}

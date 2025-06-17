@@ -29,6 +29,12 @@ public partial class HomeStylesDbContext : IdentityDbContext<ApplicationUser>
     public virtual DbSet<CartItem> CartItems { get; set; }
     public virtual DbSet<ProductVariant> ProductVariants { get; set; }
 
+
+    // Thêm các DbSet mới
+    public virtual DbSet<Post> Posts { get; set; }
+    public virtual DbSet<Comment> Comments { get; set; }
+    public virtual DbSet<PostType> PostTypes { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -359,6 +365,64 @@ public partial class HomeStylesDbContext : IdentityDbContext<ApplicationUser>
                 .WithMany(p => p.ProductVariants)
                 .HasForeignKey(d => d.ProductId)
                 .HasConstraintName("FK__ProductVariants__product_id");
+        });
+
+        // Thêm cấu hình bổ sung cho Post
+        modelBuilder.Entity<Post>(entity =>
+        {
+            entity.Property(p => p.ImageUrls)
+                .HasColumnType("nvarchar(max)"); // Cho phép lưu JSON
+            entity.Property(p => p.ApprovalStatus)
+        .HasConversion<string>();
+            entity.Property(p => p.IsDeleted)
+                .HasDefaultValue(false); // Mặc định là false cho xóa mềm
+            
+            entity.HasOne(p => p.User)
+         .WithMany()
+         .HasForeignKey(p => p.UserId)
+         .OnDelete(DeleteBehavior.NoAction); // Set NULL khi User bị xóa
+
+            entity.HasOne(p => p.ApprovedBy)
+                .WithMany()
+                .HasForeignKey(p => p.ApprovedById)
+                .OnDelete(DeleteBehavior.NoAction); // Set NULL khi ApprovedBy bị xóa
+
+            entity.HasOne(p => p.PostType)
+                .WithMany(p => p.Posts)
+                .HasForeignKey(p => p.PostTypeId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // Thêm cấu hình bổ sung cho Comment
+        modelBuilder.Entity<Comment>(entity =>
+        {
+            entity.HasOne(c => c.Post)
+                .WithMany(p => p.Comments)
+                .HasForeignKey(c => c.PostId)
+                .OnDelete(DeleteBehavior.Cascade); // Xóa Comment khi Post bị xóa
+
+            entity.HasOne(c => c.User)
+                .WithMany()
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Cascade); // Set NULL khi User bị xóa
+
+            entity.HasOne(c => c.ParentComment)
+                .WithMany()
+                .HasForeignKey(c => c.ParentCommentId)
+                .OnDelete(DeleteBehavior.Restrict); // Không xóa ParentComment nếu có Comment con
+        });
+
+        // Đảm bảo PostType đã có cấu hình
+        modelBuilder.Entity<PostType>(entity =>
+        {
+            entity.HasIndex(p => p.Name)
+                .IsUnique(); // Đảm bảo Name là duy nhất
+            entity.HasMany(p => p.Posts)
+                .WithOne(p => p.PostType)
+                .HasForeignKey(p => p.PostTypeId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict); // Giữ PostType khi xóa Post
         });
 
         OnModelCreatingPartial(modelBuilder);
