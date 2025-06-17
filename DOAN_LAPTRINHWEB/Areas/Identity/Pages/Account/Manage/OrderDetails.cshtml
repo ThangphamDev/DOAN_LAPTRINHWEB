@@ -3,40 +3,106 @@
 
 @{
     ViewData["Title"] = "Chi tiết đơn hàng";
+    ViewData["ActivePage"] = ManageNavPages.Orders;
 }
 
-<h2>Chi tiết đơn hàng #@Model.Order.OrderId</h2>
-<p><strong>Ngày đặt:</strong> @Model.Order.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
-<p><strong>Trạng thái:</strong> @Model.Order.OrderStatus</p>
-<p><strong>Tổng tiền:</strong> @Model.Order.TotalAmount.ToString("N0") VNĐ</p>
+<h2 class="text-primary fw-bold text-center mb-4">Chi tiết đơn hàng #@Model.Order.OrderId</h2>
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Sản phẩm</th>
-            <th>Số lượng</th>
-            <th>Đơn giá</th>
-            <th>Thành tiền</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model.Order.OrderItems != null && Model.Order.OrderItems.Any())
+<div class="card shadow-sm mb-4 border-0">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Thông tin chung</h5>
+        <span class="badge bg-light text-primary fs-6">@Model.Order.OrderStatus</span>
+    </div>
+    <div class="card-body">
+        <div class="row mb-2">
+            <div class="col-md-4"><strong>Ngày đặt:</strong></div>
+            <div class="col-md-8">@Model.Order.CreatedAt.ToString("HH:mm dd/MM/yyyy")</div>
+        </div>
+        @if (Model.Order.User != null)
         {
-            foreach (var item in Model.Order.OrderItems)
+            <div class="row mb-2">
+                <div class="col-md-4"><strong>Người đặt:</strong></div>
+                <div class="col-md-8">@Model.Order.User.FullName</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-4"><strong>Số điện thoại:</strong></div>
+                <div class="col-md-8">@Model.Order.User.PhoneNumber</div>
+            </div>
+        }
+        <div class="row mb-2">
+            <div class="col-md-4"><strong>Tổng tiền:</strong></div>
+            <div class="col-md-8 text-danger fw-bold">@Model.Order.TotalAmount.ToString("N0") VNĐ</div>
+        </div>
+    </div>
+</div>
+
+<h3 class="text-primary fw-bold mb-3 mt-5">Sản phẩm trong đơn hàng</h3>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped table-hover align-middle">
+        <thead>
+            <tr>
+                <th class="text-center">Ảnh</th>
+                <th>Sản phẩm</th>
+                <th class="text-center">Số lượng</th>
+                <th class="text-end">Đơn giá</th>
+                <th class="text-end">Thành tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Order.OrderItems != null && Model.Order.OrderItems.Any())
+            {
+                @foreach (var item in Model.Order.OrderItems)
+                {
+                    <tr>
+                        <td class="text-center">
+                            @{
+                                string imageUrl = null;
+                                if (item.Product?.ProductImages != null && item.Product.ProductImages.Any())
+                                {
+                                    var primaryImage = item.Product.ProductImages.FirstOrDefault(pi => pi.IsPrimary == true);
+                                    imageUrl = primaryImage?.ImageUrl ?? item.Product.ProductImages.FirstOrDefault()?.ImageUrl;
+                                }
+                            }
+                            @if (!string.IsNullOrEmpty(imageUrl))
+                            {
+                                <img src="@Url.Content(imageUrl)"
+                                     alt="@item.Product?.Name"
+                                     class="img-thumbnail"
+                                     style="width: 70px; height: 70px; object-fit: cover;">
+                            }
+                            else
+                            {
+                                <img src="~/images/placeholder-product.png"
+                                     alt="Không có ảnh"
+                                     class="img-thumbnail"
+                                     style="width: 70px; height: 70px; object-fit: cover;">
+                            }
+                        </td>
+                        <td>
+                            <strong>@item.Product?.Name</strong>
+                        </td>
+                        <td class="text-center">@item.Quantity</td>
+                        <td class="text-end">@item.Price.ToString("N0") VNĐ</td>
+                        <td class="text-end text-danger fw-bold">@((item.Quantity * item.Price).ToString("N0")) VNĐ</td>
+                    </tr>
+                }
+            }
+            else
             {
                 <tr>
-                    <td>@item.Product?.Name</td>
-                    <td>@item.Quantity</td>
-                    <td>@item.Price.ToString("N0") VNĐ</td>
-                    <td>@((item.Quantity * item.Price).ToString("N0")) VNĐ</td>
+                    <td colspan="5" class="text-center text-muted py-4">Không có sản phẩm nào trong đơn hàng này.</td>
                 </tr>
             }
-        }
-        else
-        {
-            <tr>
-                <td colspan="4">Không có sản phẩm nào trong đơn hàng.</td>
-            </tr>
-        }
-    </tbody>
-</table>
+        </tbody>
+    </table>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mt-4">
+    <a asp-page="./Orders" class="btn btn-outline-primary">
+        <i class="bi bi-arrow-left me-2"></i> Quay lại đơn mua
+    </a>
+</div>
+
+@section Scripts {
+}

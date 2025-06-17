@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace DOAN_LAPTRINHWEB.Areas.Identity.Pages.Account.Manage
 {
@@ -11,25 +12,28 @@ namespace DOAN_LAPTRINHWEB.Areas.Identity.Pages.Account.Manage
     {
         private readonly HomeStylesDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-
         public OrderDetailsModel(HomeStylesDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
-
         public Order Order { get; set; }
-
         public async Task<IActionResult> OnGetAsync(int id)
         {
             var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
             Order = await _context.Orders
-         .Include(o => o.OrderItems)
-             .ThenInclude(oi => oi.Product)
-         .FirstOrDefaultAsync(o => o.OrderId == id);
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Product)
+                        .ThenInclude(p => p.ProductImages)
+                .Include(o => o.User) 
+                .FirstOrDefaultAsync(o => o.OrderId == id && o.UserId == user.Id);
             if (Order == null)
             {
-                return NotFound();
+                return NotFound("Không tìm th?y ??n hàng.");
             }
 
             return Page();
