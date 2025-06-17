@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DOAN_LAPTRINHWEB")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4436dad25c102c916261fb7945340b9d3cd47c81")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3e7ee87e1977ace2bfaa51e4125c0951c42cf8c1")]
 [assembly: System.Reflection.AssemblyProductAttribute("DOAN_LAPTRINHWEB")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DOAN_LAPTRINHWEB")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

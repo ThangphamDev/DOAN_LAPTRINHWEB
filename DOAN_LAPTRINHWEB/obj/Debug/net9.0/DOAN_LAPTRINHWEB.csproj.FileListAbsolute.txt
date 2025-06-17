@@ -785,7 +785,6 @@ E:\LapTrinhWeb\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\obj\Debug\net9.0\compressed\v0z
 E:\LapTrinhWeb\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\obj\Debug\net9.0\compressed\yfc7ypekbg-mlv21k5csn.gz
 E:\LapTrinhWeb\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\obj\Debug\net9.0\compressed\73evhp1u1m-nkxk10snur.gz
 E:\LapTrinhWeb\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\obj\Debug\net9.0\compressed\ef6h2ss5yy-dhhw2c9odw.gz
-E:\LapTrinhWeb\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\obj\Debug\net9.0\compressed\p3ll3drabw-kjrephwfl1.gz
 E:\LapTrinhWeb\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\obj\Debug\net9.0\compressed\8sucojm49p-61n19gt1b8.gz
 E:\LapTrinhWeb\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\obj\Debug\net9.0\compressed\mlnhm1l93g-xwemmj8gdm.gz
 E:\LapTrinhWeb\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\obj\Debug\net9.0\compressed\k08zokmdij-xtxxf3hu2r.gz
@@ -863,3 +862,4 @@ E:\LapTrinhWeb\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\obj\Debug\net9.0\refint\DOAN_LA
 E:\LapTrinhWeb\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\obj\Debug\net9.0\DOAN_LAPTRINHWEB.pdb
 E:\LapTrinhWeb\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\obj\Debug\net9.0\DOAN_LAPTRINHWEB.genruntimeconfig.cache
 E:\LapTrinhWeb\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\obj\Debug\net9.0\ref\DOAN_LAPTRINHWEB.dll
+E:\LapTrinhWeb\DOAN_LAPTRINHWEB\DOAN_LAPTRINHWEB\obj\Debug\net9.0\compressed\p3ll3drabw-kjrephwfl1.gz
