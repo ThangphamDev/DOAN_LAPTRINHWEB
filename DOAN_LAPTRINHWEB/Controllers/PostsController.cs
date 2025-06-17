@@ -19,6 +19,36 @@ namespace DOAN_LAPTRINHWEB.Controllers
             _context = context;
             _userManager = userManager;
         }
+        // GET: Posts - Trang chủ bài viết (hiển thị bài viết đã được duyệt)
+        [AllowAnonymous]
+        public async Task<IActionResult> Index(int? postTypeId, int page = 1, int pageSize = 10)
+        {
+            var postsQuery = _context.Posts
+                .Include(p => p.User)
+                .Include(p => p.PostType)
+                .Where(p => p.ApprovalStatus == "Approved" && !p.IsDeleted);
+
+            // Lọc theo loại bài viết nếu có
+            if (postTypeId.HasValue)
+            {
+                postsQuery = postsQuery.Where(p => p.PostTypeId == postTypeId.Value);
+            }
+
+            var totalPosts = await postsQuery.CountAsync();
+            var posts = await postsQuery
+                .OrderByDescending(p => p.CreatedDate)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            ViewBag.PostTypes = await _context.PostTypes.ToListAsync();
+            ViewBag.CurrentPostTypeId = postTypeId;
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalPosts / pageSize);
+            ViewBag.PageSize = pageSize;
+
+            return View(posts);
+        }
 
         // GET: Posts/MyPosts - Danh sách bài viết của người dùng hiện tại có lọc
         public async Task<IActionResult> MyPosts(string statusFilter)
