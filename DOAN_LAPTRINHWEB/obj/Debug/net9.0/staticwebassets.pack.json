@@ -1,0 +1,501 @@
+{
+  "Files": [
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\obj\\Debug\\net9.0\\scopedcss\\projectbundle\\DOAN_LAPTRINHWEB.bundle.scp.css",
+      "PackagePath": "staticwebassets\\DOAN_LAPTRINHWEB.lke6018v67.bundle.scp.css"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\css\\admin.css",
+      "PackagePath": "staticwebassets\\css\\admin.css"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\css\\custom.css",
+      "PackagePath": "staticwebassets\\css\\custom.css"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\css\\site.css",
+      "PackagePath": "staticwebassets\\css\\site.css"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\favicon.ico",
+      "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\3e511c07-dcc8-4bf7-b938-eaaa7a823fbf_Groth.jpg",
+      "PackagePath": "staticwebassets\\images\\3e511c07-dcc8-4bf7-b938-eaaa7a823fbf_Groth.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\avatars\\3e511c07-dcc8-4bf7-b938-eaaa7a823fbf_Groth.jpg",
+      "PackagePath": "staticwebassets\\images\\avatars\\3e511c07-dcc8-4bf7-b938-eaaa7a823fbf_Groth.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\avatars\\5daf30da-0cbd-4741-bb6e-e6bc7fe79a03.png",
+      "PackagePath": "staticwebassets\\images\\avatars\\5daf30da-0cbd-4741-bb6e-e6bc7fe79a03.png"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\dashboad\\banner.png",
+      "PackagePath": "staticwebassets\\images\\dashboad\\banner.png"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\dashboad\\banner2.png",
+      "PackagePath": "staticwebassets\\images\\dashboad\\banner2.png"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\dashboad\\bed.png",
+      "PackagePath": "staticwebassets\\images\\dashboad\\bed.png"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\dashboad\\clock.jpg",
+      "PackagePath": "staticwebassets\\images\\dashboad\\clock.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\dashboad\\lamp.png",
+      "PackagePath": "staticwebassets\\images\\dashboad\\lamp.png"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\dashboad\\lamp_minima.png",
+      "PackagePath": "staticwebassets\\images\\dashboad\\lamp_minima.png"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\dashboad\\lamp_minima2.png",
+      "PackagePath": "staticwebassets\\images\\dashboad\\lamp_minima2.png"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\dashboad\\picture.png",
+      "PackagePath": "staticwebassets\\images\\dashboad\\picture.png"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\dashboad\\room.png",
+      "PackagePath": "staticwebassets\\images\\dashboad\\room.png"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\dashboad\\sock.png",
+      "PackagePath": "staticwebassets\\images\\dashboad\\sock.png"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\dashboad\\sofa.png",
+      "PackagePath": "staticwebassets\\images\\dashboad\\sofa.png"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\dashboad\\wall.png",
+      "PackagePath": "staticwebassets\\images\\dashboad\\wall.png"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\10\\7b0b21e6-84d1-47e6-98a9-50d47cdd66ca.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\10\\7b0b21e6-84d1-47e6-98a9-50d47cdd66ca.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\10\\94242719-5261-4e35-a158-64ce5ab3d0ef.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\10\\94242719-5261-4e35-a158-64ce5ab3d0ef.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\10\\d61d7c32-309e-43c6-814d-cbf28bf28156.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\10\\d61d7c32-309e-43c6-814d-cbf28bf28156.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\11\\c4561283-2a14-4fd4-9561-81359916f17a.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\11\\c4561283-2a14-4fd4-9561-81359916f17a.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\11\\c83a80d0-13f0-4d88-857a-19f6fa6d1721.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\11\\c83a80d0-13f0-4d88-857a-19f6fa6d1721.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\11\\e5a9f04a-2cd4-4825-b1e4-5d74e743cadc.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\11\\e5a9f04a-2cd4-4825-b1e4-5d74e743cadc.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\12\\09b0f78b-1455-4543-a135-8f70e0428f03.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\12\\09b0f78b-1455-4543-a135-8f70e0428f03.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\12\\2b88f80e-5979-4807-b2fa-0d61d1468b9a.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\12\\2b88f80e-5979-4807-b2fa-0d61d1468b9a.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\12\\bcd3c922-3d3b-4b4c-8ad0-1563a8dba6b2.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\12\\bcd3c922-3d3b-4b4c-8ad0-1563a8dba6b2.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\13\\31dfc5a1-da62-4cc6-9d7a-62278479941a.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\13\\31dfc5a1-da62-4cc6-9d7a-62278479941a.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\13\\aeda09f1-435a-46ca-ad08-4a259c54cca4.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\13\\aeda09f1-435a-46ca-ad08-4a259c54cca4.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\13\\ea5ad331-f6e9-41d9-bdfc-541e3bd48b28.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\13\\ea5ad331-f6e9-41d9-bdfc-541e3bd48b28.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\14\\01c52a32-bcc2-4cbb-9420-528393fa61db.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\14\\01c52a32-bcc2-4cbb-9420-528393fa61db.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\14\\bd544d57-17be-44a9-8eb1-f5759995441c.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\14\\bd544d57-17be-44a9-8eb1-f5759995441c.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\14\\d3e630b8-70a1-4293-86a7-5d65f2cd9b39.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\14\\d3e630b8-70a1-4293-86a7-5d65f2cd9b39.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\14\\db624912-0a46-4ed8-91ac-32862f430085.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\14\\db624912-0a46-4ed8-91ac-32862f430085.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\15\\127871a8-438b-4502-baed-aa9b9f111215.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\15\\127871a8-438b-4502-baed-aa9b9f111215.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\15\\a26b09cd-9a27-4bd3-8ff7-5c776b79263f.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\15\\a26b09cd-9a27-4bd3-8ff7-5c776b79263f.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\15\\c7728280-cfd1-4534-a02b-9ef5abc2b217.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\15\\c7728280-cfd1-4534-a02b-9ef5abc2b217.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\1\\dc77df46-53cb-49dd-b0ca-c93f02b0a263.png",
+      "PackagePath": "staticwebassets\\images\\products\\1\\dc77df46-53cb-49dd-b0ca-c93f02b0a263.png"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\1\\f3b6c4dd-cfc8-4fdc-9f27-c0e954ef3cc8.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\1\\f3b6c4dd-cfc8-4fdc-9f27-c0e954ef3cc8.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\2\\8426f73e-23bb-40c6-8c34-3ed1a04323c0.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\2\\8426f73e-23bb-40c6-8c34-3ed1a04323c0.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\3\\279bf334-e302-4ced-b9ac-e540dae01ee3.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\3\\279bf334-e302-4ced-b9ac-e540dae01ee3.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\3\\40f076ec-65c6-4a45-bc04-ec8266465a3c.png",
+      "PackagePath": "staticwebassets\\images\\products\\3\\40f076ec-65c6-4a45-bc04-ec8266465a3c.png"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\3\\7a8b5df2-fee4-457b-906e-3728b11bf689.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\3\\7a8b5df2-fee4-457b-906e-3728b11bf689.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\3\\a7435ccd-1aa5-4a94-8c41-42b8194a1ec6.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\3\\a7435ccd-1aa5-4a94-8c41-42b8194a1ec6.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\4\\03b994da-198a-4f20-96a8-30ac3fef887a.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\4\\03b994da-198a-4f20-96a8-30ac3fef887a.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\4\\319e6bb2-bb1f-4e09-99ad-f9669908b8ff.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\4\\319e6bb2-bb1f-4e09-99ad-f9669908b8ff.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\4\\66765097-10e4-4bb0-949a-dc70a334e1df.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\4\\66765097-10e4-4bb0-949a-dc70a334e1df.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\4\\88328709-1f40-4f52-8ff0-7765e244f19f.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\4\\88328709-1f40-4f52-8ff0-7765e244f19f.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\4\\b5aa97e5-c551-4c45-acd3-ac80be87c199.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\4\\b5aa97e5-c551-4c45-acd3-ac80be87c199.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\4\\b62b3829-52e1-41df-9cb3-3896efdf28f6.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\4\\b62b3829-52e1-41df-9cb3-3896efdf28f6.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\7\\20a59afd-7bcc-4b06-be17-fee665f96830.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\7\\20a59afd-7bcc-4b06-be17-fee665f96830.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\8\\54cf24f3-1241-4054-b544-2622d162309e.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\8\\54cf24f3-1241-4054-b544-2622d162309e.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\8\\7ef41eb6-64f6-4e06-a443-882dcbf223a1.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\8\\7ef41eb6-64f6-4e06-a443-882dcbf223a1.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\8\\92c383d1-9676-4379-8d83-d01089ffc5a3.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\8\\92c383d1-9676-4379-8d83-d01089ffc5a3.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\8\\bafe79d3-30d0-4328-85a1-6e0128ce1bae.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\8\\bafe79d3-30d0-4328-85a1-6e0128ce1bae.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\9\\0fd5e7ba-314d-4d54-a6f5-377eb1e13623.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\9\\0fd5e7ba-314d-4d54-a6f5-377eb1e13623.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\9\\2b7468c6-dcfe-405e-8f4c-b79a523d3518.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\9\\2b7468c6-dcfe-405e-8f4c-b79a523d3518.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\images\\products\\9\\e4373086-5207-4040-a554-e9126d194ec0.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\9\\e4373086-5207-4040-a554-e9126d194ec0.jpg"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\js\\admin.js",
+      "PackagePath": "staticwebassets\\js\\admin.js"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\js\\site.js",
+      "PackagePath": "staticwebassets\\js\\site.js"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\LICENSE",
+      "PackagePath": "staticwebassets\\lib\\bootstrap"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css.map"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js.map"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\jquery-validation-unobtrusive\\LICENSE.txt",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\LICENSE.txt"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\jquery-validation\\LICENSE.md",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\LICENSE.md"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.js"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.min.js"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.js"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.min.js"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\jquery\\LICENSE.txt",
+      "PackagePath": "staticwebassets\\lib\\jquery\\LICENSE.txt"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\jquery\\dist\\jquery.js",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.js"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\jquery\\dist\\jquery.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.js"
+    },
+    {
+      "Id": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.DOAN_LAPTRINHWEB.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.DOAN_LAPTRINHWEB.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.build.DOAN_LAPTRINHWEB.props",
+      "PackagePath": "build\\DOAN_LAPTRINHWEB.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.buildMultiTargeting.DOAN_LAPTRINHWEB.props",
+      "PackagePath": "buildMultiTargeting\\DOAN_LAPTRINHWEB.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.buildTransitive.DOAN_LAPTRINHWEB.props",
+      "PackagePath": "buildTransitive\\DOAN_LAPTRINHWEB.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

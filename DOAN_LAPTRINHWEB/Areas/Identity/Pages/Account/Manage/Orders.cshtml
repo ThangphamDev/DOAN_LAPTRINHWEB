@@ -2,37 +2,44 @@
 @model DOAN_LAPTRINHWEB.Areas.Identity.Pages.Account.Manage.OrdersModel
 @{
     ViewData["Title"] = "Đơn mua";
+    ViewData["ActivePage"] = ManageNavPages.Orders; 
 }
 
-<h2>Đơn mua của bạn</h2>
+<h2 class="text-primary fw-bold text-center mb-4">Đơn mua của bạn</h2>
 
 @if (Model.UserOrders == null || !Model.UserOrders.Any())
 {
-    <p>Bạn chưa có đơn hàng nào.</p>
+    <div class="alert alert-info text-center" role="alert">
+        Bạn chưa có đơn hàng nào.
+    </div>
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Ngày đặt</th>
-                <th>Tổng tiền</th>
-                <th>Trạng thái</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var order in Model.UserOrders)
-            {
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered align-middle">
+            <thead class="table-light">
                 <tr>
-                    <td>@order.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
-                    <td>@String.Format("{0:N0} VNĐ", order.TotalAmount)</td>
-                    <td>@order.OrderStatus</td>
-                    <td>
-                        <a asp-page="/Account/Manage/OrderDetails" asp-route-id="@order.OrderId" class="btn btn-sm btn-info">Chi tiết</a>
-                    </td>
+                    <th scope="col">Ngày đặt</th>
+                    <th scope="col" class="text-end">Tổng tiền</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col" class="text-center"></th> 
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var order in Model.UserOrders)
+                {
+                    <tr>
+                        <td>@order.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td class="text-end text-danger fw-bold">@String.Format("{0:N0} VNĐ", order.TotalAmount)</td>
+                        <td>@order.OrderStatus</td>
+                        <td class="text-center">
+                            <a asp-page="./OrderDetails" asp-route-id="@order.OrderId" class="btn btn-info btn-sm text-white">Chi tiết</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
+
+

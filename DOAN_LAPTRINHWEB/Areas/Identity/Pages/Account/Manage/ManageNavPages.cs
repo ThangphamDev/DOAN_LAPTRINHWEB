@@ -5,7 +5,7 @@
 using System;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace  DOAN_LAPTRINHWEB.Areas.Identity.Pages.Account.Manage
+namespace DOAN_LAPTRINHWEB.Areas.Identity.Pages.Account.Manage
 {
     /// <summary>
     ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -66,7 +66,10 @@ namespace  DOAN_LAPTRINHWEB.Areas.Identity.Pages.Account.Manage
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         public static string Orders => "Orders";
-        public static string OrdersNavClass(ViewContext viewContext) => PageNavClass(viewContext, Orders);
+
+        // Đã thêm hằng số Addresses ở đây
+        public static string Addresses => "Addresses";
+
         public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
 
         /// <summary>
@@ -111,6 +114,12 @@ namespace  DOAN_LAPTRINHWEB.Areas.Identity.Pages.Account.Manage
         /// </summary>
         public static string TwoFactorAuthenticationNavClass(ViewContext viewContext) => PageNavClass(viewContext, TwoFactorAuthentication);
 
+        // Đã thêm phương thức OrdersNavClass ở đây (nếu chưa có)
+        public static string OrdersNavClass(ViewContext viewContext) => PageNavClass(viewContext, Orders);
+
+        // THÊM PHƯƠNG THỨC NÀY ĐỂ KHẮC PHỤC LỖI "AddressesNavClass"
+        public static string AddressesNavClass(ViewContext viewContext) => PageNavClass(viewContext, Addresses);
+
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
@@ -118,7 +127,7 @@ namespace  DOAN_LAPTRINHWEB.Areas.Identity.Pages.Account.Manage
         public static string PageNavClass(ViewContext viewContext, string page)
         {
             var activePage = viewContext.ViewData["ActivePage"] as string
-                ?? System.IO.Path.GetFileNameWithoutExtension(viewContext.ActionDescriptor.DisplayName);
+                                ?? System.IO.Path.GetFileNameWithoutExtension(viewContext.ActionDescriptor.DisplayName);
             return string.Equals(activePage, page, StringComparison.OrdinalIgnoreCase) ? "active" : null;
         }
     }

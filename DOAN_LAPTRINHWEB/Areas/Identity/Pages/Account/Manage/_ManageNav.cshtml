@@ -1,22 +1,75 @@
-﻿@inject SignInManager<ApplicationUser> SignInManager
+﻿@using Microsoft.AspNetCore.Identity
+@using DOAN_LAPTRINHWEB.Models 
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
 @{
+    var user = await UserManager.GetUserAsync(User);
+    var avatarUrl = user?.AvatarUrl; 
+    var email = await UserManager.GetEmailAsync(user);
+    var fullName = user?.FullName ?? UserManager.GetUserName(User);
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }
-<ul class="nav nav-pills flex-column">
-    <li class="nav-item"><a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Profile</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">Email</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">Password</a></li>
+
+<div class="list-group list-group-flush">
+    <div class="text-center mb-3 py-3 border-bottom">
+        @if (!string.IsNullOrEmpty(avatarUrl))
+        {
+            <img src="@Url.Content(avatarUrl)"
+                 alt="Ảnh đại diện"
+                 class="rounded-circle mb-2"
+                 style="width: 80px; height: 80px; object-fit: cover;">
+        }
+        else
+        {
+            <img src="~/images/avatars/default-avatar.png"
+                 class="rounded-circle mb-2"
+                 alt="Avatar mặc định"
+                 style="width: 80px; height: 80px; object-fit: cover;">
+        }
+        <p class="mb-0 fw-bold">@fullName</p>
+        @if (!string.IsNullOrEmpty(email))
+        {
+            <p class="mb-0 text-muted small">@email</p>
+        }
+    </div>
+
+    <a class="list-group-item list-group-item-action @ManageNavPages.IndexNavClass(ViewContext)" asp-page="./Index">
+        <i class="bi bi-person-fill me-2"></i> Hồ sơ
+    </a>
+    <a class="list-group-item list-group-item-action @ManageNavPages.EmailNavClass(ViewContext)" asp-page="./Email">
+        <i class="bi bi-envelope-fill me-2"></i> Email
+    </a>
+    <a class="list-group-item list-group-item-action @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password-link" asp-page="./ChangePassword">
+        <i class="bi bi-key-fill me-2"></i> Đổi mật khẩu
+    </a>
+    @if (await UserManager.GetTwoFactorEnabledAsync(user))
+    {
+        <a class="list-group-item list-group-item-action @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor-link" asp-page="./TwoFactorAuthentication">
+            <i class="bi bi-shield-lock-fill me-2"></i> Xác thực 2 yếu tố
+        </a>
+    }
     @if (hasExternalLogins)
     {
-        <li id="external-logins" class="nav-item"><a id="external-login" class="nav-link @ManageNavPages.ExternalLoginsNavClass(ViewContext)" asp-page="./ExternalLogins">External logins</a></li>
-    }
-    <li class="nav-item"><a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor" asp-page="./TwoFactorAuthentication">Two-factor authentication</a></li>
-
-    <li class="nav-item">
-        <a class="nav-link @ManageNavPages.OrdersNavClass(ViewContext)" id="orders" asp-page="./Orders">
-            <i class="bi bi-box-seam me-2"></i>Lịch sử đơn hàng
+        <a class="list-group-item list-group-item-action @ManageNavPages.ExternalLoginsNavClass(ViewContext)" id="external-logins" asp-page="./ExternalLogins">
+            <i class="bi bi-box-arrow-in-right me-2"></i> Đăng nhập bên ngoài
         </a>
-    </li>
+    }
+    <a class="list-group-item list-group-item-action @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">
+        <i class="bi bi-file-earmark-person-fill me-2"></i> Dữ liệu cá nhân
+    </a>
 
-    <li class="nav-item"><a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">Personal data</a></li>
-</ul>
+    <a class="list-group-item list-group-item-action @ManageNavPages.OrdersNavClass(ViewContext)" asp-page="./Orders">
+        <i class="bi bi-box-seam-fill me-2"></i> Đơn mua
+    </a>
+
+    <a class="list-group-item list-group-item-action @ManageNavPages.AddressesNavClass(ViewContext)" asp-page="./Addresses">
+        <i class="bi bi-geo-alt-fill me-2"></i> Địa chỉ
+    </a>
+
+    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post" class="d-grid mt-3 px-3 pb-3">
+        <button type="submit" class="btn btn-danger btn-sm">
+            <i class="bi bi-box-arrow-right me-2"></i> Đăng xuất
+        </button>
+    </form>
+</div>
