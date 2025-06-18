@@ -1,49 +1,1048 @@
 ﻿@model IEnumerable<DOAN_LAPTRINHWEB.Models.Post>
+
 @{
     ViewData["Title"] = "Bài viết của tôi";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-4">
-    <h2>@ViewData["Title"]</h2>
-    <div class="row mb-4 align-items-center">
-        <!-- Cột bên trái: Bộ lọc -->
-        <div class="col-auto">
-            <form method="get" asp-action="MyPosts">
-                <div class="input-group">
-                    <label for="statusFilter" class="input-group-text">Lọc theo trạng thái:</label>
-                    <select id="statusFilter" name="status" class="form-select">
-                        <option value="">Tất cả</option>
-                        <option value="Approved">Đã duyệt</option>
-                        <option value="Rejected">Bị từ chối</option>
-                        <option value="Pending">Chờ duyệt</option>
-                    </select>
-                </div>
-            </form>
-        </div>
-
-        <!-- Cột bên phải: Nút tạo bài viết -->
-        <div class="col text-end">
-            <a asp-controller="Posts" asp-action="Create" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> Tạo bài viết
-            </a>
+<div class="fb-layout-container">
+    <!-- Left sidebar -->
+    <div class="fb-sidebar left-sidebar">
+        <div class="fb-sidebar-content">
+            <div class="fb-profile-section">
+                <a asp-action="Index" class="fb-menu-item">
+                    <div class="fb-menu-icon">
+                        <i class="fas fa-newspaper"></i>
+                    </div>
+                    <div class="fb-menu-text">Blog HomeStyle</div>
+                </a>
+                <div class="fb-menu-subtitle">Quản lý bài viết</div>
+                <a asp-action="MyPosts" class="fb-menu-item active">
+                    <div class="fb-menu-icon">
+                        <i class="fas fa-user-edit"></i>
+                    </div>
+                    <div class="fb-menu-text">Bài viết của tôi</div>
+                </a>
+                <a asp-action="Create" class="fb-menu-item">
+                    <div class="fb-menu-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <div class="fb-menu-text">Tạo bài viết mới</div>
+                </a>
+            </div>
         </div>
     </div>
 
-    <div id="postList">
-        @await Html.PartialAsync("_PostListPartial", Model)
+    <!-- Main content -->
+    <div class="fb-main-feed">
+        <!-- Header section -->
+        <div class="fb-page-header">
+            <div class="fb-page-title">
+                <h2><i class="fas fa-user-edit me-2"></i>@ViewData["Title"]</h2>
+            </div>
+        </div>
+
+        <!-- Filter and Create button section -->
+        <div class="fb-filter-section">
+            <div class="row align-items-center">
+                <!-- Filter section -->
+                <div class="col-md-6">
+                    <form method="get" asp-action="MyPosts" class="fb-filter-form">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-filter"></i>
+                            </span>
+                            <select id="statusFilter" name="statusFilter" class="form-select" onchange="filterPosts()">
+                                <option value="">Tất cả trạng thái</option>
+                                @{
+                                    var currentFilter = ViewBag.StatusFilter?.ToString();
+                                }
+                                <option value="Approved" selected="@(currentFilter == "Approved")">
+                                    Đã duyệt
+                                </option>
+                                <option value="Pending" selected="@(currentFilter == "Pending")">
+                                    Chờ duyệt
+                                </option>
+                                <option value="Rejected" selected="@(currentFilter == "Rejected")">
+                                    Bị từ chối
+                                </option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Create button section -->
+                <div class="col-md-6 text-end">
+                    <a asp-controller="Posts" asp-action="Create" class="btn btn-primary fb-create-btn">
+                        <i class="fas fa-plus-circle me-2"></i>Tạo bài viết mới
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Posts list -->
+        <div id="postList" class="fb-posts-container">
+            @if (Model.Any())
+            {
+                @foreach (var post in Model)
+                {
+                    <div class="fb-post-card mb-3">
+                        <div class="fb-post-header">
+                            <div class="fb-post-user">
+                                <div class="fb-post-info">
+                                    <div class="fb-post-title">
+                                        <a href="@Url.Action("Details", new { id = post.Id })">@post.Title</a>
+                                    </div>
+                                    <div class="fb-post-meta">
+                                        <span><i class="fas fa-calendar-alt me-1"></i>@post.CreatedDate.ToString("dd/MM/yyyy HH:mm")</span>
+                                        <span class="post-category-badge">@post.PostType.Name</span>
+                                        <span class="post-status-badge status-@post.ApprovalStatus.ToLower()">
+                                            @switch (post.ApprovalStatus)
+                                            {
+                                                case "Approved":
+                                                    <i class="fas fa-check-circle me-1"></i><span>Đã duyệt</span>
+                                                    break;
+                                                case "Pending":
+                                                    <i class="fas fa-clock me-1"></i><span>Chờ duyệt</span>
+                                                    break;
+                                                case "Rejected":
+                                                    <i class="fas fa-times-circle me-1"></i><span>Bị từ chối</span>
+                                                    break;
+                                            }
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="fb-post-actions">
+                                <div class="dropdown">
+                                    <button class="fb-post-action" type="button" data-bs-toggle="dropdown">
+                                        <i class="fas fa-ellipsis-h"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="@Url.Action("Edit", new { id = post.Id })">
+                                            <i class="fas fa-edit me-2"></i>Chỉnh sửa
+                                        </a></li>
+                                        <li><a class="dropdown-item" href="@Url.Action("Details", new { id = post.Id })">
+                                            <i class="fas fa-eye me-2"></i>Xem chi tiết
+                                        </a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item text-danger" href="@Url.Action("Delete", new { id = post.Id })">
+                                            <i class="fas fa-trash me-2"></i>Xóa
+                                        </a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="fb-post-content">
+                            <div class="fb-post-text">
+                                @{
+                                    var plainText = System.Text.RegularExpressions.Regex.Replace(post.Content, "<.*?>", "");
+                                    var truncatedText = plainText.Length > 150 ? plainText.Substring(0, 150) + "..." : plainText;
+                                }
+                                @truncatedText
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(post.ImageUrls))
+                        {
+                            var firstImage = post.ImageUrls.Split(',').FirstOrDefault()?.Trim();
+                            if (!string.IsNullOrEmpty(firstImage))
+                            {
+                                <div class="fb-post-media">
+                                    @if (!firstImage.StartsWith("http") && !firstImage.StartsWith("/"))
+                                    {
+                                        <img src="/@firstImage" alt="@post.Title" class="post-thumbnail">
+                                    }
+                                    else
+                                    {
+                                        <img src="@firstImage" alt="@post.Title" class="post-thumbnail">
+                                    }
+                                </div>
+                            }
+                        }
+
+                        @if (post.ApprovalStatus == "Rejected" && !string.IsNullOrEmpty(post.ApprovalComment))
+                        {
+                            <div class="rejection-reason">
+                                <div class="alert alert-danger mb-0">
+                                    <strong><i class="fas fa-exclamation-triangle me-2"></i>Lý do từ chối:</strong>
+                                    <p class="mb-0 mt-2">@post.ApprovalComment</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="fb-empty-state">
+                    <div class="fb-empty-icon">
+                        <i class="fas fa-newspaper"></i>
+                    </div>
+                    <h4>Chưa có bài viết nào</h4>
+                    <p>
+                        @if (!string.IsNullOrEmpty(ViewBag.StatusFilter?.ToString()))
+                        {
+                            <span>Không có bài viết nào với trạng thái này.</span>
+                        }
+                        else
+                        {
+                            <span>Bạn chưa tạo bài viết nào. Hãy bắt đầu chia sẻ những ý tưởng của bạn!</span>
+                        }
+                    </p>
+                    <a asp-action="Create" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i> Tạo bài viết đầu tiên
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Right sidebar (optional stats) -->
+    <div class="fb-sidebar right-sidebar">
+        <div class="fb-sidebar-content">
+            <div class="fb-stats-card">
+                <h5 class="fb-sidebar-title">Thống kê của bạn</h5>
+                <div class="fb-stat-item">
+                    <div class="fb-stat-icon">
+                        <i class="fas fa-newspaper text-primary"></i>
+                    </div>
+                    <div class="fb-stat-info">
+                        <div class="fb-stat-number">@Model.Count()</div>
+                        <div class="fb-stat-label">Tổng bài viết</div>
+                    </div>
+                </div>
+                <div class="fb-stat-item">
+                    <div class="fb-stat-icon">
+                        <i class="fas fa-check-circle text-success"></i>
+                    </div>
+                    <div class="fb-stat-info">
+                        <div class="fb-stat-number">@Model.Count(p => p.ApprovalStatus == "Approved")</div>
+                        <div class="fb-stat-label">Đã duyệt</div>
+                    </div>
+                </div>
+                <div class="fb-stat-item">
+                    <div class="fb-stat-icon">
+                        <i class="fas fa-clock text-warning"></i>
+                    </div>
+                    <div class="fb-stat-info">
+                        <div class="fb-stat-number">@Model.Count(p => p.ApprovalStatus == "Pending")</div>
+                        <div class="fb-stat-label">Chờ duyệt</div>
+                    </div>
+                </div>
+                <div class="fb-stat-item">
+                    <div class="fb-stat-icon">
+                        <i class="fas fa-times-circle text-danger"></i>
+                    </div>
+                    <div class="fb-stat-info">
+                        <div class="fb-stat-number">@Model.Count(p => p.ApprovalStatus == "Rejected")</div>
+                        <div class="fb-stat-label">Bị từ chối</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<style>
+    /* CSS giống như trước nhưng thêm styles cho post cards */
+    :root {
+        --fb-bg: #f0f2f5;
+        --fb-card-bg: #ffffff;
+        --fb-primary-text: #1c1e21;
+        --fb-secondary-text: #65676b;
+        --fb-hover-bg: #f2f2f2;
+        --fb-active-bg: #e7f3ff;
+        --fb-active-color: #1877f2;
+        --fb-border: #e4e6eb;
+        --fb-primary-button: #1877f2;
+        --fb-icon-bg: #e4e6eb;
+        --fb-divider: #ced0d4;
+    }
+
+    body {
+        background-color: var(--fb-bg) !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    .fb-layout-container {
+        display: flex;
+        max-width: 1920px;
+        margin: 0 auto;
+        padding-top: 20px;
+        position: relative;
+    }
+
+    .fb-sidebar {
+        width: 360px;
+        height: calc(100vh - 100px);
+        position: sticky;
+        top: 80px;
+        overflow-y: auto;
+    }
+
+    .left-sidebar {
+        padding-right: 15px;
+    }
+
+    .right-sidebar {
+        padding-left: 15px;
+    }
+
+    .fb-sidebar-content {
+        padding: 0 8px;
+    }
+
+    .fb-main-feed {
+        flex: 1;
+        max-width: 680px;
+        margin: 0 auto;
+    }
+
+    .fb-menu-item {
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 10px;
+        text-decoration: none;
+        color: var(--fb-primary-text);
+        margin-bottom: 5px;
+        transition: all 0.2s ease;
+    }
+
+    .fb-menu-item:hover {
+        background-color: var(--fb-hover-bg);
+        color: var(--fb-primary-text);
+    }
+
+    .fb-menu-item.active {
+        background-color: var(--fb-active-bg);
+        color: var(--fb-active-color);
+        font-weight: 500;
+    }
+
+    .fb-menu-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: var(--fb-icon-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+    }
+
+    .fb-menu-item.active .fb-menu-icon {
+        background-color: #d4e5f9;
+    }
+
+    .fb-menu-text {
+        font-size: 15px;
+        font-weight: 500;
+    }
+
+        .fb-menu-subtitle {
+        color: var(--fb-secondary-text);
+        font-weight: 600;
+        padding: 10px 12px 8px;
+        font-size: 17px;
+    }
+
+    .fb-page-header {
+        background-color: var(--fb-card-bg);
+        border-radius: 8px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-bottom: 16px;
+    }
+
+    .fb-page-title h2 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--fb-primary-text);
+        display: flex;
+        align-items: center;
+    }
+
+    .fb-filter-section {
+        background-color: var(--fb-card-bg);
+        border-radius: 8px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+
+    .fb-filter-form .input-group-text {
+        background-color: var(--fb-icon-bg);
+        border-color: var(--fb-border);
+        color: var(--fb-secondary-text);
+    }
+
+    .fb-filter-form .form-select {
+        border-color: var(--fb-border);
+        font-size: 15px;
+    }
+
+    .fb-filter-form .form-select:focus {
+        border-color: var(--fb-active-color);
+        box-shadow: 0 0 0 0.2rem rgba(24, 119, 242, 0.25);
+    }
+
+    .fb-create-btn {
+        background-color: var(--fb-primary-button);
+        border-color: var(--fb-primary-button);
+        font-weight: 600;
+        padding: 10px 20px;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+    }
+
+    .fb-create-btn:hover {
+        background-color: #166fe5;
+        border-color: #166fe5;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Post card styles */
+    .fb-post-card {
+        background-color: var(--fb-card-bg);
+        border-radius: 8px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        margin-bottom: 16px;
+        overflow: hidden;
+    }
+
+    .fb-post-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 16px;
+        border-bottom: 1px solid var(--fb-border);
+    }
+
+    .fb-post-user {
+        flex: 1;
+    }
+
+    .fb-post-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .fb-post-title {
+        margin-bottom: 8px;
+    }
+
+    .fb-post-title a {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--fb-primary-text);
+        text-decoration: none;
+        line-height: 1.3;
+    }
+
+    .fb-post-title a:hover {
+        color: var(--fb-active-color);
+        text-decoration: underline;
+    }
+
+    .fb-post-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--fb-secondary-text);
+        align-items: center;
+    }
+
+    .post-category-badge {
+        background-color: var(--fb-icon-bg);
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .post-status-badge {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .status-approved {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .status-pending {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    .status-rejected {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .fb-post-actions {
+        display: flex;
+        align-items: center;
+    }
+
+    .fb-post-action {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        background-color: transparent;
+        border: none;
+        color: var(--fb-secondary-text);
+        transition: background-color 0.2s;
+    }
+
+    .fb-post-action:hover {
+        background-color: var(--fb-hover-bg);
+    }
+
+    .fb-post-content {
+        padding: 16px;
+    }
+
+    .fb-post-text {
+        font-size: 15px;
+        color: var(--fb-primary-text);
+        line-height: 1.4;
+        margin-bottom: 12px;
+    }
+
+    .fb-post-media {
+        padding: 0 16px 16px;
+    }
+
+    .post-thumbnail {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+    }
+
+    .post-thumbnail:hover {
+        transform: scale(1.02);
+    }
+
+    .rejection-reason {
+        padding: 0 16px 16px;
+    }
+
+    .rejection-reason .alert {
+        border-radius: 8px;
+        font-size: 14px;
+    }
+
+    /* Dropdown styles */
+    .dropdown-menu {
+        border: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        border-radius: 8px;
+        padding: 8px 0;
+    }
+
+    .dropdown-item {
+        padding: 8px 16px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        transition: background-color 0.2s;
+    }
+
+    .dropdown-item:hover {
+        background-color: var(--fb-hover-bg);
+    }
+
+    .dropdown-item.text-danger:hover {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    /* Stats card */
+    .fb-stats-card {
+        background-color: var(--fb-card-bg);
+        border-radius: 8px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+
+    .fb-sidebar-title {
+        color: var(--fb-secondary-text);
+        font-size: 17px;
+        font-weight: 600;
+        margin-bottom: 16px;
+    }
+
+    .fb-stat-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--fb-border);
+        transition: all 0.2s ease;
+    }
+
+    .fb-stat-item:last-child {
+        border-bottom: none;
+    }
+
+    .fb-stat-item:hover {
+        background-color: var(--fb-hover-bg);
+        border-radius: 8px;
+        margin: 0 -8px;
+        padding: 12px 8px;
+        cursor: pointer;
+    }
+
+    .fb-stat-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: var(--fb-icon-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+        font-size: 16px;
+    }
+
+    .fb-stat-info {
+        flex: 1;
+    }
+
+    .fb-stat-number {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--fb-primary-text);
+        line-height: 1.2;
+    }
+
+    .fb-stat-label {
+        font-size: 13px;
+        color: var(--fb-secondary-text);
+        line-height: 1.2;
+    }
+
+    /* Empty state */
+    .fb-empty-state {
+        background-color: var(--fb-card-bg);
+        border-radius: 8px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        padding: 40px 20px;
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .fb-empty-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background-color: var(--fb-icon-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 2rem;
+        color: var(--fb-secondary-text);
+    }
+
+    .fb-empty-state h4 {
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--fb-primary-text);
+    }
+
+    .fb-empty-state p {
+        color: var(--fb-secondary-text);
+        margin-bottom: 20px;
+    }
+
+    /* Loading state */
+    .fb-loading {
+        text-align: center;
+        padding: 40px 20px;
+        background-color: var(--fb-card-bg);
+        border-radius: 8px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .fb-loading .spinner-border {
+        color: var(--fb-active-color);
+    }
+
+    /* Responsive design */
+   @@media (max-width: 1200px) {
+        .fb-sidebar {
+            width: 280px;
+        }
+
+        .fb-main-feed {
+            max-width: 600px;
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .right-sidebar {
+            display: none;
+        }
+
+        .fb-main-feed {
+            margin-right: 0;
+        }
+
+        .fb-filter-section .row {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .fb-filter-section .col-md-6 {
+            width: 100%;
+        }
+
+        .fb-filter-section .text-end {
+            text-align: center !important;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .fb-layout-container {
+            flex-direction: column;
+            padding-top: 10px;
+        }
+
+        .left-sidebar {
+            display: none;
+        }
+
+        .fb-main-feed {
+            width: 100%;
+            max-width: none;
+            padding: 0 10px;
+        }
+
+        .fb-page-header {
+            border-radius: 0;
+            margin-bottom: 8px;
+        }
+
+        .fb-filter-section {
+            border-radius: 0;
+            margin-bottom: 8px;
+        }
+
+        .fb-page-title h2 {
+            font-size: 20px;
+        }
+
+        .fb-create-btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .fb-post-card {
+            border-radius: 0;
+            margin-bottom: 8px;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .fb-page-header {
+            padding: 15px;
+        }
+
+        .fb-filter-section {
+            padding: 12px;
+        }
+
+        .fb-page-title h2 {
+            font-size: 18px;
+        }
+
+        .fb-create-btn {
+            padding: 12px 16px;
+            font-size: 14px;
+        }
+
+        .fb-post-header {
+            padding: 12px;
+        }
+
+        .fb-post-content {
+            padding: 12px;
+        }
+
+        .fb-post-media {
+            padding: 0 12px 12px;
+        }
+
+        .fb-post-title a {
+            font-size: 16px;
+        }
+
+        .fb-post-text {
+            font-size: 14px;
+        }
+    }
+
+    /* Animation effects */
+    .fb-filter-section,
+    .fb-page-header,
+    .fb-stats-card,
+    .fb-post-card {
+        animation: fadeInUp 0.3s ease-out;
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Custom scrollbar */
+    .fb-sidebar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .fb-sidebar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .fb-sidebar::-webkit-scrollbar-thumb {
+        background: var(--fb-border);
+        border-radius: 3px;
+    }
+
+    .fb-sidebar::-webkit-scrollbar-thumb:hover {
+        background: var(--fb-secondary-text);
+    }
+</style>
 
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $('#statusFilter').on('change', function () {
-            var selectedStatus = $(this).val();
+                // Filter posts function với JSON response
+        function filterPosts() {
+            var selectedStatus = $('#statusFilter').val();
 
-            $.get('/Posts/FilterByStatus', { statusFilter: selectedStatus }, function (data) {
-                $('#postList').html(data);
+            // Show loading state
+            $('#postList').html(`
+                <div class="fb-loading">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Đang tải...</span>
+                    </div>
+                    <p class="mt-2">Đang lọc bài viết...</p>
+                </div>
+            `);
+
+            // Make AJAX request
+            $.get('/Posts/FilterByStatus', { statusFilter: selectedStatus })
+                .done(function (response) {
+                    if (response.success) {
+                        renderPosts(response.posts);
+
+                        // Update URL without page reload
+                        var newUrl = selectedStatus ?
+                            `${window.location.pathname}?statusFilter=${selectedStatus}` :
+                            window.location.pathname;
+                        window.history.pushState({}, '', newUrl);
+                    } else {
+                        showError('Không thể tải dữ liệu bài viết.');
+                    }
+                })
+                .fail(function () {
+                    showError('Đã xảy ra lỗi khi lọc bài viết. Vui lòng thử lại.');
+                });
+        }
+
+        // Render posts from JSON data
+        function renderPosts(posts) {
+            if (posts.length === 0) {
+                $('#postList').html(`
+                    <div class="fb-empty-state">
+                        <div class="fb-empty-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h4>Không tìm thấy bài viết nào</h4>
+                        <p>Không có bài viết nào phù hợp với bộ lọc hiện tại.</p>
+                        <button class="btn btn-outline-primary" onclick="$('#statusFilter').val('').trigger('change')">
+                            <i class="fas fa-refresh me-2"></i>Xem tất cả bài viết
+                        </button>
+                    </div>
+                `);
+                return;
+            }
+
+            let html = '';
+            posts.forEach(post => {
+                html += createPostHTML(post);
             });
-        });
-    </script>
+
+            $('#postList').html(html);
+
+            // Re-initialize tooltips and hover effects
+            initializePostEffects();
+        }
+
+        // Create HTML for a single post
+        function createPostHTML(post) {
+            const truncatedContent = post.content.length > 150 ?
+                post.content.substring(0, 150) + '...' : post.content;
+
+            const statusInfo = getStatusInfo(post.approvalStatus);
+
+            const imageHTML = post.imageUrls ?
+                `<div class="fb-post-media">
+                    <img src="${post.imageUrls.startsWith('http') || post.imageUrls.startsWith('/') ? post.imageUrls : '/' + post.imageUrls}"
+                         alt="${post.title}" class="post-thumbnail">
+                </div>` : '';
+
+            const rejectionHTML = post.approvalStatus === 'Rejected' && post.approvalComment ?
+                `<div class="rejection-reason">
+                    <div class="alert alert-danger mb-0">
+                        <strong><i class="fas fa-exclamation-triangle me-2"></i>Lý do từ chối:</strong>
+                        <p class="mb-0 mt-2">${post.approvalComment}</p>
+                    </div>
+                </div>` : '';
+
+            return `
+                <div class="fb-post-card mb-3">
+                    <div class="fb-post-header">
+                        <div class="fb-post-user">
+                            <div class="fb-post-info">
+                                <div class="fb-post-title">
+                                    <a href="/Posts/Details/${post.id}">${post.title}</a>
+                                </div>
+                                <div class="fb-post-meta">
+                                    <span><i class="fas fa-calendar-alt me-1"></i>${post.createdDate}</span>
+                                    <span class="post-category-badge">${post.postTypeName}</span>
+                                    <span class="post-status-badge status-${post.approvalStatus.toLowerCase()}"
+                                          data-bs-toggle="tooltip"
+                                          title="${statusInfo.tooltip}">
+                                        <i class="${statusInfo.icon} me-1"></i><span>${statusInfo.text}</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fb-post-actions">
+                            <div class="dropdown">
+                                <button class="fb-post-action" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/Posts/Edit/${post.id}">
+                                        <i class="fas fa-edit me-2"></i>Chỉnh sửa
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="/Posts/Details/${post.id}">
+                                        <i class="fas fa-eye me-2"></i>Xem chi tiết
+                                    </a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item text-danger" href="/Posts/Delete/${post.id}">
+                                        <i class="fas fa-trash me-2"></i>Xóa
+                                    </a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fb-post-content">
+                        <div class="fb-post-text">
+                            ${truncatedContent}
+                        </div>
+                    </div>
+
+                    ${imageHTML}
+                    ${rejectionHTML}
+                </div>
+            `;
+        }
+
+        // Get status information
+        function getStatusInfo(status) {
+            switch (status) {
+                case 'Approved':
+                    return {
+                        icon: 'fas fa-check-circle',
+                        text: 'Đã duyệt',
+                        tooltip: 'Bài viết đã được duyệt'
+                    };
+                case 'Pending':
+                    return {
+                        icon: 'fas fa-clock',
+                        text: 'Chờ duyệt',
+                        tooltip: 'Bài viết đang chờ duyệt'
+                    };
+                case 'Rejected':
+                    return {
+                        icon: 'fas fa-times-circle',
+                        text: 'Bị từ chối',
+                        tooltip: 'Bài viết bị từ chối'
+                    };
+                default:
+                    return {
+                        icon: 'fas fa-question-circle',
+                        text: 'Không xác định',
+                        tooltip: 'Trạng thái không xác định'
+                    };
+            }
+        }
+
+        // Show error message
+        function showError(message) {
+            $('#postList').html(`
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    ${message}
+                </div>
+            `);
+        }
+
+        // Initialize post effects after rendering
+        function initializePostEffects() {
+            // Initialize tooltips
+            $('[data-bs-toggle="tooltip"]').tooltip();
+
+            // Add hover effects for post cards
+            $('.fb-post-card').hover(
+                function() {
+                    $(this).css('transform', 'translateY(-2px)');
+                    $(this).css('box-shadow', '0 4px 12px rgba(0, 0, 0, 0.15)');
+                },
+                function() {
+                    $(this).css('transform', 'translateY(0)');
+                    $(this).css('box-shadow', '0 1px 2px rgba(0, 0, 0, 0.1)');
+                }
+            );
+
+            // Add confirmation for delete actions
+            $('.dropdown-item.text-danger').on('click', function(e) {
+                if (!confirm('Bạn có chắc chắn muốn xóa bài viết này?')) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        }
+</script>
 }
+

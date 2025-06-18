@@ -1,6 +1,5 @@
-﻿﻿@using Microsoft.AspNetCore.Identity
+﻿@using Microsoft.AspNetCore.Identity
 @using DOAN_LAPTRINHWEB.Models
-
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
@@ -10,13 +9,40 @@
     var displayName = user?.FullName ?? UserManager.GetUserName(User);
 
     <div class="dropdown hover-dropdown" id="customDropdown">
-        <a href="#" class="header-icon dropdown-toggle" id="userDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="fas fa-user-circle"></i>
+        <a href="#" class="header-icon dropdown-toggle d-flex align-items-center" id="userDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="user-avatar me-2">
+                @if (user != null && !string.IsNullOrEmpty(user.AvatarUrl))
+                {
+                    <img src="@user.AvatarUrl" alt="Avatar" class="avatar-img" />
+                }
+                else if (user != null && !string.IsNullOrEmpty(user.Avatar))
+                {
+                    <img src="@user.Avatar" alt="Avatar" class="avatar-img" />
+                }
+                else
+                {
+                    <i class="fas fa-user-circle"></i>
+                }
+            </div>
+            <span class="user-name d-none d-lg-inline">@displayName</span>
         </a>
         <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" id="userDropdownMenu">
             <li class="dropdown-item-text">
                 <div class="user-info">
-                    <i class="fas fa-user-circle user-icon me-2"></i>
+                    <div class="user-avatar-dropdown me-2">
+                        @if (user != null && !string.IsNullOrEmpty(user.AvatarUrl))
+                        {
+                            <img src="@user.AvatarUrl" alt="Avatar" class="avatar-img" />
+                        }
+                        else if (user != null && !string.IsNullOrEmpty(user.Avatar))
+                        {
+                            <img src="@user.Avatar" alt="Avatar" class="avatar-img" />
+                        }
+                        else
+                        {
+                            <i class="fas fa-user-circle user-icon"></i>
+                        }
+                    </div>
                     <span class="user-name">@displayName</span>
                 </div>
             </li>
@@ -45,3 +71,110 @@ else
         </ul>
     </div>
 }
+
+<style>
+    /* Thêm vào phần style hiện có */
+
+    /* User Avatar Styles */
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #e4e6eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        flex-shrink: 0;
+        border: 2px solid #fff;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+    }
+
+        .user-avatar .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .user-avatar i {
+            font-size: 20px;
+            color: #65676b;
+        }
+
+    .user-avatar-dropdown {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #e4e6eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        flex-shrink: 0;
+        border: 2px solid #fff;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+    }
+
+        .user-avatar-dropdown .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+    /* Cập nhật header-icon để đảm bảo khớp với thiết kế header */
+    .header-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        color: #212529;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .user-name {
+        font-weight: 500;
+        color: #1c1e21;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 120px;
+    }
+
+    /* Header icon adjustments */
+    .header-icon.dropdown-toggle {
+        text-decoration: none !important;
+        color: inherit;
+        background-color: transparent;
+    }
+
+        .header-icon.dropdown-toggle::after {
+            display: none; /* Ẩn mũi tên dropdown mặc định */
+        }
+
+    /* User info in dropdown */
+    .user-info {
+        display: flex;
+        align-items: center;
+        padding: 8px 0;
+    }
+
+    /* Responsive */
+    @@media (max-width: 991px) {
+        .user-name
+
+    {
+        display: none !important;
+    }
+
+    .user-avatar {
+        width: 28px;
+        height: 28px;
+    }
+
+    }
+</style>

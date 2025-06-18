@@ -479,6 +479,21 @@ body {
     left: 0;
 }
 
+#userDropdownBtn,
+.header-icon {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+    #userDropdownBtn:hover,
+    #userDropdownBtn:focus,
+    #userDropdownBtn:active {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
 /* User info in dropdown */
 .user-info {
     display: flex;

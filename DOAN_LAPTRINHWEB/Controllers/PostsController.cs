@@ -57,6 +57,7 @@ namespace DOAN_LAPTRINHWEB.Controllers
             var query = _context.Posts
                 .Include(p => p.User)
                 .Include(p => p.PostType)
+                .Where(p => !p.IsDeleted)
                 .AsQueryable();
 
             if (postTypeId.HasValue)
@@ -104,7 +105,7 @@ namespace DOAN_LAPTRINHWEB.Controllers
                 var featuredPosts = await _context.Posts
                     .Include(p => p.User)
                     .Include(p => p.PostType)
-                    .Where(p => p.CreatedDate >= thirtyDaysAgo)
+                    .Where(p => p.CreatedDate >= thirtyDaysAgo && !p.IsDeleted)
                     .Select(p => new
                     {
                         Post = p,
@@ -127,7 +128,7 @@ namespace DOAN_LAPTRINHWEB.Controllers
             {
                 var featuredAuthors = await _context.Posts
                     .Include(p => p.User)
-                    .Where(p => p.CreatedDate >= thirtyDaysAgo && p.User != null)
+                    .Where(p => p.CreatedDate >= thirtyDaysAgo && p.User != null && !p.IsDeleted)
                     .GroupBy(p => p.UserId)
                     .Select(g => new FeaturedAuthorDto
                     {
@@ -207,8 +208,22 @@ namespace DOAN_LAPTRINHWEB.Controllers
                 .OrderByDescending(p => p.CreatedDate)
                 .ToListAsync();
 
-            return PartialView("_PostListPartial", filteredPosts); // tạo file partial view này
+            // Trả về JSON data thay vì HTML
+            var postsData = filteredPosts.Select(post => new
+            {
+                id = post.Id,
+                title = post.Title,
+                content = System.Text.RegularExpressions.Regex.Replace(post.Content, "<.*?>", ""),
+                createdDate = post.CreatedDate.ToString("dd/MM/yyyy HH:mm"),
+                approvalStatus = post.ApprovalStatus,
+                approvalComment = post.ApprovalComment,
+                imageUrls = post.ImageUrls,
+                postTypeName = post.PostType.Name
+            }).ToList();
+
+            return Json(new { success = true, posts = postsData });
         }
+
 
 
 

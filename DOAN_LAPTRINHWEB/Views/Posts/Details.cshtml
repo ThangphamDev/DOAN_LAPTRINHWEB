@@ -999,7 +999,8 @@
         });
 
         // Hàm thêm bình luận
-            function addComment(postId, parentId = null) {
+                    // Thay thế hàm addComment hiện tại bằng code này:
+        function addComment(postId, parentId = null) {
             const commentInput = parentId ? $(`#replyContent-${parentId}`) : $('#commentContent');
             const content = commentInput.val().trim();
 
@@ -1028,6 +1029,7 @@
                         submitButton.prop('disabled', false);
 
                         if (parentId) {
+                            // Xử lý reply
                             const replyContainer = $(`#replyContainer-${parentId}`);
                             replyContainer.hide();
 
@@ -1036,7 +1038,15 @@
                             nestedCommentsContainer.append(newReply);
                             nestedCommentsContainer.show();
                         } else {
-                            loadComments(postId, 1);
+                            // Xử lý bình luận gốc - THÊM VÀO ĐẦU DANH SÁCH thay vì reload
+                            const newComment = createCommentHTML(response.comment);
+
+                            // Kiểm tra nếu danh sách rỗng
+                            if ($('#commentsList .fb-empty-state').length > 0) {
+                                $('#commentsList').html(newComment);
+                            } else {
+                                $('#commentsList').prepend(newComment);
+                            }
                         }
 
                         // Cập nhật tổng số bình luận từ response
@@ -1056,6 +1066,7 @@
                 }
             });
         }
+
 
         // Hàm tải bình luận
         function loadComments(postId, page) {
