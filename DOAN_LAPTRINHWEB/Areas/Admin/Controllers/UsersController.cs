@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
 {
@@ -10,7 +12,7 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly HomeStylesDbContext _context;
+        private readonly HomeStylesDbContext _context; // Giữ lại _context nếu bạn có các thao tác khác ngoài UserManager
 
         public UsersController(
             UserManager<ApplicationUser> userManager,
@@ -45,6 +47,13 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
                     EmailConfirmed = user.EmailConfirmed,
                     Roles = roles.ToList()
                 });
+            }
+
+            // Đặt thông báo từ TempData nếu có
+            if (TempData["Message"] != null)
+            {
+                ViewBag.Message = TempData["Message"];
+                ViewBag.MessageType = TempData["MessageType"];
             }
 
             return View(userViewModels);
@@ -85,10 +94,10 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
             return View(viewModel);
         }
 
-        // GET: Admin/Users/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
@@ -99,91 +108,144 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
                 return NotFound();
             }
 
+            // Lấy tất cả vai trò của người dùng hiện tại
             var userRoles = await _userManager.GetRolesAsync(user);
-            var allRoles = await _roleManager.Roles.ToListAsync();
 
-            var viewModel = new UserEditViewModel
+            // Lấy tất cả các vai trò KHÔNG PHẢI "Admin" từ RoleManager
+            var allNonAdminRoles = _roleManager.Roles
+                                                .Where(r => r.Name != "Admin")
+                                                .ToList();
+
+            var model = new UserEditViewModel
             {
                 Id = user.Id,
                 FullName = user.FullName,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
-                Status = user.Status,
+                Status = user.Status ?? "Đang hoạt động", // Mặc định nếu null
                 EmailConfirmed = user.EmailConfirmed,
-                Roles = allRoles.Select(r => new RoleViewModel
+                Roles = allNonAdminRoles.Select(role => new RoleViewModel
                 {
-                    Id = r.Id,
-                    Name = r.Name,
-                    IsSelected = userRoles.Contains(r.Name)
+                    Id = role.Id,
+                    Name = role.Name,
+                    IsSelected = userRoles.Contains(role.Name) // Kiểm tra xem người dùng có vai trò này không
                 }).ToList()
             };
 
-            ViewBag.Statuses = new[] { "Đang hoạt động", "Tạm khóa" };
-            return View(viewModel);
+            ViewBag.Statuses = new List<string> { "Đang hoạt động", "Tạm khóa" };
+            return View(model);
         }
+
 
         // POST: Admin/Users/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, UserEditViewModel model)
+        public async Task<IActionResult> Edit(UserEditViewModel model)
         {
-            if (id != model.Id)
+            // Kiểm tra ModelState trước khi tiếp tục
+            // Loại bỏ lỗi cho FullName, Email, PhoneNumber nếu bạn không muốn validate chúng ở đây
+            // Hoặc đảm bảo chúng được gửi đầy đủ từ client
+            ModelState.Remove("FullName");
+            ModelState.Remove("Email");
+            ModelState.Remove("PhoneNumber");
+            // Bất kỳ trường nào khác mà bạn không muốn validation tự động nếu chúng là hidden/readonly
+
+            if (!ModelState.IsValid)
+            {
+                // Reload ViewBag data if validation fails
+                ViewBag.Statuses = new List<string> { "Đang hoạt động", "Tạm khóa" };
+                // Phải lấy lại roles để populate lại checkbox trên form nếu validation fail
+                var userr = await _userManager.FindByIdAsync(model.Id);
+                var userRoles = await _userManager.GetRolesAsync(userr);
+                var allNonAdminRoles = _roleManager.Roles.Where(r => r.Name != "Admin").ToList();
+                model.Roles = allNonAdminRoles.Select(role => new RoleViewModel
+                {
+                    Id = role.Id,
+                    Name = role.Name,
+                    IsSelected = userRoles.Contains(role.Name)
+                }).ToList();
+                return View(model);
+            }
+
+            var user = await _userManager.FindByIdAsync(model.Id);
+            if (user == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                var user = await _userManager.FindByIdAsync(id);
-                if (user == null)
-                {
-                    return NotFound();
-                }
-
-                user.FullName = model.FullName;
-                user.Email = model.Email;
-                user.PhoneNumber = model.PhoneNumber;
+                // Cập nhật trạng thái
                 user.Status = model.Status;
                 user.EmailConfirmed = model.EmailConfirmed;
 
-                var result = await _userManager.UpdateAsync(user);
-                if (!result.Succeeded)
+                // Cập nhật thông tin user
+                var updateResult = await _userManager.UpdateAsync(user);
+                if (!updateResult.Succeeded)
                 {
-                    foreach (var error in result.Errors)
+                    foreach (var error in updateResult.Errors)
                     {
                         ModelState.AddModelError("", error.Description);
                     }
-                    ViewBag.Statuses = new[] { "Đang hoạt động", "Tạm khóa" };
+                    ViewBag.Statuses = new List<string> { "Đang hoạt động", "Tạm khóa" };
+                    // Nếu cập nhật lỗi, cần tải lại danh sách vai trò cho view
+                    var userRoles = await _userManager.GetRolesAsync(user);
+                    var allNonAdminRoles = _roleManager.Roles.Where(r => r.Name != "Admin").ToList();
+                    model.Roles = allNonAdminRoles.Select(role => new RoleViewModel
+                    {
+                        Id = role.Id,
+                        Name = role.Name,
+                        IsSelected = userRoles.Contains(role.Name)
+                    }).ToList();
                     return View(model);
                 }
 
-                // Handle roles
-                var userRoles = await _userManager.GetRolesAsync(user);
-                foreach (var role in model.Roles)
-                {
-                    // Bỏ qua vai trò Admin để không thay đổi nó
-                    if (role.Name == "Admin")
-                    {
-                        continue;
-                    }
+                // Cập nhật vai trò (chỉ Customer và Manager)
+                var currentRoles = await _userManager.GetRolesAsync(user);
+                // Các vai trò được chọn từ form, loại bỏ "Admin" nếu có ai đó cố tình gửi lên
+                var selectedRoles = model.Roles.Where(r => r.IsSelected && r.Name != "Admin").Select(r => r.Name).ToList();
 
-                    if (role.IsSelected && !userRoles.Contains(role.Name))
-                    {
-                        await _userManager.AddToRoleAsync(user, role.Name);
-                    }
-                    else if (!role.IsSelected && userRoles.Contains(role.Name))
-                    {
-                        await _userManager.RemoveFromRoleAsync(user, role.Name);
-                    }
+                // Các vai trò hiện tại của user, nhưng chỉ Customer và Manager
+                var currentCustomerManagerRoles = currentRoles.Where(r => r == "Customer" || r == "Manager").ToList();
+
+                // Các vai trò cần thêm: có trong selectedRoles nhưng không có trong currentCustomerManagerRoles
+                var rolesToAdd = selectedRoles.Except(currentCustomerManagerRoles).ToList();
+                if (rolesToAdd.Any())
+                {
+                    await _userManager.AddToRolesAsync(user, rolesToAdd);
                 }
 
-                TempData["SuccessMessage"] = "Thông tin người dùng đã được cập nhật thành công!";
-                return RedirectToAction(nameof(Index));
-            }
+                // Các vai trò cần xóa: có trong currentCustomerManagerRoles nhưng không có trong selectedRoles
+                var rolesToRemove = currentCustomerManagerRoles.Except(selectedRoles).ToList();
+                if (rolesToRemove.Any())
+                {
+                    await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
+                }
 
-            ViewBag.Statuses = new[] { "Đang hoạt động", "Tạm khóa" };
-            return View(model);
+                TempData["Message"] = "Cập nhật thông tin người dùng thành công!";
+                TempData["MessageType"] = "success";
+
+                // Redirect về trang Index sau khi lưu thành công
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = "Có lỗi xảy ra khi cập nhật: " + ex.Message;
+                TempData["MessageType"] = "danger";
+                ViewBag.Statuses = new List<string> { "Đang hoạt động", "Tạm khóa" };
+                // Nếu có lỗi exception, cũng cần tải lại danh sách vai trò cho view
+                var userRoles = await _userManager.GetRolesAsync(user);
+                var allNonAdminRoles = _roleManager.Roles.Where(r => r.Name != "Admin").ToList();
+                model.Roles = allNonAdminRoles.Select(role => new RoleViewModel
+                {
+                    Id = role.Id,
+                    Name = role.Name,
+                    IsSelected = userRoles.Contains(role.Name)
+                }).ToList();
+                return View(model);
+            }
         }
+
     }
 
     public class UserViewModel
@@ -205,12 +267,15 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
     public class UserEditViewModel
     {
         public string Id { get; set; }
+        [Required(ErrorMessage = "Họ và tên không được để trống.")]
         public string FullName { get; set; }
+        [Required(ErrorMessage = "Email không được để trống.")]
+        [EmailAddress(ErrorMessage = "Email không hợp lệ.")]
         public string Email { get; set; }
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
         public string Status { get; set; }
         public bool EmailConfirmed { get; set; }
-        public List<RoleViewModel> Roles { get; set; }
+        public List<RoleViewModel> Roles { get; set; } = new List<RoleViewModel>(); // Khởi tạo để tránh null reference
     }
 
     public class RoleViewModel

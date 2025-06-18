@@ -1,0 +1,270 @@
+﻿@page
+@model AddressesModel
+@{
+    ViewData["Title"] = "Quản lý địa chỉ";
+    ViewData["ActivePage"] = ManageNavPages.Addresses;
+}
+
+<h4>@ViewData["Title"]</h4>
+<partial name="_StatusMessage" for="StatusMessage" />
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Danh sách địa chỉ</h5>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+                    <i class="fas fa-plus"></i> Thêm địa chỉ mới
+                </button>
+            </div>
+            <div class="card-body">
+                @if (Model.Addresses == null || !Model.Addresses.Any())
+                {
+                    <div class="alert alert-info">
+                        Bạn chưa có địa chỉ nào. Vui lòng thêm địa chỉ mới.
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Họ tên</th>
+                                    <th>Số điện thoại</th>
+                                    <th>Địa chỉ</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var address in Model.Addresses)
+                                {
+                                    <tr>
+                                        <td>@address.FullName</td>
+                                        <td>@address.Phone</td>
+                                        <td>
+                                            @address.Street, @address.City
+                                            @if (!string.IsNullOrEmpty(address.State))
+                                            {
+                                                <span>, @address.State</span>
+                                            }
+                                            @if (!string.IsNullOrEmpty(address.Country))
+                                            {
+                                                <span>, @address.Country</span>
+                                            }
+                                            @if (!string.IsNullOrEmpty(address.PostalCode))
+                                            {
+                                                <span> (@address.PostalCode)</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (address.IsDefault)
+                                            {
+                                                <span class="badge bg-primary">Mặc định</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-sm btn-outline-primary edit-address-btn"
+                                                        data-bs-toggle="modal" data-bs-target="#editAddressModal"
+                                                        data-id="@address.AddressId"
+                                                        data-fullname="@address.FullName"
+                                                        data-phone="@address.Phone"
+                                                        data-street="@address.Street"
+                                                        data-city="@address.City"
+                                                        data-state="@address.State"
+                                                        data-country="@address.Country"
+                                                        data-postalcode="@address.PostalCode"
+                                                        data-isdefault="@address.IsDefault.ToString().ToLower()">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                @if (!address.IsDefault)
+                                                {
+                                                    <form method="post" asp-page-handler="SetDefault" style="display: inline;">
+                                                        <input type="hidden" name="addressId" value="@address.AddressId" />
+                                                        <button type="submit" class="btn btn-sm btn-outline-success" title="Đặt làm mặc định">
+                                                            <i class="fas fa-check"></i>
+                                                        </button>
+                                                    </form>
+                                                }
+                                                <form method="post" asp-page-handler="Delete" style="display: inline;"
+                                                      onsubmit="return confirm('Bạn có chắc chắn muốn xóa địa chỉ này?');">
+                                                    <input type="hidden" name="addressId" value="@address.AddressId" />
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Xóa">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Thêm Địa Chỉ -->
+<div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="Add">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addAddressModalLabel">Thêm địa chỉ mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="add-fullname" class="form-label">Họ tên <span class="text-danger">*</span></label>
+                            <input type="text" id="add-fullname" name="fullName" class="form-control" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="add-phone" class="form-label">Số điện thoại <span class="text-danger">*</span></label>
+                            <input type="tel" id="add-phone" name="phone" class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="add-street" class="form-label">Địa chỉ <span class="text-danger">*</span></label>
+                        <input type="text" id="add-street" name="street" class="form-control" required />
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="add-city" class="form-label">Thành phố <span class="text-danger">*</span></label>
+                            <input type="text" id="add-city" name="city" class="form-control" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="add-state" class="form-label">Tỉnh/Thành phố</label>
+                            <input type="text" id="add-state" name="state" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="add-country" class="form-label">Quốc gia</label>
+                            <input type="text" id="add-country" name="country" class="form-control" value="Việt Nam" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="add-postalcode" class="form-label">Mã bưu điện</label>
+                            <input type="text" id="add-postalcode" name="postalCode" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" id="add-isdefault" name="isDefault" class="form-check-input" value="true" />
+                        <input type="hidden" name="isDefault" value="false" />
+                        <label for="add-isdefault" class="form-check-label">Đặt làm địa chỉ mặc định</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-primary">Lưu địa chỉ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Sửa Địa Chỉ -->
+<div class="modal fade" id="editAddressModal" tabindex="-1" aria-labelledby="editAddressModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="Edit">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editAddressModalLabel">Sửa địa chỉ</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="edit-address-id" name="addressId" />
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="edit-fullname" class="form-label">Họ tên <span class="text-danger">*</span></label>
+                            <input type="text" id="edit-fullname" name="fullName" class="form-control" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="edit-phone" class="form-label">Số điện thoại <span class="text-danger">*</span></label>
+                            <input type="tel" id="edit-phone" name="phone" class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-street" class="form-label">Địa chỉ <span class="text-danger">*</span></label>
+                        <input type="text" id="edit-street" name="street" class="form-control" required />
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="edit-city" class="form-label">Thành phố <span class="text-danger">*</span></label>
+                            <input type="text" id="edit-city" name="city" class="form-control" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="edit-state" class="form-label">Tỉnh/Thành phố</label>
+                            <input type="text" id="edit-state" name="state" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="edit-country" class="form-label">Quốc gia</label>
+                            <input type="text" id="edit-country" name="country" class="form-control" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="edit-postalcode" class="form-label">Mã bưu điện</label>
+                            <input type="text" id="edit-postalcode" name="postalCode" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" id="edit-isdefault" name="isDefault" class="form-check-input" value="true" />
+                        <input type="hidden" name="isDefault" value="false" />
+                        <label for="edit-isdefault" class="form-check-label">Đặt làm địa chỉ mặc định</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Xử lý khi nhấn nút sửa địa chỉ
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.edit-address-btn').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    var id = this.getAttribute('data-id');
+                    var fullname = this.getAttribute('data-fullname');
+                    var phone = this.getAttribute('data-phone');
+                    var street = this.getAttribute('data-street');
+                    var city = this.getAttribute('data-city');
+                    var state = this.getAttribute('data-state');
+                    var country = this.getAttribute('data-country');
+                    var postalcode = this.getAttribute('data-postalcode');
+                    var isdefault = this.getAttribute('data-isdefault') === 'true';
+
+                    document.getElementById('edit-address-id').value = id;
+                    document.getElementById('edit-fullname').value = fullname || '';
+                    document.getElementById('edit-phone').value = phone || '';
+                    document.getElementById('edit-street').value = street || '';
+                    document.getElementById('edit-city').value = city || '';
+                    document.getElementById('edit-state').value = state || '';
+                    document.getElementById('edit-country').value = country || '';
+                    document.getElementById('edit-postalcode').value = postalcode || '';
+                    document.getElementById('edit-isdefault').checked = isdefault;
+                });
+            });
+
+            // Reset form khi đóng modal
+            document.getElementById('addAddressModal').addEventListener('hidden.bs.modal', function () {
+                this.querySelector('form').reset();
+                document.getElementById('add-country').value = 'Việt Nam';
+            });
+
+            document.getElementById('editAddressModal').addEventListener('hidden.bs.modal', function () {
+                this.querySelector('form').reset();
+            });
+        });
+    </script>
+}
+

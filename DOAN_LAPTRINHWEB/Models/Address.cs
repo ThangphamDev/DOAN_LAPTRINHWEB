@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace DOAN_LAPTRINHWEB.Models;
 
@@ -22,6 +23,7 @@ public partial class Address
     public string PostalCode { get; set; }
 
     public string Country { get; set; }
+    public bool IsDefault { get; set; }
 
     public virtual ApplicationUser? User { get; set; }
 }
