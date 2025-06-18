@@ -37,7 +37,7 @@ namespace DOAN_LAPTRINHWEB.Models
         public PostType PostType { get; set; }
 
         [ForeignKey("ApprovedBy")]
-        public string? ApprovedById { get; set; } // Xóa [Required] để cho phép NULL
+        public string? ApprovedById { get; set; } 
         public ApplicationUser? ApprovedBy { get; set; }
 
         public DateTime? ApprovalDate { get; set; }

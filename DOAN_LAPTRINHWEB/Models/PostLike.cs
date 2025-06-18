@@ -1,11 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using DOAN_LAPTRINHWEB.Models; 
 
 namespace DOAN_LAPTRINHWEB.Models
 {
-    public class Comment
+    public class PostLike
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -17,16 +16,8 @@ namespace DOAN_LAPTRINHWEB.Models
 
         [ForeignKey("User")]
         public string UserId { get; set; }
-        public ApplicationUser User { get; set; } 
+        public ApplicationUser User { get; set; }
 
-        [Required]
-        public string Content { get; set; }
-
-        [Required]
         public DateTime CreatedDate { get; set; }
-
-        [ForeignKey("ParentComment")]
-        public int? ParentCommentId { get; set; }
-        public Comment ParentComment { get; set; }
     }
 }

@@ -1,71 +1,277 @@
-﻿
-@model DOAN_LAPTRINHWEB.Models.Post
+﻿@model DOAN_LAPTRINHWEB.Models.Post
 
 @{
     ViewData["Title"] = "Sửa bài viết";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
 }
 
 <div class="container mt-5">
     <h1 class="mb-4">@ViewData["Title"]</h1>
 
-    <form asp-action="Edit" method="post">
+    <form asp-action="Edit" method="post" enctype="multipart/form-data" id="editPostForm">
         <input type="hidden" asp-for="Id" />
+
         <div class="mb-3">
             <label asp-for="Title" class="form-label">Tiêu đề</label>
-            <input asp-for="Title" class="form-control" />
+            <input asp-for="Title" class="form-control" required />
             <span asp-validation-for="Title" class="text-danger"></span>
         </div>
+
         <div class="mb-3">
-            <label asp-for="Content" class="form-label" style="display:none">Nội dung</label>
-            <textarea asp-for="Content" class="form-control" rows="5"></textarea>
+            <label asp-for="Content" class="form-label">Nội dung</label>
+            <textarea asp-for="Content" class="form-control" id="contentEditor"></textarea>
             <span asp-validation-for="Content" class="text-danger"></span>
         </div>
-        <div class="mb-3">
-            <label asp-for="ImageUrls" class="form-label">URL hình ảnh</label>
-            <input asp-for="ImageUrls" class="form-control" />
+
+        <div class="mb-4">
+            <label class="form-label">Ảnh đại diện cho bài viết</label>
+            <div class="d-flex gap-3">
+                <div class="flex-grow-1">
+                    <div class="input-group">
+                        <input type="file" class="form-control" id="coverImageFile" name="CoverImageFile" accept="image/*" />
+                        <button class="btn btn-outline-secondary" type="button" id="uploadCoverBtn">
+                            <i class="fas fa-upload"></i> Tải lên
+                        </button>
+                    </div>
+                    <small class="text-muted d-block mt-1">Kích thước tối đa: 5MB (JPG, PNG, GIF)</small>
+                </div>
+
+                <span class="mx-2 d-flex align-items-center">hoặc</span>
+
+                <div class="flex-grow-1">
+                    <input asp-for="ImageUrls" class="form-control" placeholder="Hoặc nhập URL hình ảnh" id="imageUrlInput" />
+                    <small class="text-muted d-block mt-1">Nhiều URL cách nhau bằng dấu phẩy</small>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.ImageUrls))
+            {
+                <div class="mt-3" id="currentImage">
+                    <div class="card p-2 bg-light">
+                        <div class="d-flex align-items-center">
+                            <img src="@Model.ImageUrls" alt="Ảnh hiện tại" class="img-thumbnail me-3" style="max-height: 100px; max-width: 150px;" />
+                            <div>
+                                <h6 class="mb-1">Ảnh hiện tại</h6>
+                                <button type="button" class="btn btn-sm btn-danger" id="removeCurrentImage">
+                                    <i class="fas fa-trash me-1"></i> Xóa
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="mt-3 d-none" id="coverImagePreview">
+                <div class="card p-2 bg-light">
+                    <div class="d-flex align-items-center">
+                        <img src="" alt="Ảnh xem trước" class="img-thumbnail me-3" style="max-height: 100px; max-width: 150px;" id="previewImg" />
+                        <div>
+                            <h6 class="mb-1" id="previewFilename"></h6>
+                            <button type="button" class="btn btn-sm btn-danger" id="removeCoverBtn">
+                                <i class="fas fa-trash me-1"></i> Xóa
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <span asp-validation-for="ImageUrls" class="text-danger"></span>
         </div>
+
         <div class="mb-3">
             <label asp-for="PostTypeId" class="form-label">Loại bài viết</label>
-            <select asp-for="PostTypeId" class="form-select" asp-items="@(new SelectList(ViewData["PostTypes"] as List<DOAN_LAPTRINHWEB.Models.PostType>, "Id", "Name"))">
+            <select asp-for="PostTypeId" class="form-select" required
+                    asp-items="@(new SelectList(ViewData["PostTypes"] as List<DOAN_LAPTRINHWEB.Models.PostType>, "Id", "Name"))">
                 <option value="">Chọn loại bài viết</option>
             </select>
             <span asp-validation-for="PostTypeId" class="text-danger"></span>
         </div>
-        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
-        <a asp-action="MyPosts" class="btn btn-secondary">Quay lại</a>
+
+        <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-2"></i> Lưu thay đổi
+            </button>
+            <a asp-action="MyPosts" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i> Quay lại
+            </a>
+        </div>
     </form>
 </div>
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <partial name="_ValidationScriptsPartial" />
     <script src="https://cdn.tiny.cloud/1/dlw5y4nq5zad9avo50yhqzcfkodnsankzz7bh511nmbds50d/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-<script>
-    tinymce.init({
-        selector: '#Content', // đảm bảo ID đúng với textarea của bạn
-        plugins: 'image code',
-        toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code | image',
-        relative_urls: false,                   // Bắt TinyMCE dùng absolute URLs
-        remove_script_host: false,              // Đừng bỏ host trong URL
-        convert_urls: false,                    // Không tự chuyển đổi đường dẫn
-
-        setup: function (editor) {
-            editor.on('BeforeSetContent', function (e) {
-                if (e.content) {
-                    e.content = e.content.replace(/(\.\.\/|\.{2}\/\/)+uploads\//g, '/uploads/');
+    <script>
+        // Wait for the document to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize TinyMCE
+            tinymce.init({
+                selector: '#contentEditor',
+                height: 500,
+                plugins: 'image link media code table lists',
+                toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright | bullist numlist | image link media | code',
+                images_upload_url: '/Posts/UploadImage',
+                automatic_uploads: true,
+                images_upload_credentials: true,
+                resize: true,
+                image_caption: true,
+                image_title: true,
+                image_dimensions: true,
+                object_resizing: 'img',
+                content_style: "img { max-width: 100%; height: auto; }",
+                relative_urls: false,
+                remove_script_host: false,
+                convert_urls: false,
+                setup: function(editor) {
+                    // Update the textarea with TinyMCE content before form submission
+                    editor.on('change', function() {
+                        editor.save();
+                    });
                 }
             });
-            editor.on('GetContent', function (e) {
-                if (e.content) {
-                    e.content = e.content.replace(/(\.\.\/|\.{2}\/\/)+uploads\//g, '/uploads/');
+
+            // Handle file input change
+            const fileInput = document.getElementById('coverImageFile');
+            const imageUrlInput = document.getElementById('imageUrlInput');
+            const previewContainer = document.getElementById('coverImagePreview');
+            const previewImg = document.getElementById('previewImg');
+            const previewFilename = document.getElementById('previewFilename');
+            const removeBtn = document.getElementById('removeCoverBtn');
+            const uploadBtn = document.getElementById('uploadCoverBtn');
+            const currentImageContainer = document.getElementById('currentImage');
+            const removeCurrentImageBtn = document.getElementById('removeCurrentImage');
+
+            // Function to handle image upload
+            function handleFileUpload() {
+                const file = fileInput.files[0];
+                if (!file) return;
+
+                // Kiểm tra kích thước file (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File quá lớn. Vui lòng chọn file nhỏ hơn 5MB.');
+                    fileInput.value = '';
+                    return;
                 }
-            });
-        }
-    });
-</script>
 
+                // Kiểm tra loại file
+                const fileType = file.type;
+                if (!fileType.match('image.*')) {
+                    alert('Vui lòng chọn file hình ảnh.');
+                    fileInput.value = '';
+                    return;
+                }
 
+                // Tạo form data để upload
+                const formData = new FormData();
+                formData.append('file', file);
+
+                // Upload file
+                fetch('/Posts/UploadImage', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.location) {
+                        // Ẩn hình ảnh hiện tại nếu có
+                        if (currentImageContainer) {
+                            currentImageContainer.classList.add('d-none');
+                        }
+
+                        // Hiển thị ảnh xem trước
+                        previewImg.src = data.location;
+                        previewFilename.textContent = file.name;
+                        previewContainer.classList.remove('d-none');
+
+                        // Cập nhật giá trị vào input
+                        imageUrlInput.value = data.location;
+
+                        // Xóa file đã chọn
+                        fileInput.value = '';
+                    } else {
+                        alert('Có lỗi xảy ra khi tải lên file');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra khi tải lên file');
+                });
+            }
+
+            // Khi nhấn nút Upload
+            if (uploadBtn) {
+                uploadBtn.addEventListener('click', handleFileUpload);
+            }
+
+            // Khi file input thay đổi
+            if (fileInput) {
+                fileInput.addEventListener('change', function() {
+                    const file = this.files[0];
+                    if (file) {
+                        previewFilename.textContent = file.name;
+                    }
+                });
+            }
+
+            // Khi nhấn nút Remove cho ảnh mới
+            if (removeBtn) {
+                removeBtn.addEventListener('click', function() {
+                    previewContainer.classList.add('d-none');
+                    previewImg.src = '';
+                    fileInput.value = '';
+
+                    // Hiển thị lại ảnh hiện tại nếu có
+                    if (currentImageContainer) {
+                        currentImageContainer.classList.remove('d-none');
+                    } else {
+                        imageUrlInput.value = '';
+                    }
+                });
+            }
+
+            // Khi nhấn nút Remove cho ảnh hiện tại
+            if (removeCurrentImageBtn) {
+                removeCurrentImageBtn.addEventListener('click', function() {
+                    if (currentImageContainer) {
+                        currentImageContainer.classList.add('d-none');
+                        imageUrlInput.value = '';
+                    }
+                });
+            }
+
+            // Handle form submission
+            const form = document.getElementById('editPostForm');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    // Get TinyMCE content
+                    const content = tinymce.get('contentEditor').getContent();
+
+                    // Validate required fields
+                    if (!form.querySelector('[name="Title"]').value.trim()) {
+                        e.preventDefault();
+                        alert('Vui lòng nhập tiêu đề bài viết');
+                        return false;
+                    }
+
+                    if (!content.trim()) {
+                        e.preventDefault();
+                        alert('Vui lòng nhập nội dung bài viết');
+                        return false;
+                    }
+
+                    if (!form.querySelector('[name="PostTypeId"]').value) {
+                        e.preventDefault();
+                        alert('Vui lòng chọn loại bài viết');
+                        return false;
+                    }
+
+                    // Update textarea with TinyMCE content before submission
+                    document.querySelector('#contentEditor').value = content;
+
+                    // Proceed with form submission
+                    return true;
+                });
+            }
+        });
+    </script>
 }

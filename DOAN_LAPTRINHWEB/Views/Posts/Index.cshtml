@@ -5,636 +5,1588 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
-    <style>
-        /* Tránh header che nội dung */
-        .posts-container {
-            padding-top: 100px; /* Điều chỉnh theo chiều cao header */
-        }
-
-        /* Hero section cho trang blog */
-        .blog-hero {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 80px 0 60px;
-            margin-top: -100px;
-            padding-top: 180px;
-        }
-
-        .blog-hero h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-
-        .blog-hero p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-
-        /* Filter section */
-        .filter-section {
-            background: #f8f9fa;
-            padding: 2rem 0;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .filter-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            justify-content: center;
-        }
-
-        .filter-btn {
-            padding: 0.5rem 1.5rem;
-            border: 2px solid #dee2e6;
-            background: white;
-            color: #6c757d;
-            text-decoration: none;
-            border-radius: 25px;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-
-        .filter-btn:hover {
-            border-color: #495057;
-            color: #495057;
-            transform: translateY(-2px);
-        }
-
-        .filter-btn.active {
-            background: #495057;
-            border-color: #495057;
-            color: white;
-        }
-
-        /* Blog cards */
-        .blog-section {
-            padding: 4rem 0;
-        }
-
-        .blog-card {
-            border: none;
-            border-radius: 15px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            height: 100%;
-        }
-
-        .blog-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-        }
-
-        .blog-card-img {
-            height: 250px;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-
-        .blog-card:hover .blog-card-img {
-            transform: scale(1.05);
-        }
-
-        .blog-card-body {
-            padding: 1.5rem;
-        }
-
-        .blog-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .blog-category {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .blog-date {
-            color: #6c757d;
-            font-size: 0.9rem;
-        }
-
-        .blog-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            line-height: 1.4;
-        }
-
-        .blog-title a {
-            color: #2c3e50;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .blog-title a:hover {
-            color: #667eea;
-        }
-
-        .blog-excerpt {
-            color: #6c757d;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
-
-        .blog-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 1rem;
-            border-top: 1px solid #e9ecef;
-        }
-
-        .blog-author {
-            display: flex;
-            align-items: center;
-            color: #6c757d;
-            font-size: 0.9rem;
-        }
-
-        .blog-author i {
-            margin-right: 0.5rem;
-        }
-
-        .read-more-btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            border: none;
-            color: white;
-            padding: 0.5rem 1.5rem;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .read-more-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-            color: white;
-        }
-
-        /* Action buttons */
-        .action-buttons {
-            margin-bottom: 2rem;
-        }
-
-        .btn-create, .btn-my-posts {
-            padding: 0.75rem 2rem;
-            border-radius: 25px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .btn-create {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            border: none;
-            color: white;
-        }
-
-        .btn-create:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-            color: white;
-        }
-
-        .btn-my-posts {
-            border: 2px solid #667eea;
-            color: #667eea;
-            background: transparent;
-        }
-
-        .btn-my-posts:hover {
-            background: #667eea;
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        /* Pagination */
-        .custom-pagination {
-            margin-top: 3rem;
-        }
-
-        .custom-pagination .page-link {
-            border: none;
-            color: #667eea;
-            padding: 0.75rem 1rem;
-            margin: 0 0.25rem;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .custom-pagination .page-item.active .page-link {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            border-color: transparent;
-        }
-
-        .custom-pagination .page-link:hover {
-            background: #f8f9fa;
-            transform: translateY(-2px);
-        }
-
-        /* Empty state */
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-        }
-
-        .empty-state i {
-            font-size: 4rem;
-            color: #dee2e6;
-            margin-bottom: 1.5rem;
-        }
-
-        .empty-state h4 {
-            color: #6c757d;
-            margin-bottom: 1rem;
-        }
-
-        .empty-state p {
-            color: #adb5bd;
-            margin-bottom: 2rem;
-        }
-
-        /* Responsive */
-        @@media (max-width: 768px) {
-            .posts-container {
-                padding-top: 80px;
-            }
-
-            .blog-hero {
-                padding-top: 160px;
-                padding-bottom: 40px;
-            }
-
-            .blog-hero h1 {
-                font-size: 2rem;
-            }
-
-            .filter-buttons {
-                justify-content: flex-start;
-                overflow-x: auto;
-                padding-bottom: 0.5rem;
-            }
-
-            .filter-btn {
-                white-space: nowrap;
-            }
-
-            .action-buttons {
-                text-align: center;
-            }
-
-            .action-buttons .btn {
-                display: block;
-                width: 100%;
-                margin-bottom: 0.5rem;
-            }
-        }
-        /* Floating Action Button */
-    .floating-action-btn {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 1000;
-    }
-
-    .floating-action-btn .btn {
-        width: 60px;
-        height: 60px;
-        box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
-        border: none;
-    }
-
-    .floating-action-btn .btn:hover {
-        transform: scale(1.1);
-        box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
-    }
-
-    /* Additional animations */
-    .blog-card {
-        animation: fadeInUp 0.6s ease-out;
-    }
-
-    .blog-card:nth-child(2) {
-        animation-delay: 0.1s;
-    }
-
-    .blog-card:nth-child(3) {
-        animation-delay: 0.2s;
-    }
-
-    @@keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* Loading state */
-    .loading {
-        opacity: 0.7;
-        pointer-events: none;
-    }
-
-    /* Improved responsive design */
-    @@media (max-width: 576px) {
-        .blog-hero h1 {
-            font-size: 1.8rem;
-        }
-
-        .blog-hero p {
-            font-size: 1rem;
-        }
-
-        .blog-card-body {
-            padding: 1rem;
-        }
-
-        .blog-title {
-            font-size: 1.1rem;
-        }
-
-        .filter-buttons {
-            padding: 0 1rem;
-        }
-
-        .action-buttons .btn {
-            font-size: 0.9rem;
-            padding: 0.6rem 1.5rem;
-        }
-    }
-
-    /* Dark mode support (optional) */
-    @@media (prefers-color-scheme: dark) {
-        .filter-section {
-            background: #2c3e50;
-        }
-
-        .filter-btn {
-            background: #34495e;
-            color: #ecf0f1;
-            border-color: #4a5f7a;
-        }
-
-        .filter-btn:hover {
-            border-color: #667eea;
-            color: #667eea;
-        }
-
-        .blog-card {
-            background: #34495e;
-            color: #ecf0f1;
-        }
-
-        .blog-title a {
-            color: #ecf0f1;
-        }
-
-        .blog-excerpt {
-            color: #bdc3c7;
-        }
-
-        .blog-author {
-            color: #bdc3c7;
-        }
-
-        .blog-date {
-            color: #bdc3c7;
-        }
-    }
-    </style>
-
-<div class="posts-container">
-    <!-- Hero Section -->
-    <section class="blog-hero">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 mx-auto text-center">
-                    <h1>
-                        <i class="fas fa-newspaper me-3"></i>
-                        Blog & Cảm Hứng
-                    </h1>
-                    <p class="lead">Khám phá những ý tưởng trang trí mới nhất và chia sẻ cảm hứng thiết kế không gian sống</p>
-                </div>
+<div class="fb-layout-container">
+    <!-- Left sidebar -->
+    <div class="fb-sidebar left-sidebar">
+        <div class="fb-sidebar-content">
+            <div class="fb-profile-section">
+                <a asp-action="MyPosts" class="fb-menu-item active">
+                    <div class="fb-menu-icon">
+                        <i class="fas fa-newspaper"></i>
+                    </div>
+                    <div class="fb-menu-text">Blog HomeStyle</div>
+                </a>
+                <div class="fb-menu-subtitle">Khám phá nội dung</div>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a asp-action="MyPosts" class="fb-menu-item">
+                        <div class="fb-menu-icon">
+                            <i class="fas fa-user-edit"></i>
+                        </div>
+                        <div class="fb-menu-text">Bài viết của tôi</div>
+                    </a>
+                }
+                <a href="#" class="fb-menu-item">
+                    <div class="fb-menu-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="fb-menu-text">Xu hướng</div>
+                </a>
+                <a href="#" class="fb-menu-item">
+                    <div class="fb-menu-icon">
+                        <i class="fas fa-bookmark"></i>
+                    </div>
+                    <div class="fb-menu-text">Đã lưu</div>
+                </a>
+            </div>
+            <div class="fb-categories-section">
+                <div class="fb-menu-subtitle">Loại bài viết</div>
+                <a href="@Url.Action("Index")"
+                   class="fb-menu-item @(ViewBag.CurrentPostTypeId == null ? "active" : "")">
+                    <div class="fb-menu-icon">
+                        <i class="fas fa-border-all"></i>
+                    </div>
+                    <div class="fb-menu-text">Tất cả</div>
+                </a>
+                @foreach (var postType in ViewBag.PostTypes as List<DOAN_LAPTRINHWEB.Models.PostType>)
+                {
+                    <a href="@Url.Action("Index", new { postTypeId = postType.Id })"
+                       class="fb-menu-item @(ViewBag.CurrentPostTypeId == postType.Id ? "active" : "")">
+                        <div class="fb-menu-icon">
+                            <i class="fas fa-hashtag"></i>
+                        </div>
+                        <div class="fb-menu-text">@postType.Name</div>
+                    </a>
+                }
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Filter Section -->
-    <section class="filter-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <h6 class="text-center mb-3 text-muted">Lọc theo chủ đề:</h6>
-                    <div class="filter-buttons">
-                        <a href="@Url.Action("Index")" 
-                           class="filter-btn @(ViewBag.CurrentPostTypeId == null ? "active" : "")">
-                            <i class="fas fa-th-large me-1"></i> Tất cả
-                        </a>
-                        @foreach (var postType in ViewBag.PostTypes as List<DOAN_LAPTRINHWEB.Models.PostType>)
+    <!-- Main feed -->
+    <div class="fb-main-feed">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        <!-- Create post section -->
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div class="create-post-card">
+                <div class="create-post-header">
+                    <div class="avatar-circle">
+                        @{
+                            var currentUser = ViewBag.CurrentUser as DOAN_LAPTRINHWEB.Models.ApplicationUser;
+                        }
+                        @if (currentUser != null && !string.IsNullOrEmpty(currentUser.AvatarUrl))
                         {
-                            <a href="@Url.Action("Index", new { postTypeId = postType.Id })" 
-                               class="filter-btn @(ViewBag.CurrentPostTypeId == postType.Id ? "active" : "")">
-                                @postType.Name
+                            <img src="@currentUser.AvatarUrl" alt="Avatar" class="avatar-img" />
+                        }
+                        else if (currentUser != null && !string.IsNullOrEmpty(currentUser.Avatar))
+                        {
+                            <img src="@currentUser.Avatar" alt="Avatar" class="avatar-img" />
+                        }
+                        else
+                        {
+                            <i class="fas fa-user"></i>
+                        }
+                    </div>
+                    <a asp-action="Create" class="create-post-input">
+                        Bạn đang nghĩ gì thế?
+                    </a>
+                </div>
+                <div class="create-post-actions">
+                    <a asp-action="Create" class="create-post-action">
+                        <i class="fas fa-image text-success"></i>
+                        <span>Ảnh/Video</span>
+                    </a>
+                    <a asp-action="Create" class="create-post-action">
+                        <i class="fas fa-edit text-primary"></i>
+                        <span>Tạo bài viết</span>
+                    </a>
+                </div>
+            </div>
+        }
+
+        <!-- Stories/Filters section -->
+        <div class="stories-section">
+            <div class="stories-container">
+                <div class="story-filter @(ViewBag.CurrentPostTypeId == null ? "active" : "")"
+                     onclick="window.location.href='@Url.Action("Index")'">
+                    <div class="story-icon">
+                        <i class="fas fa-border-all"></i>
+                    </div>
+                    <div class="story-name">Tất cả</div>
+                </div>
+                @foreach (var postType in ViewBag.PostTypes as List<DOAN_LAPTRINHWEB.Models.PostType>)
+                {
+                    <div class="story-filter @(ViewBag.CurrentPostTypeId == postType.Id ? "active" : "")"
+                         onclick="window.location.href='@Url.Action("Index", new { postTypeId = postType.Id })'">
+                        <div class="story-icon">
+                            <i class="fas fa-hashtag"></i>
+                        </div>
+                        <div class="story-name">@postType.Name</div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Posts feed -->
+        @if (Model.Any())
+        {
+            @foreach (var post in Model)
+            {
+                <div class="fb-post-card">
+                    <div class="fb-post-header">
+                        <div class="fb-post-user">
+                            <div class="fb-post-avatar">
+                                @if (!string.IsNullOrEmpty(post.User?.AvatarUrl))
+                                {
+                                    <img src="@post.User.AvatarUrl" alt="Avatar" class="avatar-img" />
+                                }
+                                else if (!string.IsNullOrEmpty(post.User?.Avatar))
+                                {
+                                    <img src="@post.User.Avatar" alt="Avatar" class="avatar-img" />
+                                }
+                                else
+                                {
+                                    <i class="fas fa-user"></i>
+                                }
+                            </div>
+                            <div class="fb-post-info">
+                                <div class="fb-post-author">@(post.User?.FullName ?? "Ẩn danh")</div>
+                                <div class="fb-post-meta">
+                                    <span>@post.CreatedDate.ToString("dd/MM/yyyy")</span>
+                                    <span class="post-category-badge">@post.PostType.Name</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fb-post-actions">
+                            <button class="fb-post-action">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="fb-post-content">
+                        <h3 class="fb-post-title">
+                            <a href="@Url.Action("Details", new { id = post.Id })">@post.Title</a>
+                        </h3>
+                        <div class="fb-post-text" id="post-content-@post.Id">
+                            @{
+                                var plainText = System.Text.RegularExpressions.Regex.Replace(post.Content, "<.*?>", "");
+                                var shouldTruncate = plainText.Length > 200;
+                                var truncatedText = shouldTruncate ? plainText.Substring(0, 200) : plainText;
+                            }
+
+                            <span class="content-preview" id="preview-@post.Id">
+                                @truncatedText
+                                @if (shouldTruncate)
+                                {
+                                    <span>...</span>
+                                    <span class="see-more-btn" onclick="showFullContent(@post.Id)">Xem thêm</span>
+                                }
+                            </span>
+
+                            @if (shouldTruncate)
+                            {
+                                <span class="content-full" id="full-@post.Id" style="display: none;">
+                                    @Html.Raw(post.Content)
+                                    <span class="see-less-btn" onclick="showPreviewContent(@post.Id)">Ẩn bớt</span>
+                                </span>
+                            }
+                        </div>
+                    </div>
+
+
+                    @if (!string.IsNullOrEmpty(post.ImageUrls))
+                    {
+                        var firstImage = post.ImageUrls.Split(',').FirstOrDefault()?.Trim();
+                        if (!string.IsNullOrEmpty(firstImage))
+                        {
+                            <div class="fb-post-media">
+                                @if (!firstImage.StartsWith("http") && !firstImage.StartsWith("/"))
+                                {
+                                    <img src="/@firstImage" alt="@post.Title">
+                                }
+                                else
+                                {
+                                    <img src="@firstImage" alt="@post.Title">
+                                }
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="fb-post-media">
+                            <img src="~/images/blog-placeholder.jpg" alt="@post.Title">
+                        </div>
+                    }
+
+                    <!-- Thêm phần hiển thị số lượng like và comment -->
+                    @{
+                        var likeCounts = ViewBag.LikeCounts as Dictionary<int, int>;
+                        var commentCounts = ViewBag.CommentCounts as Dictionary<int, int>;
+                        var userLikes = ViewBag.UserLikes as Dictionary<int, bool>;
+
+                        var likeCount = likeCounts?.ContainsKey(post.Id) == true ? likeCounts[post.Id] : 0;
+                        var commentCount = commentCounts?.ContainsKey(post.Id) == true ? commentCounts[post.Id] : 0;
+                        var isLiked = userLikes?.ContainsKey(post.Id) == true ? userLikes[post.Id] : false;
+                    }
+
+                    <!-- Hiển thị thống kê like và comment -->
+                    @if (likeCount > 0 || commentCount > 0)
+                    {
+                        <div class="fb-post-stats">
+                            <div class="fb-post-stats-left">
+                                @if (likeCount > 0)
+                                {
+                                    <span class="fb-post-stat-item">
+                                        <i class="fas fa-thumbs-up text-primary"></i>
+                                        <span>@likeCount</span>
+                                    </span>
+                                }
+                            </div>
+                            <div class="fb-post-stats-right">
+                                @if (commentCount > 0)
+                                {
+                                    <span class="fb-post-stat-item">
+                                        <span>@commentCount bình luận</span>
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    <div class="fb-post-footer">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <button type="button" class="fb-post-reaction @(isLiked ? "liked" : "")" onclick="likePostFromIndex(@post.Id, this)">
+                                <i class="@(isLiked ? "fas" : "far") fa-thumbs-up"></i>
+                                <span>@(isLiked ? "Đã thích" : "Thích")</span>
+                            </button>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Details", new { id = post.Id })" class="fb-post-reaction">
+                                <i class="far fa-thumbs-up"></i>
+                                <span>Thích</span>
+                            </a>
+                        }
+
+                        <a href="@Url.Action("Details", new { id = post.Id })" class="fb-post-reaction">
+                            <i class="far fa-comment"></i>
+                            <span>Bình luận</span>
+                        </a>
+                        <a href="@Url.Action("Details", new { id = post.Id })" class="fb-post-reaction">
+                            <i class="fas fa-share"></i>
+                            <span>Chia sẻ</span>
+                        </a>
+                    </div>
+                </div>
+            }
+
+
+            <!-- Pagination -->
+            @if (ViewBag.TotalPages > 1)
+            {
+                <div class="fb-pagination">
+                    <div class="fb-pagination-inner">
+                        @if (ViewBag.CurrentPage > 1)
+                        {
+                            <a class="fb-pagination-item" href="@Url.Action("Index", new { postTypeId = ViewBag.CurrentPostTypeId, page = ViewBag.CurrentPage - 1 })">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        }
+
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <a class="fb-pagination-item @(i == ViewBag.CurrentPage ? "active" : "")"
+                               href="@Url.Action("Index", new { postTypeId = ViewBag.CurrentPostTypeId, page = i })">
+                                @i
+                            </a>
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                        {
+                            <a class="fb-pagination-item" href="@Url.Action("Index", new { postTypeId = ViewBag.CurrentPostTypeId, page = ViewBag.CurrentPage + 1 })">
+                                <i class="fas fa-chevron-right"></i>
                             </a>
                         }
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Main Content -->
-    <section class="blog-section">
-        <div class="container">
-            <!-- Action Buttons -->
-            @if (User.Identity.IsAuthenticated)
-            {
-                <div class="action-buttons text-center">
-                    <a asp-action="Create" class="btn btn-create me-3">
-                        <i class="fas fa-plus me-2"></i> Tạo bài viết mới
-                    </a>
-                    <a asp-action="MyPosts" class="btn btn-my-posts">
-                        <i class="fas fa-user-edit me-2"></i> Bài viết của tôi
-                    </a>
-                </div>
             }
-
-            <!-- Blog Posts -->
-            @if (Model.Any())
-            {
-                <div class="row g-4">
-                    @foreach (var post in Model)
-                    {
-                        <div class="col-lg-4 col-md-6">
-                            <article class="card blog-card">
-                                @if (!string.IsNullOrEmpty(post.ImageUrls))
-                                {
-                                    var firstImage = post.ImageUrls.Split(',').FirstOrDefault()?.Trim();
-                                    if (!string.IsNullOrEmpty(firstImage))
-                                    {
-                                        <img src="@firstImage" class="blog-card-img" alt="@post.Title">
-                                    }
-                                }
-                                else
-                                {
-                                    <div class="blog-card-img d-flex align-items-center justify-content-center bg-light">
-                                        <i class="fas fa-image fa-3x text-muted"></i>
-                                    </div>
-                                }
-                                
-                                <div class="blog-card-body">
-                                    <div class="blog-meta">
-                                        <span class="blog-category">@post.PostType.Name</span>
-                                        <span class="blog-date">
-                                            <i class="far fa-calendar-alt me-1"></i>
-                                            @post.CreatedDate.ToString("dd/MM/yyyy")
-                                        </span>
-                                    </div>
-                                    
-                                    <h3 class="blog-title">
-                                        <a href="@Url.Action("Details", new { id = post.Id })">
-                                            @post.Title
-                                        </a>
-                                    </h3>
-                                    
-                                    <div class="blog-excerpt">
-                                        @{
-                                            var plainText = System.Text.RegularExpressions.Regex.Replace(post.Content, "<.*?>", "");
-                                            var truncatedText = plainText.Length > 120 ? plainText.Substring(0, 120) + "..." : plainText;
-                                        }
-                                        @truncatedText
-                                    </div>
-                                    
-                                    <div class="blog-footer">
-                                        <div class="blog-author">
-                                            <i class="fas fa-user-circle"></i>
-                                            @(post.User?.FullName ?? "Ẩn danh")
-                                        </div>
-                                        <a href="@Url.Action("Details", new { id = post.Id })" 
-                                           class="read-more-btn">
-                                            Đọc thêm
-                                        </a>
-                                    </div>
-                                </div>
-                            </article>
-                        </div>
-                    }
-                </div>
-
-                <!-- Pagination -->
-                @if (ViewBag.TotalPages > 1)
-                {
-                    <nav aria-label="Blog pagination" class="custom-pagination">
-                        <ul class="pagination justify-content-center">
-                            @if (ViewBag.CurrentPage > 1)
-                            {
-                                <li class="page-item">
-                                    <a class="page-link" href="@Url.Action("Index", new { postTypeId = ViewBag.CurrentPostTypeId, page = ViewBag.CurrentPage - 1 })">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </a>
-                                </li>
-                            }
-
-                            @for (int i = Math.Max(1, ViewBag.CurrentPage - 2); i <= Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2); i++)
-                            {
-                                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                                    <a class="page-link" href="@Url.Action("Index", new { postTypeId = ViewBag.CurrentPostTypeId, page = i })">
-                                        @i
-                                    </a>
-                                </li>
-                            }
-
-                                                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
-                            {
-                                <li class="page-item">
-                                    <a class="page-link" href="@Url.Action("Index", new { postTypeId = ViewBag.CurrentPostTypeId, page = ViewBag.CurrentPage + 1 })">
-                                        <i class="fas fa-chevron-right"></i>
-                                    </a>
-                                </li>
-                            }
-                        </ul>
-                    </nav>
-                }
-            }
-            else
-            {
-                <!-- Empty State -->
-                <div class="empty-state">
+        }
+        else
+        {
+            <div class="fb-empty-state">
+                <div class="fb-empty-icon">
                     <i class="fas fa-newspaper"></i>
-                    <h4>Chưa có bài viết nào</h4>
-                    <p>
-                        @if (ViewBag.CurrentPostTypeId != null)
-                        {
-                            <span>Không có bài viết nào thuộc chủ đề này.</span>
-                        }
-                        else
-                        {
-                            <span>Hãy là người đầu tiên chia sẻ cảm hứng trang trí!</span>
-                        }
-                    </p>
-                    @if (User.Identity.IsAuthenticated)
+                </div>
+                <h4>Chưa có bài viết nào</h4>
+                <p>
+                    @if (ViewBag.CurrentPostTypeId != null)
                     {
-                        <a asp-action="Create" class="btn btn-create">
-                            <i class="fas fa-plus me-2"></i> Tạo bài viết đầu tiên
-                        </a>
+                        <span>Không có bài viết nào thuộc loại này.</span>
                     }
                     else
                     {
-                        <a asp-controller="Account" asp-action="Login" class="btn btn-create">
-                            <i class="fas fa-sign-in-alt me-2"></i> Đăng nhập để viết bài
-                        </a>
+                        <span>Hãy là người đầu tiên chia sẻ bài viết!</span>
                     }
+                </p>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a asp-action="Create" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i> Tạo bài viết đầu tiên
+                    </a>
+                }
+            </div>
+        }
+    </div>
+
+    <!-- Right sidebar -->
+    <div class="fb-sidebar right-sidebar">
+        <div class="fb-sidebar-content">
+            <div class="fb-sponsored">
+                <h5 class="fb-sidebar-title">Bài nổi bật</h5>
+                <div class="fb-recommended-posts">
+                    <div class="fb-recommended-post">
+                        <div class="fb-recommended-img">
+                            <img src="~/images/blog-placeholder.jpg" alt="Gợi ý bài viết">
+                        </div>
+                        <div class="fb-recommended-info">
+                            <div class="fb-recommended-title">Ý tưởng trang trí phòng khách</div>
+                            <div class="fb-recommended-meta">2 giờ trước</div>
+                        </div>
+                    </div>
+                    <div class="fb-recommended-post">
+                        <div class="fb-recommended-img">
+                            <img src="~/images/blog-placeholder.jpg" alt="Gợi ý bài viết">
+                        </div>
+                        <div class="fb-recommended-info">
+                            <div class="fb-recommended-title">Những xu hướng mới nhất 2025</div>
+                            <div class="fb-recommended-meta">1 ngày trước</div>
+                        </div>
+                    </div>
                 </div>
-            }
+            </div>
+
+            <div class="fb-contacts">
+                <h5 class="fb-sidebar-title">Tác giả nổi bật</h5>
+                <div class="fb-contact-list">
+                    <div class="fb-contact-item">
+                        <div class="fb-contact-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="fb-contact-name">Nguyễn Văn A</div>
+                    </div>
+                    <div class="fb-contact-item">
+                        <div class="fb-contact-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="fb-contact-name">Trần Thị B</div>
+                    </div>
+                    <div class="fb-contact-item">
+                        <div class="fb-contact-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="fb-contact-name">Lê Văn C</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fb-footer">
+                <div class="fb-footer-links">
+                    <a href="#">Điều khoản</a>
+                    <a href="#">Bảo mật</a>
+                    <a href="#">Quảng cáo</a>
+                    <a href="#">Liên hệ</a>
+                </div>
+                <div class="fb-copyright">
+                    HomeStyle © 2025
+                </div>
+            </div>
         </div>
-    </section>
+    </div>
 </div>
 
-<!-- Floating Action Button for Mobile -->
-@if (User.Identity.IsAuthenticated)
-{
-    <div class="floating-action-btn d-md-none">
-        <a asp-action="Create" class="btn btn-create rounded-circle" title="Tạo bài viết">
-            <i class="fas fa-plus"></i>
-        </a>
-    </div>
-}
+<style>
+    /* Facebook-style layout */
+    /* Facebook-style layout */
+    :root {
+        --fb-bg: #f0f2f5;
+        --fb-card-bg: #ffffff;
+        --fb-primary-text: #1c1e21;
+        --fb-secondary-text: #65676b;
+        --fb-hover-bg: #f2f2f2;
+        --fb-active-bg: #e7f3ff;
+        --fb-active-color: #1877f2;
+        --fb-border: #e4e6eb;
+        --fb-primary-button: #1877f2;
+        --fb-icon-bg: #e4e6eb;
+        --fb-divider: #ced0d4;
+    }
 
-@section Scripts {
-    <script>
-        // Smooth scroll for filter buttons on mobile
-        document.addEventListener('DOMContentLoaded', function() {
-            const filterButtons = document.querySelector('.filter-buttons');
-            if (filterButtons) {
-                const activeBtn = filterButtons.querySelector('.filter-btn.active');
-                if (activeBtn) {
-                    activeBtn.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+    body {
+        background-color: var(--fb-bg) !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    /* Thêm vào phần CSS trong Index.cshtml */
+    .fb-post-stats {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 16px;
+        border-bottom: 1px solid var(--fb-border);
+        font-size: 13px;
+        color: var(--fb-secondary-text);
+    }
+
+    .fb-post-stats-left,
+    .fb-post-stats-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .fb-post-stat-item {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+    }
+
+        .fb-post-stat-item i {
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(45deg, #1877f2, #42a5f5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+        }
+
+        .fb-post-stat-item:hover {
+            text-decoration: underline;
+        }
+
+    .fb-post-reaction.liked {
+        color: var(--fb-active-color);
+        background-color: rgba(24, 119, 242, 0.1);
+    }
+
+        .fb-post-reaction.liked i {
+            animation: likeAnimation 0.3s ease;
+        }
+
+        .fb-post-reaction.liked:hover {
+            background-color: rgba(24, 119, 242, 0.15);
+            color: var(--fb-active-color);
+        }
+
+    .fb-layout-container {
+        display: flex;
+        max-width: 1920px;
+        margin: 0 auto;
+        padding-top: 20px;
+        position: relative;
+    }
+
+    /* Sidebar styles */
+    .fb-sidebar {
+        width: 360px;
+        height: calc(100vh - 100px);
+        position: sticky;
+        top: 80px;
+        overflow-y: auto;
+    }
+
+    .left-sidebar {
+        padding-right: 15px;
+    }
+
+    .right-sidebar {
+        padding-left: 15px;
+    }
+
+    .fb-sidebar-content {
+        padding: 0 8px;
+    }
+
+    /* Main feed */
+    .fb-main-feed {
+        flex: 1;
+        max-width: 680px;
+        margin: 0 auto;
+    }
+
+    /* Menu items */
+    .fb-menu-item {
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 10px;
+        text-decoration: none;
+        color: var(--fb-primary-text);
+        margin-bottom: 5px;
+        transition: all 0.2s ease;
+    }
+
+        .fb-menu-item:hover {
+            background-color: var(--fb-hover-bg);
+            color: var(--fb-primary-text);
+        }
+
+        .fb-menu-item.active {
+            background-color: var(--fb-active-bg);
+            color: var(--fb-active-color);
+            font-weight: 500;
+        }
+
+    .fb-menu-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: var(--fb-icon-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+    }
+
+    .fb-menu-item.active .fb-menu-icon {
+        background-color: #d4e5f9;
+    }
+
+    .fb-menu-text {
+        font-size: 15px;
+        font-weight: 500;
+    }
+
+    .fb-menu-subtitle {
+        color: var(--fb-secondary-text);
+        font-weight: 600;
+        padding: 10px 12px 8px;
+        font-size: 17px;
+    }
+
+    /* Sections */
+    .fb-profile-section,
+    .fb-categories-section {
+        margin-bottom: 20px;
+    }
+
+    /* Avatar styles */
+    .avatar-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #e4e6eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+        overflow: hidden;
+    }
+
+    .avatar-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    .fb-post-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #e4e6eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+        overflow: hidden;
+    }
+
+    .fb-contact-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: var(--fb-icon-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+        overflow: hidden;
+    }
+
+    /* Create post card */
+    .create-post-card {
+        background-color: var(--fb-card-bg);
+        border-radius: 8px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        padding: 12px 16px 10px;
+        margin-bottom: 16px;
+    }
+
+    .create-post-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .create-post-input {
+        flex: 1;
+        background-color: #f0f2f5;
+        border-radius: 20px;
+        padding: 10px 15px;
+        font-size: 15px;
+        color: var(--fb-secondary-text);
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+        .create-post-input:hover {
+            background-color: var(--fb-hover-bg);
+            color: var(--fb-secondary-text);
+        }
+
+    .create-post-actions {
+        display: flex;
+        border-top: 1px solid var(--fb-border);
+        margin-top: 5px;
+        padding-top: 10px;
+    }
+
+    .create-post-action {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        border-radius: 8px;
+        color: var(--fb-secondary-text);
+        text-decoration: none;
+        transition: background-color 0.2s;
+    }
+
+        .create-post-action:hover {
+            background-color: var(--fb-hover-bg);
+            color: var(--fb-secondary-text);
+        }
+
+        .create-post-action i {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+
+    /* Stories/Filters section */
+    .stories-section {
+        margin-bottom: 16px;
+        background-color: var(--fb-card-bg);
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .stories-container {
+        display: flex;
+        overflow-x: auto;
+        padding: 5px 0;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+        .stories-container::-webkit-scrollbar {
+            display: none;
+        }
+
+    .story-filter {
+        min-width: 100px;
+        padding: 10px;
+        margin-right: 10px;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 1px solid var(--fb-border);
+    }
+
+        .story-filter:hover {
+            background-color: var(--fb-hover-bg);
+        }
+
+        .story-filter.active {
+            background-color: var(--fb-active-bg);
+            border-color: var(--fb-active-color);
+        }
+
+    .story-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: var(--fb-icon-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 5px;
+    }
+
+    .story-filter.active .story-icon {
+        background-color: #d4e5f9;
+    }
+
+    .story-name {
+        font-size: 14px;
+        color: var(--fb-primary-text);
+        font-weight: 500;
+        text-align: center;
+    }
+
+    /* Post card - Facebook style */
+    .fb-post-card {
+        background-color: var(--fb-card-bg);
+        border-radius: 8px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        margin-bottom: 16px;
+        overflow: hidden;
+    }
+
+    .fb-post-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 16px;
+    }
+
+    .fb-post-user {
+        display: flex;
+        align-items: center;
+    }
+
+    .fb-post-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .fb-post-author {
+        font-weight: 600;
+        font-size: 15px;
+        color: var(--fb-primary-text);
+        line-height: 1.3333;
+    }
+
+    .fb-post-meta {
+        display: flex;
+        align-items: center;
+        font-size: 13px;
+        color: var(--fb-secondary-text);
+        gap: 8px;
+        line-height: 1.3333;
+    }
+
+    .post-category-badge {
+        background-color: var(--fb-icon-bg);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-weight: 500;
+        font-size: 12px;
+    }
+
+    .fb-post-actions {
+        display: flex;
+        align-items: center;
+    }
+
+    .fb-post-action {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        background-color: transparent;
+        border: none;
+        color: var(--fb-secondary-text);
+        transition: background-color 0.2s;
+    }
+
+        .fb-post-action:hover {
+            background-color: var(--fb-hover-bg);
+        }
+
+    /* Post content - Facebook typography */
+    .fb-post-content {
+        padding: 0 16px;
+    }
+
+    .fb-post-title {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 4px; /* Reduced from 8px to 4px */
+        line-height: 1.2;
+        color: var(--fb-primary-text);
+    }
+
+        .fb-post-title a {
+            color: var(--fb-primary-text);
+            text-decoration: none;
+        }
+
+            .fb-post-title a:hover {
+                text-decoration: underline;
+            }
+
+    .fb-post-text {
+        font-size: 15px;
+        color: var(--fb-primary-text);
+        margin-bottom: 12px; /* Reduced from 16px to 12px */
+        margin-top: 0; /* Added to ensure no extra space */
+        line-height: 1.3333;
+        font-weight: 400;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+
+    /* See more/less functionality */
+    .see-more-btn,
+    .see-less-btn {
+        color: var(--fb-active-color);
+        cursor: pointer;
+        font-weight: 600;
+        margin-left: 5px;
+        font-size: 15px;
+    }
+
+        .see-more-btn:hover,
+        .see-less-btn:hover {
+            text-decoration: underline;
+        }
+
+    /* Fix spacing between title and content */
+    .fb-post-title + .fb-post-text {
+        margin-top: 4px !important; /* Reduced from 8px to 4px and made important */
+    }
+
+    /* Fix content spacing */
+    .content-full {
+        margin-top: 0; /* Reduced from 10px to 0 */
+    }
+
+    .content-preview {
+        margin-top: 0;
+        margin-bottom: 8px;
+    }
+
+    /* Post media - Facebook image style */
+    .fb-post-media {
+        margin-bottom: 0;
+        margin-top: 12px;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .fb-post-media img {
+            width: 100%;
+            height: auto;
+            max-height: 600px;
+            object-fit: cover;
+            display: block;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+            .fb-post-media img:hover {
+                transform: scale(1.02);
+            }
+
+        /* Multiple images layout */
+        .fb-post-media.multiple-images {
+            display: grid;
+            gap: 2px;
+        }
+
+            .fb-post-media.multiple-images.two-images {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .fb-post-media.multiple-images.three-images {
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: 1fr 1fr;
+            }
+
+                .fb-post-media.multiple-images.three-images img:first-child {
+                    grid-row: 1 / 3;
                 }
+
+            .fb-post-media.multiple-images.four-images {
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: 1fr 1fr;
+            }
+
+            .fb-post-media.multiple-images img {
+                height: 250px;
+                object-fit: cover;
+            }
+
+    /* Post footer */
+    .fb-post-footer {
+        display: flex;
+        padding: 8px 16px 12px;
+        border-top: 1px solid var(--fb-border);
+        margin-top: 12px;
+    }
+
+    .fb-post-reaction {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        border-radius: 6px;
+        color: var(--fb-secondary-text);
+        text-decoration: none;
+        transition: all 0.2s ease;
+        font-weight: 600;
+        font-size: 15px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        outline: none; /* Loại bỏ outline */
+    }
+
+        .fb-post-reaction:focus {
+            outline: none; /* Loại bỏ focus outline */
+            box-shadow: none; /* Loại bỏ box-shadow */
+        }
+
+        .fb-post-reaction i {
+            margin-right: 8px;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+
+    /* Pagination */
+    .fb-pagination {
+        display: flex;
+        justify-content: center;
+        margin: 20px 0 30px;
+    }
+
+    .fb-pagination-inner {
+        background-color: var(--fb-card-bg);
+        border-radius: 8px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        display: flex;
+        padding: 5px;
+    }
+
+    .fb-pagination-item {
+        min-width: 36px;
+        height: 36px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 2px;
+        text-decoration: none;
+        color: var(--fb-primary-text);
+        font-weight: 500;
+        transition: background-color 0.2s;
+    }
+
+        .fb-pagination-item:hover {
+            background-color: var(--fb-hover-bg);
+        }
+
+        .fb-pagination-item.active {
+            background-color: var(--fb-active-bg);
+            color: var(--fb-active-color);
+        }
+
+    /* Empty state */
+    .fb-empty-state {
+        background-color: var(--fb-card-bg);
+        border-radius: 8px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        padding: 40px 20px;
+        text-align: center;
+    }
+
+    .fb-empty-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background-color: var(--fb-icon-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 2rem;
+        color: var(--fb-secondary-text);
+    }
+
+    .fb-empty-state h4 {
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--fb-primary-text);
+    }
+
+    .fb-empty-state p {
+        color: var(--fb-secondary-text);
+        margin-bottom: 20px;
+    }
+
+    /* Right sidebar components */
+    .fb-sidebar-title {
+        color: var(--fb-secondary-text);
+        font-size: 17px;
+        font-weight: 600;
+        padding: 10px 0;
+    }
+
+    .fb-sponsored,
+    .fb-contacts {
+        margin-bottom: 24px;
+        background-color: var(--fb-card-bg);
+        border-radius: 8px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+    }
+
+    .fb-recommended-posts {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .fb-recommended-post {
+        display: flex;
+        align-items: center;
+        padding: 8px 0;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: background-color 0.2s;
+    }
+
+        .fb-recommended-post:hover {
+            background-color: var(--fb-hover-bg);
+        }
+
+    .fb-recommended-img {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-right: 10px;
+    }
+
+        .fb-recommended-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .fb-recommended-info {
+        flex: 1;
+    }
+
+    .fb-recommended-title {
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 5px;
+        color: var(--fb-primary-text);
+        line-height: 1.3333;
+    }
+
+    .fb-recommended-meta {
+        font-size: 12px;
+        color: var(--fb-secondary-text);
+    }
+
+    .fb-contact-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .fb-contact-item {
+        display: flex;
+        align-items: center;
+        padding: 8px 0;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: background-color 0.2s;
+    }
+
+        .fb-contact-item:hover {
+            background-color: var(--fb-hover-bg);
+        }
+
+    .fb-contact-name {
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--fb-primary-text);
+    }
+
+    .fb-footer {
+        padding: 15px 0;
+    }
+
+    .fb-footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+        .fb-footer-links a {
+            color: var(--fb-secondary-text);
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+            .fb-footer-links a:hover {
+                text-decoration: underline;
+            }
+
+    .fb-copyright {
+        color: var(--fb-secondary-text);
+        font-size: 13px;
+    }
+
+    /* Alert styles for success message */
+    .alert {
+        border-radius: 8px;
+        margin-bottom: 16px;
+        font-size: 15px;
+        font-weight: 400;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+    }
+
+    .btn-close {
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        font-weight: 700;
+        line-height: 1;
+        color: #000;
+        opacity: 0.5;
+        cursor: pointer;
+    }
+
+        .btn-close:hover {
+            opacity: 0.75;
+        }
+
+    /* Content formatting for HTML content */
+    .content-full h1,
+    .content-full h2,
+    .content-full h3,
+    .content-full h4,
+    .content-full h5,
+    .content-full h6 {
+        color: var(--fb-primary-text);
+        font-weight: 600;
+        margin: 16px 0 8px 0;
+        line-height: 1.25;
+    }
+
+    .content-full p {
+        margin: 8px 0;
+        line-height: 1.3333;
+    }
+
+    .content-full img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin: 8px 0;
+    }
+
+    .content-full ul,
+    .content-full ol {
+        margin: 8px 0;
+        padding-left: 20px;
+    }
+
+    .content-full li {
+        margin: 4px 0;
+        line-height: 1.3333;
+    }
+
+    .content-full blockquote {
+        border-left: 4px solid var(--fb-active-color);
+        padding-left: 16px;
+        margin: 16px 0;
+        font-style: italic;
+        color: var(--fb-secondary-text);
+    }
+
+    .content-full a {
+        color: var(--fb-active-color);
+        text-decoration: none;
+    }
+
+        .content-full a:hover {
+            text-decoration: underline;
+        }
+
+    .fb-post-text {
+        font-size: 15px;
+        color: var(--fb-primary-text);
+        margin: 0 0 12px 0 !important; /* Bắt buộc áp dụng margin */
+        line-height: 1.3333;
+        font-weight: 400;
+        white-space: normal !important; /* Thay đổi từ pre-wrap sang normal */
+        word-wrap: break-word;
+        display: block;
+    }
+
+    .fb-post-title {
+        font-size: 20px;
+        font-weight: 600;
+        margin: 0 0 4px 0 !important; /* Bắt buộc áp dụng margin */
+        line-height: 1.2;
+        color: var(--fb-primary-text);
+        display: block;
+    }
+
+    .fb-post-content {
+        padding: 0 16px;
+        display: block;
+    }
+
+    .content-preview {
+        display: inline;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Đảm bảo không có khoảng cách giữa các phần tử con */
+    .fb-post-content > * {
+        margin-top: 0 !important;
+        margin-bottom: 4px !important;
+    }
+
+    /* Loại bỏ white-space */
+    .content-preview, .content-full {
+        white-space: normal !important;
+    }
+
+    .fb-post-reaction-active {
+        color: #1877f2 !important;
+        font-weight: bold;
+    }
+
+        .fb-post-reaction-active i {
+            color: #1877f2;
+        }
+
+    /* Responsive design */
+    @@media (max-width: 1200px) {
+        .fb-sidebar
+
+    {
+        width: 280px;
+    }
+
+    .fb-main-feed {
+        max-width: 600px;
+    }
+
+    }
+
+    @@media (max-width: 992px) {
+        .right-sidebar
+
+    {
+        display: none;
+    }
+
+    .fb-main-feed {
+        margin-right: 0;
+    }
+
+    }
+
+    @@media (max-width: 768px) {
+        .fb-layout-container
+
+    {
+        flex-direction: column;
+        padding-top: 10px;
+    }
+
+    .left-sidebar {
+        display: none;
+    }
+
+    .fb-main-feed {
+        width: 100%;
+        max-width: none;
+        padding: 0 10px;
+    }
+
+    .fb-post-card {
+        border-radius: 0;
+        margin-bottom: 8px;
+    }
+
+    .fb-post-title {
+        font-size: 18px;
+    }
+
+    .fb-post-text {
+        font-size: 14px;
+    }
+
+    .fb-post-media img {
+        max-height: 400px;
+    }
+
+    }
+
+    @@media (max-width: 480px) {
+        .fb-post-header
+
+    {
+        padding: 10px 12px;
+    }
+
+    .fb-post-content {
+        padding: 0 16px;
+    }
+
+    .fb-post-footer {
+        padding: 6px 12px 10px;
+    }
+
+    .fb-post-title {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 4px; /* Reduced from 8px to 4px */
+        line-height: 1.2;
+        color: var(--fb-primary-text);
+    }
+
+    .fb-post-text {
+        font-size: 14px;
+    }
+
+    .fb-post-reaction {
+        font-size: 14px;
+        padding: 6px;
+    }
+
+ }
+
+</style>
+
+        
+    <script>
+        function showFullContent(postId) {
+        const preview = document.getElementById(`preview-${postId}`);
+        const full = document.getElementById(`full-${postId}`);
+
+        if (preview && full) {
+            preview.style.display = 'none';
+            full.style.display = 'block';
+
+            setTimeout(() => {
+                full.style.transition = 'all 0.3s ease';
+                full.style.opacity = '1';
+                full.style.transform = 'translateY(0)';
+            }, 10);
+        }
+    }
+
+    function showPreviewContent(postId) {
+        const preview = document.getElementById(`preview-${postId}`);
+        const full = document.getElementById(`full-${postId}`);
+
+        if (preview && full) {
+            full.style.transition = 'all 0.3s ease';
+            full.style.opacity = '0';
+            full.style.transform = 'translateY(-10px)';
+
+            setTimeout(() => {
+                full.style.display = 'none';
+                preview.style.display = 'block';
+
+                setTimeout(() => {
+                    preview.style.opacity = '1';
+                    preview.style.transform = 'translateY(0)';
+                }, 10);
+            }, 300);
+        }
+    }
+
+
+    // Thêm đoạn mã để xử lý khoảng trắng khi trang tải xong
+    document.addEventListener('DOMContentLoaded', function() {
+        // Xử lý tất cả các đoạn nội dung để loại bỏ khoảng trắng không cần thiết
+        document.querySelectorAll('.fb-post-text').forEach(function(element) {
+            // Áp dụng kiểu hiển thị nhỏ gọn
+            element.style.margin = '0 0 12px 0';
+            element.style.whiteSpace = 'normal';
+        });
+
+        // Đảm bảo các phần tử con của post content có khoảng cách tối thiểu
+        document.querySelectorAll('.fb-post-content > *').forEach(function(element) {
+            element.style.marginTop = '0';
+            element.style.marginBottom = '4px';
+        });
+
+        // Đảm bảo content-preview được hiển thị dạng inline
+        document.querySelectorAll('.content-preview').forEach(function(element) {
+            element.style.display = 'inline';
+        });
+    });
+
+         function likePostFromIndex(postId, button) {
+        // Disable button để tránh spam click
+        button.disabled = true;
+
+        // Hiệu ứng ngay lập tức (optimistic update)
+        const icon = button.querySelector('i');
+        const text = button.querySelector('span');
+        const postCard = button.closest('.fb-post-card');
+        let statsSection = postCard.querySelector('.fb-post-stats');
+
+        // Lấy trạng thái hiện tại
+        const isCurrentlyLiked = button.classList.contains('liked');
+        const newLikedState = !isCurrentlyLiked;
+
+        // Cập nhật UI ngay lập tức
+        if (newLikedState) {
+            // Thích
+            button.classList.add('liked');
+            icon.classList.remove('far');
+            icon.classList.add('fas');
+            text.textContent = 'Đã thích';
+        } else {
+            // Bỏ thích
+            button.classList.remove('liked');
+            icon.classList.remove('fas');
+            icon.classList.add('far');
+            text.textContent = 'Thích';
+        }
+
+        // Gửi request đến server
+        $.ajax({
+            url: '@Url.Action("LikePost", "Posts")',
+            type: 'POST',
+            data: { id: postId },
+            success: function(response) {
+                if (response.success) {
+                    // Cập nhật số lượng like chính xác từ server
+                    updateLikeCount(postCard, response.likeCount);
+                } else {
+                    // Nếu server trả về lỗi, revert lại UI
+                    revertLikeUI(button, !newLikedState);
+                    alert(response.message || 'Có lỗi xảy ra');
+                }
+            },
+            error: function() {
+                // Nếu có lỗi, revert lại UI
+                revertLikeUI(button, !newLikedState);
+                alert('Đã xảy ra lỗi khi thực hiện thao tác. Vui lòng thử lại.');
+            },
+            complete: function() {
+                // Enable lại button
+                button.disabled = false;
             }
         });
+    }
 
-        // Add loading animation for pagination
-        document.querySelectorAll('.pagination .page-link').forEach(link => {
-            link.addEventListener('click', function() {
-                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-            });
-        });
-    </script>
-}
+    function revertLikeUI(button, shouldBeLiked) {
+        const icon = button.querySelector('i');
+        const text = button.querySelector('span');
 
+        if (shouldBeLiked) {
+            button.classList.add('liked');
+            icon.classList.remove('far');
+            icon.classList.add('fas');
+            text.textContent = 'Đã thích';
+        } else {
+            button.classList.remove('liked');
+            icon.classList.remove('fas');
+            icon.classList.add('far');
+            text.textContent = 'Thích';
+        }
+    }
 
-                            
+    function updateLikeCount(postCard, likeCount) {
+        let statsSection = postCard.querySelector('.fb-post-stats');
+
+        if (likeCount > 0) {
+            // Nếu chưa có stats section, tạo mới
+            if (!statsSection) {
+                const mediaSection = postCard.querySelector('.fb-post-media');
+                const footerSection = postCard.querySelector('.fb-post-footer');
+
+                statsSection = document.createElement('div');
+                statsSection.className = 'fb-post-stats';
+                statsSection.innerHTML = `
+                    <div class="fb-post-stats-left"></div>
+                    <div class="fb-post-stats-right"></div>
+                `;
+
+                postCard.insertBefore(statsSection, footerSection);
+            }
+
+            const statsLeft = statsSection.querySelector('.fb-post-stats-left');
+            let likeStatItem = statsLeft.querySelector('.fb-post-stat-item');
+
+            if (likeStatItem) {
+                likeStatItem.querySelector('span').textContent = likeCount;
+            } else {
+                statsLeft.innerHTML = `
+                    <span class="fb-post-stat-item">
+                        <i class="fas fa-thumbs-up"></i>
+                        <span>${likeCount}</span>
+                    </span>
+                `;
+            }
+        } else {
+            // Nếu không còn like nào, xóa stats section nếu cũng không có comment
+            if (statsSection) {
+                const statsLeft = statsSection.querySelector('.fb-post-stats-left');
+                const statsRight = statsSection.querySelector('.fb-post-stats-right');
+
+                statsLeft.innerHTML = '';
+
+                // Nếu cả left và right đều trống, xóa toàn bộ stats section
+                if (!statsLeft.innerHTML.trim() && !statsRight.innerHTML.trim()) {
+                    statsSection.remove();
+                }
+            }
+        }
+    }
+
+    // Thêm CSS cho disabled state
+    document.addEventListener('DOMContentLoaded', function() {
+        const style = document.createElement('style');
+        style.textContent = `
+            .fb-post-reaction:disabled {
+                opacity: 0.7;
+                cursor: not-allowed;
+            }
+        `;
+        document.head.appendChild(style);
+    });
+</script>
+

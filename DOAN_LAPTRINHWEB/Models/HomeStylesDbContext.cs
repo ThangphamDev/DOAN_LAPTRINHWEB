@@ -28,6 +28,7 @@ public partial class HomeStylesDbContext : IdentityDbContext<ApplicationUser>
     public virtual DbSet<Cart> Carts { get; set; }
     public virtual DbSet<CartItem> CartItems { get; set; }
     public virtual DbSet<ProductVariant> ProductVariants { get; set; }
+    public DbSet<PostLike> PostLikes { get; set; }
 
 
     // Thêm các DbSet mới
