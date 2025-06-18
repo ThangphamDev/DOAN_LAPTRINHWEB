@@ -5,147 +5,194 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-4">
-    <div class="card shadow rounded">
-        <div class="card-body">
-            <div class="d-flex align-items-center mb-3">
-                <div class="fb-post-avatar me-3">
-                    @if (!string.IsNullOrEmpty(Model.User?.AvatarUrl))
-                    {
-                        <img src="@Model.User.AvatarUrl" alt="Avatar" class="avatar-img" />
-                    }
-                    else if (!string.IsNullOrEmpty(Model.User?.Avatar))
-                    {
-                        <img src="@Model.User.Avatar" alt="Avatar" class="avatar-img" />
-                    }
-                    else
-                    {
-                        <i class="fas fa-user"></i>
-                    }
-                </div>
-                <div class="fb-post-info">
-                    <div class="fb-post-author">@(Model.User?.FullName ?? "Ẩn danh")</div>
-                    <div class="fb-post-meta">
-                        <span>@Model.CreatedDate.ToString("dd/MM/yyyy")</span>
-                        <span class="post-category-badge">@Model.PostType.Name</span>
-                    </div>
-                </div>
+<div class="fb-layout-container">
+    <!-- Main content -->
+    <div class="fb-main-content">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
+        }
 
-            <h3 class="card-title mb-3">@Model.Title</h3>
-
-            <div class="mb-4">
-                @Html.Raw(Model.Content)
-            </div>
-
-            @* Hiển thị ảnh *@
-            @if (!string.IsNullOrEmpty(Model.ImageUrls))
-            {
-                <div class="text-center mt-3 mb-4">
-                    <img src="@Url.Content(Model.ImageUrls)" class="img-fluid rounded" alt="Ảnh bài viết" />
-                </div>
-            }
-
-            <hr class="my-4" />
-
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div class="d-flex align-items-center">
-                    <div class="me-3">
-                        @if (User.Identity.IsAuthenticated)
+        <!-- Post detail card -->
+        <div class="fb-post-card">
+            <div class="fb-post-header">
+                <div class="fb-post-user">
+                    <div class="fb-post-avatar">
+                        @if (!string.IsNullOrEmpty(Model.User?.AvatarUrl))
                         {
-                            <button id="likeButton" class="btn @(ViewBag.UserLiked ? "btn-primary" : "btn-outline-primary")" onclick="likePost(@Model.Id)">
-                                <i class="@(ViewBag.UserLiked ? "fas" : "far") fa-thumbs-up"></i>
-                                <span id="likeText">@(ViewBag.UserLiked ? "Đã thích" : "Thích")</span>
-                                <span id="likeCount" class="ms-1">(@ViewBag.LikesCount)</span>
-                            </button>
+                            <img src="@Model.User.AvatarUrl" alt="Avatar" class="avatar-img" />
+                        }
+                        else if (!string.IsNullOrEmpty(Model.User?.Avatar))
+                        {
+                            <img src="@Model.User.Avatar" alt="Avatar" class="avatar-img" />
                         }
                         else
                         {
-                            <a href="@Url.Action("Login", "Account", new { area = "Identity", returnUrl = Url.Action("Details", "Posts", new { id = Model.Id }) })" class="btn btn-outline-primary">
-                                <i class="far fa-thumbs-up"></i>
-                                <span>Thích</span>
-                                <span id="likeCount" class="ms-1">(@ViewBag.LikesCount)</span>
-                            </a>
+                            <i class="fas fa-user"></i>
                         }
                     </div>
-                    <div>
-                        <button class="btn btn-outline-secondary" onclick="scrollToComments()">
-                            <i class="far fa-comment"></i>
-                            <span>Bình luận</span>
-                            <span id="commentCount" class="ms-1">(@ViewBag.CommentsCount)</span>
-                        </button>
-                    </div>
-                </div>
-
-                <a asp-action="Index" class="btn btn-light">
-                    <i class="fas fa-arrow-left"></i> Quay lại
-                </a>
-            </div>
-
-            <hr class="my-4" />
-
-            <!-- Phần bình luận -->
-            <div id="commentsSection" class="comments-section">
-                <h5 class="mb-4">Bình luận (<span id="commentCountText">@ViewBag.CommentsCount</span>)</h5>
-
-                @if (User.Identity.IsAuthenticated)
-                {
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <div class="d-flex">
-                                <div class="avatar-circle me-3">
-                                    @{
-                                        var currentUser = ViewBag.CurrentUser as DOAN_LAPTRINHWEB.Models.ApplicationUser;
-                                    }
-                                    @if (currentUser != null && !string.IsNullOrEmpty(currentUser.AvatarUrl))
-                                    {
-                                        <img src="@currentUser.AvatarUrl" alt="Avatar" class="avatar-img" />
-                                    }
-                                    else if (currentUser != null && !string.IsNullOrEmpty(currentUser.Avatar))
-                                    {
-                                        <img src="@currentUser.Avatar" alt="Avatar" class="avatar-img" />
-                                    }
-                                    else
-                                    {
-                                        <i class="fas fa-user"></i>
-                                    }
-                                </div>
-                                <div class="flex-grow-1">
-                                    <textarea id="commentContent" class="form-control" rows="3" placeholder="Viết bình luận của bạn..."></textarea>
-                                    <div class="text-end mt-2">
-                                        <button id="addCommentBtn" class="btn btn-primary" onclick="addComment(@Model.Id)">
-                                            <i class="fas fa-paper-plane me-1"></i> Gửi bình luận
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="fb-post-info">
+                        <div class="fb-post-author">@(Model.User?.FullName ?? "Ẩn danh")</div>
+                        <div class="fb-post-meta">
+                            <span>@Model.CreatedDate.ToString("dd/MM/yyyy")</span>
+                            <span class="post-category-badge">@Model.PostType.Name</span>
                         </div>
                     </div>
+                </div>
+                <div class="fb-post-actions">
+                    <a asp-action="Index" class="fb-post-action" title="Quay lại">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="fb-post-content">
+                <h3 class="fb-post-title">@Model.Title</h3>
+                <div class="fb-post-text post-content">
+                    @Html.Raw(Model.Content)
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.ImageUrls))
+            {
+                var firstImage = Model.ImageUrls.Split(',').FirstOrDefault()?.Trim();
+                if (!string.IsNullOrEmpty(firstImage))
+                {
+                    <div class="fb-post-media">
+                        @if (!firstImage.StartsWith("http") && !firstImage.StartsWith("/"))
+                        {
+                            <img src="/@firstImage" alt="@Model.Title">
+                        }
+                        else
+                        {
+                            <img src="@firstImage" alt="@Model.Title">
+                        }
+                    </div>
+                }
+            }
+
+            <!-- Stats section -->
+            @{
+                var likeCount = ViewBag.LikesCount ?? 0;
+                var commentCount = ViewBag.CommentsCount ?? 0;
+                var isLiked = ViewBag.UserLiked ?? false;
+            }
+
+            @if (likeCount > 0 || commentCount > 0)
+            {
+                <div class="fb-post-stats">
+                    <div class="fb-post-stats-left">
+                        @if (likeCount > 0)
+                        {
+                            <span class="fb-post-stat-item">
+                                <i class="fas fa-thumbs-up"></i>
+                                <span>@likeCount</span>
+                            </span>
+                        }
+                    </div>
+                    <div class="fb-post-stats-right">
+                        @if (commentCount > 0)
+                        {
+                            <span class="fb-post-stat-item">
+                                <span>@commentCount bình luận</span>
+                            </span>
+                        }
+                    </div>
+                </div>
+            }
+
+            <div class="fb-post-footer">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <button id="likeButton" class="fb-post-reaction @(isLiked ? "liked" : "")" onclick="likePost(@Model.Id)">
+                        <i class="@(isLiked ? "fas" : "far") fa-thumbs-up"></i>
+                        <span id="likeText">@(isLiked ? "Đã thích" : "Thích")</span>
+                    </button>
                 }
                 else
                 {
-                    <div class="alert alert-info mb-4">
-                        <i class="fas fa-info-circle me-2"></i>
-                        Vui lòng <a href="@Url.Action("Login", "Account", new { area = "Identity", returnUrl = Url.Action("Details", "Posts", new { id = Model.Id }) })">đăng nhập</a> để bình luận.
-                    </div>
+                    <a href="@Url.Action("Login", "Account", new { area = "Identity", returnUrl = Url.Action("Details", "Posts", new { id = Model.Id }) })" class="fb-post-reaction">
+                        <i class="far fa-thumbs-up"></i>
+                        <span>Thích</span>
+                    </a>
                 }
 
-                <!-- Danh sách bình luận -->
-                <div id="commentsList" class="comments-list">
-                    <!-- Comments will be loaded here -->
-                    <div class="text-center my-4">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Đang tải...</span>
+                <button class="fb-post-reaction" onclick="scrollToComments()">
+                    <i class="far fa-comment"></i>
+                    <span>Bình luận</span>
+                </button>
+                <button class="fb-post-reaction">
+                    <i class="fas fa-share"></i>
+                    <span>Chia sẻ</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Comments section -->
+        <div id="commentsSection" class="fb-post-card">
+            <div class="fb-post-header">
+                <h5 class="mb-0">Bình luận (<span id="commentCountText">@commentCount</span>)</h5>
+            </div>
+
+            @if (User.Identity.IsAuthenticated)
+            {
+                <div class="create-comment-section">
+                    <div class="create-post-header">
+                        <div class="avatar-circle">
+                            @{
+                                var currentUser = ViewBag.CurrentUser as DOAN_LAPTRINHWEB.Models.ApplicationUser;
+                            }
+                            @if (currentUser != null && !string.IsNullOrEmpty(currentUser.AvatarUrl))
+                            {
+                                <img src="@currentUser.AvatarUrl" alt="Avatar" class="avatar-img" />
+                            }
+                            else if (currentUser != null && !string.IsNullOrEmpty(currentUser.Avatar))
+                            {
+                                <img src="@currentUser.Avatar" alt="Avatar" class="avatar-img" />
+                            }
+                            else
+                            {
+                                <i class="fas fa-user"></i>
+                            }
                         </div>
-                        <p class="mt-2">Đang tải bình luận...</p>
+                        <div class="flex-grow-1">
+                            <textarea id="commentContent" class="create-comment-input" rows="3" placeholder="Viết bình luận của bạn..."></textarea>
+                            <div class="text-end mt-2">
+                                <button id="addCommentBtn" class="btn btn-primary" onclick="addComment(@Model.Id)">
+                                    <i class="fas fa-paper-plane me-1"></i> Gửi bình luận
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                <div id="loadMoreContainer" class="text-center mt-4" style="display: none;">
-                    <button id="loadMoreBtn" class="btn btn-outline-primary" onclick="loadMoreComments()">
-                        <i class="fas fa-sync-alt me-1"></i> Xem thêm bình luận
-                    </button>
+            }
+            else
+            {
+                <div class="fb-empty-state">
+                    <div class="fb-empty-icon">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <p>Vui lòng <a href="@Url.Action("Login", "Account", new { area = "Identity", returnUrl = Url.Action("Details", "Posts", new { id = Model.Id }) })">đăng nhập</a> để bình luận.</p>
                 </div>
+            }
+
+            <!-- Comments list -->
+            <div id="commentsList" class="comments-list">
+                <div class="text-center my-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Đang tải...</span>
+                    </div>
+                    <p class="mt-2">Đang tải bình luận...</p>
+                </div>
+            </div>
+
+            <div id="loadMoreContainer" class="text-center mt-4" style="display: none;">
+                <button id="loadMoreBtn" class="btn btn-outline-primary" onclick="loadMoreComments()">
+                    <i class="fas fa-sync-alt me-1"></i> Xem thêm bình luận
+                </button>
             </div>
         </div>
     </div>
@@ -153,201 +200,662 @@
 
 
     <style>
-        .fb-post-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background-color: #e4e6eb;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
+    /* Import styles from Index.cshtml */
+    :root {
+        --fb-bg: #f0f2f5;
+        --fb-card-bg: #ffffff;
+        --fb-primary-text: #1c1e21;
+        --fb-secondary-text: #65676b;
+        --fb-hover-bg: #f2f2f2;
+        --fb-active-bg: #e7f3ff;
+        --fb-active-color: #1877f2;
+        --fb-border: #e4e6eb;
+        --fb-primary-button: #1877f2;
+        --fb-icon-bg: #e4e6eb;
+        --fb-divider: #ced0d4;
+    }
 
-        .avatar-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+    body {
+        background-color: var(--fb-bg) !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
 
-        .fb-post-info {
-            display: flex;
-            flex-direction: column;
-        }
+    .fb-layout-container {
+        display: flex;
+        max-width: 1920px;
+        margin: 0 auto;
+        padding-top: 20px;
+        position: relative;
+        justify-content: center;
+    }
 
-        .fb-post-author {
-            font-weight: 600;
-            font-size: 16px;
-        }
+    .fb-main-content {
+        width: 100%;
+        max-width: 680px;
+        margin: 0 auto;
+    }
 
-        .fb-post-meta {
-            display: flex;
-            gap: 8px;
-            font-size: 13px;
-            color: #65676b;
-        }
+    /* Post card styles - same as Index */
+    .fb-post-card {
+        background-color: var(--fb-card-bg);
+        border-radius: 8px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        margin-bottom: 16px;
+        overflow: hidden;
+    }
 
-        .post-category-badge {
-            background-color: #e4e6eb;
-            padding: 2px 8px;
-            border-radius: 12px;
+    .fb-post-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 16px;
+    }
+
+    .fb-post-user {
+        display: flex;
+        align-items: center;
+    }
+
+    .fb-post-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #e4e6eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+        overflow: hidden;
+    }
+
+    .avatar-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    .fb-post-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .fb-post-author {
+        font-weight: 600;
+        font-size: 15px;
+        color: var(--fb-primary-text);
+        line-height: 1.3333;
+    }
+
+    .fb-post-meta {
+        display: flex;
+        align-items: center;
+        font-size: 13px;
+        color: var(--fb-secondary-text);
+        gap: 8px;
+        line-height: 1.3333;
+    }
+
+    .post-category-badge {
+        background-color: var(--fb-icon-bg);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-weight: 500;
+        font-size: 12px;
+    }
+
+    .fb-post-actions {
+        display: flex;
+        align-items: center;
+    }
+
+    .fb-post-action {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        background-color: transparent;
+        border: none;
+        color: var(--fb-secondary-text);
+        transition: background-color 0.2s;
+        text-decoration: none;
+    }
+
+    .fb-post-action:hover {
+        background-color: var(--fb-hover-bg);
+        color: var(--fb-secondary-text);
+    }
+
+    /* Post content */
+    .fb-post-content {
+        padding: 0 16px;
+    }
+
+    .fb-post-title {
+        font-size: 24px;
+        font-weight: 600;
+        margin: 0 0 12px 0;
+        line-height: 1.2;
+        color: var(--fb-primary-text);
+    }
+
+    .fb-post-text {
+        font-size: 15px;
+        color: var(--fb-primary-text);
+        margin: 0 0 12px 0;
+        line-height: 1.3333;
+        font-weight: 400;
+        white-space: pre-line;
+        word-wrap: break-word;
+        display: block;
+    }
+
+    .post-content {
+        white-space: pre-line !important;
+        word-wrap: break-word;
+        line-height: 1.5;
+    }
+
+    .post-content p {
+        margin-bottom: 12px;
+    }
+
+    .post-content h1, .post-content h2, .post-content h3, 
+    .post-content h4, .post-content h5, .post-content h6 {
+        margin-top: 20px;
+        margin-bottom: 10px;
+        font-weight: 600;
+        color: var(--fb-primary-text);
+    }
+
+    .post-content img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin: 8px 0;
+    }
+
+    /* Post media */
+    .fb-post-media {
+        margin-bottom: 0;
+        margin-top: 12px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .fb-post-media img {
+        width: 100%;
+        height: auto;
+        max-height: 600px;
+        object-fit: cover;
+        display: block;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+    }
+
+    .fb-post-media img:hover {
+        transform: scale(1.02);
+    }
+    /* Stats section */
+    .fb-post-stats {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 16px;
+        border-bottom: 1px solid var(--fb-border);
+        font-size: 13px;
+        color: var(--fb-secondary-text);
+    }
+
+    .fb-post-stats-left,
+    .fb-post-stats-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .fb-post-stat-item {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+    }
+
+        .fb-post-stat-item i {
+            color: #1877f2;
             font-size: 12px;
-            font-weight: 500;
+            margin-right: 4px;
         }
 
-        /* Comment styles */
-        .avatar-circle {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #e4e6eb;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
+        .fb-post-stat-item:hover {
+            text-decoration: underline;
         }
 
-        .comment-item {
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #eee;
+    /* Post footer */
+    .fb-post-footer {
+        display: flex;
+        padding: 8px 16px 12px;
+        border-top: 1px solid var(--fb-border);
+        margin-top: 12px;
+    }
+
+    .fb-post-reaction {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        border-radius: 6px;
+        color: var(--fb-secondary-text);
+        text-decoration: none;
+        transition: all 0.2s ease;
+        font-weight: 600;
+        font-size: 15px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        outline: none;
+    }
+
+        .fb-post-reaction:focus {
+            outline: none;
+            box-shadow: none;
         }
 
-            .comment-item:last-child {
-                border-bottom: none;
+        .fb-post-reaction:hover {
+            background-color: var(--fb-hover-bg);
+            color: var(--fb-secondary-text);
+        }
+
+        .fb-post-reaction.liked {
+            color: var(--fb-active-color);
+            background-color: rgba(24, 119, 242, 0.1);
+        }
+
+            .fb-post-reaction.liked:hover {
+                background-color: rgba(24, 119, 242, 0.15);
+                color: var(--fb-active-color);
             }
 
-        .comment-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
+        .fb-post-reaction i {
+            margin-right: 8px;
+            font-size: 16px;
+            transition: all 0.2s ease;
         }
 
-        .comment-user {
-            display: flex;
-            align-items: center;
+    /* Avatar styles */
+    .avatar-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #e4e6eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+        overflow: hidden;
+    }
+
+    /* Create comment section */
+    .create-comment-section {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--fb-border);
+    }
+
+    .create-post-header {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 12px;
+        gap: 12px; /* Thêm gap */
+    }
+
+    .create-post-header .flex-grow-1 {
+        flex: 1;
+        width: 100%;
+    }
+
+    .create-comment-input {
+        flex: 1;
+        background-color: #f0f2f5;
+        border: 1px solid var(--fb-border);
+        border-radius: 20px;
+        padding: 12px 20px; /* Tăng padding */
+        font-size: 15px;
+        color: var(--fb-primary-text);
+        resize: vertical;
+        min-height: 80px; /* Tăng từ 40px lên 80px */
+        max-height: 200px; /* Thêm max-height */
+        outline: none;
+        transition: all 0.2s ease;
+        width: 100%; /* Đảm bảo full width */
+    }
+
+        .create-comment-input:focus {
+            background-color: white;
+            border-color: var(--fb-active-color);
+            box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+            min-height: 100px; /* Tăng khi focus */
         }
 
-        .avatar-sm {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background-color: #e4e6eb;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            margin-right: 10px;
+        .create-comment-input::placeholder {
+            color: var(--fb-secondary-text);
         }
 
-        .comment-username {
-            font-weight: 600;
-            font-size: 14px;
+    /* Comments list */
+    .comments-list {
+        padding: 16px;
+    }
+
+    .comment-item {
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid #eee;
+    }
+
+        .comment-item:last-child {
+            border-bottom: none;
+        }
+
+    .comment-header {
+        margin-bottom: 0px; /* Không có khoảng cách */
+    }
+
+    .comment-content-tight {
+        margin-left: 15px; 
+    }
+    .comment-user {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .avatar-sm {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: #e4e6eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        margin-right: 0px;
+        flex-shrink: 0;
+    }
+
+    .comment-username {
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: -2px;
+        color: var(--fb-primary-text);
+    }
+
+    .comment-date {
+        font-size: 12px;
+        color: var(--fb-secondary-text);
+    }
+
+    .comment-content p {
+        margin: 0 0 8px 0;
+    }
+
+    .comment-content p:last-child {
+        margin-bottom: 0;
+    }
+    .comment-content {
+        margin-left: 40px;
+        margin-top: -3px;
+        font-size: 14px;
+        color: var(--fb-primary-text);
+        white-space: pre-line;
+        word-wrap: break-word;
+        line-height: 1.4;
+    }
+
+    .comment-actions {
+        margin-left: 40px;
+        margin-top: 6px;
+        display: flex;
+        gap: 16px;
+    }
+
+    .comment-action {
+        background: none;
+        border: none;
+        color: var(--fb-secondary-text);
+        font-size: 13px;
+        font-weight: 600;
+        padding: 0;
+        cursor: pointer;
+        transition: color 0.2s ease;
+    }
+
+        .comment-action:hover {
+            text-decoration: underline;
+            color: var(--fb-active-color);
+        }
+
+        .comment-action.text-danger:hover {
+            color: #dc3545 !important;
+        }
+
+    .reply-form {
+        margin-left: 40px;
+        margin-top: 12px;
+        display: none;
+    }
+
+    .nested-comments {
+        margin-left: 40px;
+        margin-top: 16px;
+        border-left: 2px solid #eee;
+        padding-left: 16px;
+    }
+
+    .nested-comment-item {
+        margin-bottom: 12px;
+    }
+
+        .nested-comment-item:last-child {
             margin-bottom: 0;
         }
 
-        .comment-date {
-            font-size: 12px;
-            color: #65676b;
+    /* Empty state */
+    .fb-empty-state {
+        padding: 40px 20px;
+        text-align: center;
+    }
+
+    .fb-empty-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: var(--fb-icon-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 1.5rem;
+        color: var(--fb-secondary-text);
+    }
+
+    .fb-empty-state h4 {
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--fb-primary-text);
+    }
+
+    .fb-empty-state p {
+        color: var(--fb-secondary-text);
+        margin-bottom: 20px;
+    }
+
+    .fb-empty-state a {
+        color: var(--fb-active-color);
+        text-decoration: none;
+    }
+
+        .fb-empty-state a:hover {
+            text-decoration: underline;
         }
 
-        .comment-content {
-            margin-left: 42px;
-            margin-top: 4px;
-            font-size: 14px;
+    /* Alert styles */
+    .alert {
+        border-radius: 8px;
+        margin-bottom: 16px;
+        font-size: 15px;
+        font-weight: 400;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+    }
+
+    .btn-close {
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        font-weight: 700;
+        line-height: 1;
+        color: #000;
+        opacity: 0.5;
+        cursor: pointer;
+    }
+
+        .btn-close:hover {
+            opacity: 0.75;
         }
 
-        .comment-actions {
-            margin-left: 42px;
-            margin-top: 8px;
-            display: flex;
-            gap: 16px;
+    /* Button styles */
+    .btn {
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 15px;
+        padding: 8px 16px;
+        transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+        background-color: var(--fb-primary-button);
+        border-color: var(--fb-primary-button);
+        color: white;
+    }
+
+        .btn-primary:hover {
+            background-color: #166fe5;
+            border-color: #166fe5;
         }
 
-        .comment-action {
-            background: none;
-            border: none;
-            color: #65676b;
-            font-size: 13px;
-            font-weight: 600;
-            padding: 0;
-            cursor: pointer;
+    .btn-outline-primary {
+        color: var(--fb-primary-button);
+        border-color: var(--fb-primary-button);
+        background-color: transparent;
+    }
+
+        .btn-outline-primary:hover {
+            background-color: var(--fb-primary-button);
+            border-color: var(--fb-primary-button);
+            color: white;
         }
 
-            .comment-action:hover {
-                text-decoration: underline;
-                color: #1877f2;
-            }
+    .btn-light {
+        background-color: var(--fb-icon-bg);
+        border-color: var(--fb-icon-bg);
+        color: var(--fb-primary-text);
+    }
 
-        .reply-form {
-            margin-left: 42px;
-            margin-top: 12px;
-            display: none;
+        .btn-light:hover {
+            background-color: var(--fb-hover-bg);
+            border-color: var(--fb-hover-bg);
+            color: var(--fb-primary-text);
         }
 
-        .nested-comments {
-            margin-left: 42px;
-            margin-top: 16px;
-            border-left: 2px solid #eee;
-            padding-left: 16px;
-        }
+    .btn-sm {
+        padding: 4px 12px;
+        font-size: 13px;
+    }
 
-        .nested-comment-item {
-            margin-bottom: 16px;
-        }
+    /* Responsive design */
+    @@media (max-width: 768px) {
+        .fb-layout-container
 
-            .nested-comment-item:last-child {
-                margin-bottom: 0;
-            }
+    {
+        padding-top: 10px;
+    }
 
-        .lds-ring {
-            display: inline-block;
-            position: relative;
-            width: 80px;
-            height: 80px;
-        }
+    .fb-main-content {
+        width: 100%;
+        max-width: none;
+        padding: 0 10px;
+    }
 
-            .lds-ring div {
-                box-sizing: border-box;
-                display: block;
-                position: absolute;
-                width: 64px;
-                height: 64px;
-                margin: 8px;
-                border: 8px solid #1877f2;
-                border-radius: 50%;
-                animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-                border-color: #1877f2 transparent transparent transparent;
-            }
+    .fb-post-card {
+        border-radius: 0;
+        margin-bottom: 8px;
+    }
 
-                .lds-ring div:nth-child(1) {
-                    animation-delay: -0.45s;
-                }
+    .fb-post-title {
+        font-size: 20px;
+    }
 
-                .lds-ring div:nth-child(2) {
-                    animation-delay: -0.3s;
-                }
+    .fb-post-text {
+        font-size: 14px;
+    }
 
-                .lds-ring div:nth-child(3) {
-                    animation-delay: -0.15s;
-                }
+    .fb-post-media img {
+        max-height: 400px;
+    }
 
-        @@keyframes lds-ring {
-            0%
+    }
 
-        {
-            transform: rotate(0deg);
-        }
+    @@media (max-width: 480px) {
+        .fb-post-header
 
-        100% {
-            transform: rotate(360deg);
-        }
+    {
+        padding: 10px 12px;
+    }
 
-        }
-    </style>
+    .fb-post-content {
+        padding: 0 12px;
+    }
+
+    .fb-post-footer {
+        padding: 6px 12px 10px;
+    }
+
+    .fb-post-title {
+        font-size: 18px;
+    }
+
+    .fb-post-text {
+        font-size: 14px;
+    }
+
+    .fb-post-reaction {
+        font-size: 14px;
+        padding: 6px;
+    }
+
+    .create-comment-section {
+        padding: 10px 12px;
+    }
+
+    .comments-list {
+        padding: 12px;
+    }
+
+    }
+</style>
+
 
 @section Scripts {
     <script>
+
+
         let currentPage = 1;
         let totalPages = 1;
 
@@ -366,46 +874,132 @@
 
         // Cuộn đến phần bình luận
         function scrollToComments() {
-            $('html, body').animate({
-                scrollTop: $("#commentsSection").offset().top - 100
-            }, 500);
+            const commentsSection = $("#commentsSection");
+            if (commentsSection.length) {
+                $('html, body').animate({
+                    scrollTop: commentsSection.offset().top - 80 // Trừ 80px để không bị che bởi header
+                }, 800); // Tăng thời gian animation lên 800ms để mượt hơn
+
+                // Highlight phần bình luận trong 2 giây
+                commentsSection.addClass('highlight-section');
+                setTimeout(function() {
+                    commentsSection.removeClass('highlight-section');
+                }, 2000);
+            }
         }
 
         // Hàm like bài viết
         function likePost(postId) {
+            const likeButton = $('#likeButton');
+            const likeText = $('#likeText');
+            
+            // Disable button để tránh spam click
+            likeButton.prop('disabled', true);
+
             $.ajax({
                 url: '@Url.Action("LikePost", "Posts")',
                 type: 'POST',
                 data: { id: postId },
                 success: function(response) {
                     if (response.success) {
-                        const likeButton = $('#likeButton');
-                        const likeText = $('#likeText');
-                        const likeCount = $('#likeCount');
+                        const icon = likeButton.find('i');
 
                         if (response.liked) {
                             // Đã thích
-                            likeButton.removeClass('btn-outline-primary').addClass('btn-primary');
-                            likeButton.find('i').removeClass('far').addClass('fas');
+                            likeButton.addClass('liked');
+                            icon.removeClass('far').addClass('fas');
                             likeText.text('Đã thích');
                         } else {
                             // Bỏ thích
-                            likeButton.removeClass('btn-primary').addClass('btn-outline-primary');
-                            likeButton.find('i').removeClass('fas').addClass('far');
+                            likeButton.removeClass('liked');
+                            icon.removeClass('fas').addClass('far');
                             likeText.text('Thích');
                         }
 
-                        likeCount.text('(' + response.likeCount + ')');
+                        // Cập nhật stats section
+                        updateLikeStats(response.likeCount);
                     }
                 },
                 error: function() {
                     alert('Đã xảy ra lỗi khi thực hiện thao tác. Vui lòng thử lại.');
+                },
+                complete: function() {
+                    likeButton.prop('disabled', false);
                 }
             });
         }
 
+        function updateLikeStats(likeCount) {
+            let statsSection = $('.fb-post-stats');
+            
+            if (likeCount > 0) {
+                if (statsSection.length === 0) {
+                    // Tạo stats section mới
+                    const newStats = `
+                        <div class="fb-post-stats">
+                            <div class="fb-post-stats-left">
+                                <span class="fb-post-stat-item">
+                                    <i class="fas fa-thumbs-up"></i>
+                                    <span>${likeCount}</span>
+                                </span>
+                            </div>
+                            <div class="fb-post-stats-right">
+                                <span class="fb-post-stat-item">
+                                    <span>${$('#commentCountText').text()} bình luận</span>
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                    $('.fb-post-media').length > 0 ? 
+                        $('.fb-post-media').after(newStats) : 
+                        $('.fb-post-content').after(newStats);
+                } else {
+                    // Cập nhật stats hiện có
+                    statsSection.find('.fb-post-stats-left span span').text(likeCount);
+                }
+            } else {
+                // Xóa phần like nếu không còn like nào
+                if (statsSection.length > 0) {
+                    const commentCount = parseInt($('#commentCountText').text());
+                    if (commentCount === 0) {
+                        statsSection.remove();
+                    } else {
+                        statsSection.find('.fb-post-stats-left').empty();
+                    }
+                }
+                        }
+        }
+
+        function formatCommentContent(content) {
+            // Loại bỏ khoảng trắng thừa và giới hạn xuống dòng liên tiếp
+        return content
+            .replace(/\n\s*\n\s*\n/g, '\n\n') // Giới hạn tối đa 2 xuống dòng liên tiếp
+            .replace(/^\s+|\s+$/g, '') // Loại bỏ khoảng trắng đầu và cuối
+            .replace(/[ \t]+/g, ' '); // Gộp nhiều space thành 1
+            }
+
+        $(document).ready(function() {
+            // Tải bình luận khi trang được load
+            loadComments(@Model.Id, 1);
+
+            // Xử lý khi nhấn Enter trong textarea
+            $("#commentContent").keydown(function(event) {
+                if (event.keyCode === 13 && !event.shiftKey) {
+                    event.preventDefault();
+                    addComment(@Model.Id);
+                }
+            });
+
+            // Tự động cuộn đến phần bình luận nếu URL có hash #commentsSection
+            if (window.location.hash === '#commentsSection') {
+                setTimeout(function() {
+                    scrollToComments();
+                }, 500); // Đợi 500ms để trang load xong
+            }
+        });
+
         // Hàm thêm bình luận
-        function addComment(postId, parentId = null) {
+            function addComment(postId, parentId = null) {
             const commentInput = parentId ? $(`#replyContent-${parentId}`) : $('#commentContent');
             const content = commentInput.val().trim();
 
@@ -414,7 +1008,6 @@
                 return;
             }
 
-            // Vô hiệu hóa nút gửi để tránh spam
             const submitButton = parentId ? $(`#submitReply-${parentId}`) : $('#addCommentBtn');
             const originalText = submitButton.html();
             submitButton.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Đang gửi...');
@@ -430,29 +1023,26 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        // Xóa nội dung và kích hoạt lại nút
                         commentInput.val('');
                         submitButton.html(originalText);
                         submitButton.prop('disabled', false);
 
                         if (parentId) {
-                            // Nếu là phản hồi, thêm vào phần bình luận con
                             const replyContainer = $(`#replyContainer-${parentId}`);
                             replyContainer.hide();
 
                             const nestedCommentsContainer = $(`#nestedComments-${parentId}`);
                             const newReply = createNestedCommentHTML(response.comment);
                             nestedCommentsContainer.append(newReply);
-
-                            // Hiển thị phần bình luận con nếu ẩn
                             nestedCommentsContainer.show();
                         } else {
-                            // Nếu là bình luận gốc, tải lại tất cả bình luận
                             loadComments(postId, 1);
                         }
 
-                        // Cập nhật số lượng bình luận
-                        updateCommentCount(parseInt($('#commentCountText').text()) + 1);
+                        // Cập nhật tổng số bình luận từ response
+                        if (response.totalComments) {
+                            updateCommentCount(response.totalComments);
+                        }
                     } else {
                         alert(response.message || 'Đã xảy ra lỗi khi gửi bình luận.');
                         submitButton.html(originalText);
@@ -502,10 +1092,12 @@
 
                         if (response.comments.length === 0 && page === 1) {
                             commentsHTML = `
-                                <div class="text-center py-4">
-                                    <i class="far fa-comment-alt fa-3x text-muted mb-3"></i>
-                                    <p class="lead">Chưa có bình luận nào</p>
-                                    <p class="text-muted">Hãy là người đầu tiên bình luận!</p>
+                                <div class="fb-empty-state">
+                                    <div class="fb-empty-icon">
+                                        <i class="far fa-comment-alt"></i>
+                                    </div>
+                                    <h4>Chưa có bình luận nào</h4>
+                                    <p>Hãy là người đầu tiên bình luận!</p>
                                 </div>
                             `;
                         } else {
@@ -578,7 +1170,7 @@
         }
 
         // Xóa bình luận
-        function deleteComment(commentId) {
+                function deleteComment(commentId) {
             if (confirm('Bạn có chắc chắn muốn xóa bình luận này?')) {
                 $.ajax({
                     url: '@Url.Action("DeleteComment", "Posts")',
@@ -586,14 +1178,21 @@
                     data: { id: commentId },
                     success: function(response) {
                         if (response.success) {
-                            // Xóa bình luận khỏi DOM
                             $(`#comment-${commentId}`).fadeOut(300, function() {
                                 $(this).remove();
 
-                                // Cập nhật số lượng bình luận
-                                updateCommentCount(parseInt($('#commentCountText').text()) - 1);
+                                // Đếm lại tổng số comments sau khi xóa
+                                $.ajax({
+                                    url: '@Url.Action("GetComments", "Posts")',
+                                    type: 'GET',
+                                    data: { postId: @Model.Id, page: 1, pageSize: 1 },
+                                    success: function(countResponse) {
+                                        if (countResponse.success) {
+                                            updateCommentCount(countResponse.totalComments);
+                                        }
+                                    }
+                                });
 
-                                // Kiểm tra nếu không còn bình luận nào
                                 if ($('#commentsList').children().length === 0) {
                                     $('#commentsList').html(`
                                         <div class="text-center py-4">
@@ -617,12 +1216,26 @@
 
         // Cập nhật số lượng bình luận
         function updateCommentCount(count) {
-            $('#commentCount').text('(' + count + ')');
             $('#commentCountText').text(count);
+
+            // Cập nhật stats section
+            const statsSection = $('.fb-post-stats');
+            if (statsSection.length > 0) {
+                const statsRight = statsSection.find('.fb-post-stats-right');
+                if (count > 0) {
+                    statsRight.html(`<span class="fb-post-stat-item"><span>${count} bình luận</span></span>`);
+                } else {
+                    statsRight.empty();
+                    // Nếu cả like và comment đều = 0, xóa toàn bộ stats
+                    if (statsSection.find('.fb-post-stats-left').is(':empty')) {
+                        statsSection.remove();
+                    }
+                }
+            }
         }
 
-                // Tạo HTML cho bình luận
-        function createCommentHTML(comment) {
+        // Tạo HTML cho bình luận
+                function createCommentHTML(comment) {
             const isCurrentUser = '@User.FindFirstValue(ClaimTypes.NameIdentifier)' === comment.userId;
             const deleteButton = isCurrentUser ?
                 `<button class="comment-action text-danger" onclick="deleteComment(${comment.id})">
@@ -635,26 +1248,27 @@
                 </div>` :
                 `<div class="nested-comments" id="nestedComments-${comment.id}" style="display: none;"></div>`;
 
-            // Sửa đoạn này - thay vì dùng currentUserAvatar không xác định
             const currentUserAvatarHtml = @if(User.Identity.IsAuthenticated) {
                 if (ViewBag.CurrentUser != null && !string.IsNullOrEmpty(ViewBag.CurrentUser.AvatarUrl))
                 {
-                        <text>`<img src="@ViewBag.CurrentUser.AvatarUrl" alt="Avatar" class="avatar-img">`</text>
+                            <text>`<img src="@ViewBag.CurrentUser.AvatarUrl" alt="Avatar" class="avatar-img">`</text>
                 }
                 else if (ViewBag.CurrentUser != null && !string.IsNullOrEmpty(ViewBag.CurrentUser.Avatar))
                 {
-                        <text>`<img src="@ViewBag.CurrentUser.Avatar" alt="Avatar" class="avatar-img">`</text>
+                            <text>`<img src="@ViewBag.CurrentUser.Avatar" alt="Avatar" class="avatar-img">`</text>
                 }
                 else
                 {
-                        <text>'<i class="fas fa-user"></i>'</text>
+                            <text>'<i class="fas fa-user"></i>'</text>
                 }
-        } else
-        {
-
+    } else
+    {
                     <text>'<i class="fas fa-user"></i>'</text>
-                }
+        }
 ;
+
+        // Format nội dung bình luận
+        const formattedContent = formatCommentContent(comment.content);
 
         return `
             <div class="comment-item" id="comment-${comment.id}">
@@ -671,7 +1285,7 @@
                 </div>
 
                 <div class="comment-content">
-                    ${comment.content}
+                    ${formattedContent}
                 </div>
 
                 <div class="comment-actions">
@@ -687,7 +1301,7 @@
                             ${currentUserAvatarHtml}
                         </div>
                         <div class="flex-grow-1">
-                            <textarea id="replyContent-${comment.id}" class="form-control form-control-sm" rows="2" placeholder="Viết phản hồi..."></textarea>
+                            <textarea id="replyContent-${comment.id}" class="form-control form-control-sm" rows="3" placeholder="Viết phản hồi..."></textarea>
                             <div class="text-end mt-2">
                                 <button class="btn btn-sm btn-light me-2" onclick="$('#replyContainer-${comment.id}').hide()">Hủy</button>
                                 <button id="submitReply-${comment.id}" class="btn btn-sm btn-primary" onclick="addComment(@Model.Id, ${comment.id})">
@@ -703,37 +1317,39 @@
         `;
     }
 
-        // Tạo HTML cho bình luận con
+    // Tạo HTML cho bình luận con
         function createNestedCommentHTML(reply) {
-            const isCurrentUser = '@User.FindFirstValue(ClaimTypes.NameIdentifier)' === reply.userId;
-            const deleteButton = isCurrentUser ?
-                `<button class="comment-action text-danger" onclick="deleteComment(${reply.id})">
-                    <i class="far fa-trash-alt me-1"></i> Xóa
-                </button>` : '';
+        const isCurrentUser = '@User.FindFirstValue(ClaimTypes.NameIdentifier)' === reply.userId;
+        const deleteButton = isCurrentUser ?
+            `<button class="comment-action text-danger" onclick="deleteComment(${reply.id})">
+                <i class="far fa-trash-alt me-1"></i> Xóa
+            </button>` : '';
 
-            return `
-                <div class="nested-comment-item" id="comment-${reply.id}">
-                    <div class="comment-header">
-                        <div class="comment-user">
-                            <div class="avatar-sm">
-                                ${reply.userAvatar ? `<img src="${reply.userAvatar}" alt="${reply.userName}" class="avatar-img">` : '<i class="fas fa-user"></i>'}
-                            </div>
-                            <div>
-                                <p class="comment-username">${reply.userName}</p>
-                                <small class="comment-date">${reply.createdDate}</small>
-                            </div>
+        const formattedContent = formatCommentContent(reply.content);
+
+        return `
+            <div class="nested-comment-item" id="comment-${reply.id}">
+                <div class="comment-header">
+                    <div class="comment-user">
+                        <div class="avatar-sm">
+                            ${reply.userAvatar ? `<img src="${reply.userAvatar}" alt="${reply.userName}" class="avatar-img">` : '<i class="fas fa-user"></i>'}
+                        </div>
+                        <div>
+                            <p class="comment-username">${reply.userName}</p>
+                            <small class="comment-date">${reply.createdDate}</small>
                         </div>
                     </div>
-
-                    <div class="comment-content">
-                        ${reply.content}
-                    </div>
-
-                    <div class="comment-actions">
-                        ${deleteButton}
-                    </div>
                 </div>
-            `;
-        }
-    </script>
+
+                <div class="comment-content">
+                    ${formattedContent}
+                </div>
+
+                <div class="comment-actions">
+                    ${deleteButton}
+                </div>
+            </div>
+        `;
+    }
+</script>
 }

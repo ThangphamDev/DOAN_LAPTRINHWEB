@@ -19,75 +19,149 @@ namespace DOAN_LAPTRINHWEB.Controllers
             _context = context;
             _userManager = userManager;
         }
+
+        private string GetRelativeTime(DateTime utcTime)
+        {
+            var vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+            var vietnamTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime, vietnamTimeZone);
+            var now = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimeZone);
+
+            var diff = now - vietnamTime;
+
+            if (diff.TotalMinutes < 1)
+                return "Vừa xong";
+            else if (diff.TotalMinutes < 60)
+                return $"{(int)diff.TotalMinutes} phút trước";
+            else if (diff.TotalHours < 24)
+                return $"{(int)diff.TotalHours} giờ trước";
+            else if (diff.TotalDays < 7)
+                return $"{(int)diff.TotalDays} ngày trước";
+            else
+                return vietnamTime.ToString("dd/MM/yyyy HH:mm");
+        }
+
+        public class FeaturedAuthorDto
+        {
+            public string UserId { get; set; }
+            public string UserName { get; set; }
+            public string UserAvatar { get; set; }
+            public int TotalLikes { get; set; }
+            public int PostCount { get; set; }
+        }
         // GET: Posts - Trang chủ bài viết (hiển thị bài viết đã được duyệt)
         [AllowAnonymous]
-        public async Task<IActionResult> Index(int? postTypeId, int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(int? postTypeId, int page = 1)
         {
-            var postsQuery = _context.Posts
+            const int pageSize = 10;
+
+            var query = _context.Posts
                 .Include(p => p.User)
                 .Include(p => p.PostType)
-                .Where(p => p.ApprovalStatus == "Approved" && !p.IsDeleted);
+                .AsQueryable();
 
-            // Lọc theo loại bài viết nếu có
             if (postTypeId.HasValue)
             {
-                postsQuery = postsQuery.Where(p => p.PostTypeId == postTypeId.Value);
+                query = query.Where(p => p.PostTypeId == postTypeId.Value);
             }
 
-            var totalPosts = await postsQuery.CountAsync();
-            var posts = await postsQuery
+            var posts = await query
                 .OrderByDescending(p => p.CreatedDate)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
-            // Lấy thông tin like và comment cho từng bài viết
+            var totalPosts = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalPosts / pageSize);
+
             var postIds = posts.Select(p => p.Id).ToList();
 
-            // Lấy số lượng like cho tất cả bài viết
+            // Existing code for likes and comments...
             var likeCounts = await _context.PostLikes
-                .Where(l => postIds.Contains(l.PostId))
-                .GroupBy(l => l.PostId)
-                .Select(g => new { PostId = g.Key, Count = g.Count() })
-                .ToDictionaryAsync(x => x.PostId, x => x.Count);
+                .Where(pl => postIds.Contains(pl.PostId))
+                .GroupBy(pl => pl.PostId)
+                .ToDictionaryAsync(g => g.Key, g => g.Count());
 
-            // Lấy số lượng comment cho tất cả bài viết
             var commentCounts = await _context.Comments
                 .Where(c => postIds.Contains(c.PostId))
                 .GroupBy(c => c.PostId)
-                .Select(g => new { PostId = g.Key, Count = g.Count() })
-                .ToDictionaryAsync(x => x.PostId, x => x.Count);
+                .ToDictionaryAsync(g => g.Key, g => g.Count());
 
-            // Kiểm tra user hiện tại đã like bài viết nào chưa
             Dictionary<int, bool> userLikes = new Dictionary<int, bool>();
             if (User.Identity.IsAuthenticated)
             {
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                var likedPosts = await _context.PostLikes
-                    .Where(l => l.UserId == userId && postIds.Contains(l.PostId))
-                    .Select(l => l.PostId)
-                    .ToListAsync();
-
-                foreach (var postId in postIds)
-                {
-                    userLikes[postId] = likedPosts.Contains(postId);
-                }
-
-                var currentUser = await _userManager.GetUserAsync(User);
-                ViewBag.CurrentUser = currentUser;
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                userLikes = await _context.PostLikes
+                    .Where(pl => postIds.Contains(pl.PostId) && pl.UserId == userId)
+                    .ToDictionaryAsync(pl => pl.PostId, pl => true);
             }
 
+            // **Lấy dữ liệu cho sidebar - CHỈ GIỮ ĐOẠN NÀY**
+            var thirtyDaysAgo = DateTime.UtcNow.AddDays(-30);
+
+            // Lấy bài viết nổi bật
+            try
+            {
+                var featuredPosts = await _context.Posts
+                    .Include(p => p.User)
+                    .Include(p => p.PostType)
+                    .Where(p => p.CreatedDate >= thirtyDaysAgo)
+                    .Select(p => new
+                    {
+                        Post = p,
+                        LikeCount = _context.PostLikes.Count(pl => pl.PostId == p.Id)
+                    })
+                    .OrderByDescending(x => x.LikeCount)
+                    .Take(3)
+                    .Select(x => x.Post)
+                    .ToListAsync();
+
+                ViewBag.FeaturedPosts = featuredPosts;
+            }
+            catch (Exception ex)
+            {
+                ViewBag.FeaturedPosts = new List<Post>();
+            }
+
+            // Lấy tác giả nổi bật
+            try
+            {
+                var featuredAuthors = await _context.Posts
+                    .Include(p => p.User)
+                    .Where(p => p.CreatedDate >= thirtyDaysAgo && p.User != null)
+                    .GroupBy(p => p.UserId)
+                    .Select(g => new FeaturedAuthorDto
+                    {
+                        UserId = g.Key,
+                        UserName = g.First().User.FullName ?? "Ẩn danh",
+                        UserAvatar = g.First().User.AvatarUrl ?? g.First().User.Avatar,
+                        TotalLikes = _context.PostLikes.Count(pl => g.Any(p => p.Id == pl.PostId)),
+                        PostCount = g.Count()
+                    })
+                    .OrderByDescending(x => x.TotalLikes)
+                    .Take(3)
+                    .ToListAsync();
+
+                ViewBag.FeaturedAuthors = featuredAuthors;
+            }
+            catch (Exception ex)
+            {
+                ViewBag.FeaturedAuthors = new List<FeaturedAuthorDto>();
+            }
+
+            // ViewBag assignments...
             ViewBag.PostTypes = await _context.PostTypes.ToListAsync();
             ViewBag.CurrentPostTypeId = postTypeId;
             ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = (int)Math.Ceiling((double)totalPosts / pageSize);
-            ViewBag.PageSize = pageSize;
+            ViewBag.TotalPages = totalPages;
             ViewBag.LikeCounts = likeCounts;
             ViewBag.CommentCounts = commentCounts;
             ViewBag.UserLikes = userLikes;
+            ViewBag.CurrentUser = User.Identity.IsAuthenticated ?
+                await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier)) : null;
 
             return View(posts);
         }
+
 
 
         // GET: Posts/MyPosts - Danh sách bài viết của người dùng hiện tại có lọc
@@ -443,8 +517,8 @@ namespace DOAN_LAPTRINHWEB.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var post = await _context.Posts
-                .Include(p => p.PostType)
                 .Include(p => p.User)
+                .Include(p => p.PostType)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (post == null)
@@ -452,33 +526,30 @@ namespace DOAN_LAPTRINHWEB.Controllers
                 return NotFound();
             }
 
-            // Lấy số lượng like
-            var likesCount = await _context.PostLikes.CountAsync(l => l.PostId == id);
-            ViewBag.LikesCount = likesCount;
+            // Đếm số lượng like
+            var likesCount = await _context.PostLikes.CountAsync(pl => pl.PostId == id);
 
-            // Kiểm tra xem user hiện tại đã like bài viết chưa
+            // Đếm TẤT CẢ bình luận (bao gồm cả replies)
+            var commentsCount = await _context.Comments.CountAsync(c => c.PostId == id);
+
+            // Kiểm tra user đã like chưa
+            bool userLiked = false;
             if (User.Identity.IsAuthenticated)
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var userLiked = await _context.PostLikes.AnyAsync(l => l.PostId == id && l.UserId == userId);
-                ViewBag.UserLiked = userLiked;
-
-                // Thêm CurrentUser vào ViewBag
-                var currentUser = await _userManager.GetUserAsync(User);
-                ViewBag.CurrentUser = currentUser;
-            }
-            else
-            {
-                ViewBag.UserLiked = false;
-                ViewBag.CurrentUser = null;
+                userLiked = await _context.PostLikes
+                    .AnyAsync(pl => pl.PostId == id && pl.UserId == userId);
             }
 
-            // Lấy số lượng bình luận
-            var commentsCount = await _context.Comments.CountAsync(c => c.PostId == id);
+            ViewBag.LikesCount = likesCount;
             ViewBag.CommentsCount = commentsCount;
+            ViewBag.UserLiked = userLiked;
+            ViewBag.CurrentUser = User.Identity.IsAuthenticated ?
+                await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier)) : null;
 
             return View(post);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> UploadImage(IFormFile file)
@@ -584,122 +655,113 @@ namespace DOAN_LAPTRINHWEB.Controllers
         public async Task<IActionResult> AddComment(int postId, string content, int? parentCommentId = null)
         {
             if (!User.Identity.IsAuthenticated)
-            {
-                return Unauthorized(new { success = false, message = "Bạn cần đăng nhập để bình luận." });
-            }
+                return Json(new { success = false, message = "Bạn cần đăng nhập để bình luận." });
 
             if (string.IsNullOrWhiteSpace(content))
+                return Json(new { success = false, message = "Nội dung bình luận không được để trống." });
+
+            try
             {
-                return BadRequest(new { success = false, message = "Nội dung bình luận không được để trống." });
+                var comment = new Comment
+                {
+                    PostId = postId,
+                    UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                    Content = content.Trim(),
+                    CreatedDate = DateTime.UtcNow,
+                    ParentCommentId = parentCommentId
+                };
+
+                _context.Comments.Add(comment);
+                await _context.SaveChangesAsync();
+
+                var savedComment = await _context.Comments
+                    .Include(c => c.User)
+                    .FirstAsync(c => c.Id == comment.Id);
+
+                // Đếm lại tổng số comments sau khi thêm
+                var totalComments = await _context.Comments.CountAsync(c => c.PostId == postId);
+
+                return Json(new
+                {
+                    success = true,
+                    comment = new
+                    {
+                        id = savedComment.Id,
+                        content = savedComment.Content,
+                        createdDate = GetRelativeTime(savedComment.CreatedDate),
+                        userId = savedComment.UserId,
+                        userName = savedComment.User?.FullName ?? "Ẩn danh",
+                        userAvatar = savedComment.User?.AvatarUrl ?? savedComment.User?.Avatar
+                    },
+                    totalComments = totalComments // Trả về tổng số comments mới
+                });
             }
-
-            var post = await _context.Posts.FindAsync(postId);
-            if (post == null || post.IsDeleted)
+            catch
             {
-                return NotFound(new { success = false, message = "Không tìm thấy bài viết." });
+                return Json(new { success = false, message = "Đã xảy ra lỗi khi thêm bình luận." });
             }
-
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = await _userManager.FindByIdAsync(userId);
-
-            var comment = new Comment
-            {
-                PostId = postId,
-                UserId = userId,
-                Content = content,
-                CreatedDate = DateTime.UtcNow,
-                ParentCommentId = parentCommentId
-            };
-
-            await _context.Comments.AddAsync(comment);
-            await _context.SaveChangesAsync();
-
-            // Tạo dữ liệu để trả về cho việc render comment mới
-            var commentData = new
-            {
-                id = comment.Id,
-                content = comment.Content,
-                createdDate = comment.CreatedDate.ToString("dd/MM/yyyy HH:mm"),
-                userId = comment.UserId,
-                userName = user.FullName ?? user.UserName,
-                userAvatar = user.AvatarUrl ?? user.Avatar ?? "",
-                parentCommentId = comment.ParentCommentId
-            };
-
-            return Json(new
-            {
-                success = true,
-                comment = commentData,
-                message = "Đã thêm bình luận."
-            });
         }
 
         // ACTION: Lấy danh sách bình luận cho bài viết
         [HttpGet]
         public async Task<IActionResult> GetComments(int postId, int page = 1, int pageSize = 10)
         {
-            var post = await _context.Posts.FindAsync(postId);
-            if (post == null || post.IsDeleted)
+            try
             {
-                return NotFound(new { success = false, message = "Không tìm thấy bài viết." });
-            }
+                // Lấy comments gốc (không có parent)
+                var comments = await _context.Comments
+                    .Where(c => c.PostId == postId && c.ParentCommentId == null)
+                    .Include(c => c.User)
+                    .OrderByDescending(c => c.CreatedDate)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
 
-            var comments = await _context.Comments
-                .Include(c => c.User)
-                .Where(c => c.PostId == postId && c.ParentCommentId == null)
-                .OrderByDescending(c => c.CreatedDate)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+                // Đếm TẤT CẢ comments (bao gồm replies)
+                var totalComments = await _context.Comments.CountAsync(c => c.PostId == postId);
 
-            // Lấy các comments con (trả lời)
-            var commentIds = comments.Select(c => c.Id).ToList();
-            var childComments = await _context.Comments
-                .Include(c => c.User)
-                .Where(c => c.PostId == postId && c.ParentCommentId != null && commentIds.Contains(c.ParentCommentId.Value))
-                .OrderBy(c => c.CreatedDate)
-                .ToListAsync();
+                // Load replies cho từng comment
+                var commentIds = comments.Select(c => c.Id).ToList();
+                var replies = await _context.Comments
+                    .Where(c => commentIds.Contains(c.ParentCommentId.Value))
+                    .Include(c => c.User)
+                    .OrderBy(c => c.CreatedDate)
+                    .ToListAsync();
 
-            var commentData = comments.Select(c => new
-            {
-                id = c.Id,
-                content = c.Content,
-                createdDate = c.CreatedDate.ToString("dd/MM/yyyy HH:mm"),
-                userId = c.UserId,
-                userName = c.User.FullName ?? c.User.UserName,
-                userAvatar = c.User.AvatarUrl ?? c.User.Avatar ?? "",
-                replies = childComments
-                    .Where(cc => cc.ParentCommentId == c.Id)
-                    .Select(cc => new
+                var commentDtos = comments.Select(c => new
+                {
+                    id = c.Id,
+                    content = c.Content,
+                    createdDate = GetRelativeTime(c.CreatedDate),
+                    userId = c.UserId,
+                    userName = c.User?.FullName ?? "Ẩn danh",
+                    userAvatar = c.User?.AvatarUrl ?? c.User?.Avatar,
+                    replies = replies.Where(r => r.ParentCommentId == c.Id).Select(r => new
                     {
-                        id = cc.Id,
-                        content = cc.Content,
-                        createdDate = cc.CreatedDate.ToString("dd/MM/yyyy HH:mm"),
-                        userId = cc.UserId,
-                        userName = cc.User.FullName ?? cc.User.UserName,
-                        userAvatar = cc.User.AvatarUrl ?? cc.User.Avatar ?? "",
-                        parentCommentId = cc.ParentCommentId
+                        id = r.Id,
+                        content = r.Content,
+                        createdDate = GetRelativeTime(r.CreatedDate),
+                        userId = r.UserId,
+                        userName = r.User?.FullName ?? "Ẩn danh",
+                        userAvatar = r.User?.AvatarUrl ?? r.User?.Avatar
                     }).ToList()
-            }).ToList();
+                }).ToList();
 
-            // Đếm tổng số bình luận
-            var totalComments = await _context.Comments
-                .Where(c => c.PostId == postId)
-                .CountAsync();
-
-            var totalPages = (int)Math.Ceiling(totalComments / (double)pageSize);
-
-            return Json(new
+                return Json(new
+                {
+                    success = true,
+                    comments = commentDtos,
+                    totalComments = totalComments, // Tổng số TẤT CẢ comments
+                    totalPages = (int)Math.Ceiling((double)comments.Count() / pageSize), // Phân trang theo comments gốc
+                    currentPage = page
+                });
+            }
+            catch (Exception ex)
             {
-                success = true,
-                comments = commentData,
-                totalComments = totalComments,
-                totalPages = totalPages,
-                currentPage = page
-            });
+                return Json(new { success = false, message = "Không thể tải bình luận." });
+            }
         }
 
-        // ACTION: Xóa bình luận
         // ACTION: Xóa bình luận
         [HttpPost]
         [Authorize]
@@ -733,6 +795,34 @@ namespace DOAN_LAPTRINHWEB.Controllers
                 success = true,
                 message = "Đã xóa bình luận."
             });
+        }
+        public async Task<IActionResult> AuthorPosts(string userId, int page = 1)
+        {
+            const int pageSize = 10;
+
+            var author = await _userManager.FindByIdAsync(userId);
+            if (author == null)
+            {
+                return NotFound();
+            }
+
+            var posts = await _context.Posts
+                .Include(p => p.User)
+                .Include(p => p.PostType)
+                .Where(p => p.UserId == userId)
+                .OrderByDescending(p => p.CreatedDate)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var totalPosts = await _context.Posts.CountAsync(p => p.UserId == userId);
+            var totalPages = (int)Math.Ceiling((double)totalPosts / pageSize);
+
+            ViewBag.Author = author;
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+
+            return View(posts);
         }
 
     }

@@ -252,9 +252,9 @@
                             <div class="fb-post-stats-right">
                                 @if (commentCount > 0)
                                 {
-                                    <span class="fb-post-stat-item">
+                                    <a href="@Url.Action("Details", new { id = post.Id })#commentsSection" class="fb-post-stat-item comment-count-link">
                                         <span>@commentCount bình luận</span>
-                                    </span>
+                                    </a>
                                 }
                             </div>
                         </div>
@@ -352,48 +352,105 @@
             <div class="fb-sponsored">
                 <h5 class="fb-sidebar-title">Bài nổi bật</h5>
                 <div class="fb-recommended-posts">
-                    <div class="fb-recommended-post">
-                        <div class="fb-recommended-img">
-                            <img src="~/images/blog-placeholder.jpg" alt="Gợi ý bài viết">
+                    @if (ViewBag.FeaturedPosts != null)
+                    {
+                        @foreach (var featuredPost in ViewBag.FeaturedPosts as List<DOAN_LAPTRINHWEB.Models.Post>)
+                        {
+                            <div class="fb-recommended-post" onclick="window.location.href='@Url.Action("Details", new { id = featuredPost.Id })'">
+                                <div class="fb-recommended-img">
+                                    @if (!string.IsNullOrEmpty(featuredPost.ImageUrls))
+                                    {
+                                        var firstImage = featuredPost.ImageUrls.Split(',').FirstOrDefault()?.Trim();
+                                        if (!string.IsNullOrEmpty(firstImage))
+                                        {
+                                            if (!firstImage.StartsWith("http") && !firstImage.StartsWith("/"))
+                                            {
+                                                <img src="/@firstImage" alt="@featuredPost.Title">
+                                            }
+                                            else
+                                            {
+                                                <img src="@firstImage" alt="@featuredPost.Title">
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <img src="~/images/blog-placeholder.jpg" alt="@featuredPost.Title">
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <img src="~/images/blog-placeholder.jpg" alt="@featuredPost.Title">
+                                    }
+                                </div>
+                                <div class="fb-recommended-info">
+                                    <div class="fb-recommended-title">@featuredPost.Title</div>
+                                    <div class="fb-recommended-meta">
+                                        <span>@featuredPost.CreatedDate.ToString("dd/MM/yyyy")</span>
+                                        <span class="featured-stats">
+                                            <i class="fas fa-thumbs-up text-primary"></i>
+                                            @{
+                                                var likeCount = ViewBag.LikeCounts as Dictionary<int, int>;
+                                                var likes = likeCount?.ContainsKey(featuredPost.Id) == true ? likeCount[featuredPost.Id] : 0;
+                                            }
+                                            @likes
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center py-3">
+                            <p class="text-muted">Chưa có bài viết nổi bật</p>
                         </div>
-                        <div class="fb-recommended-info">
-                            <div class="fb-recommended-title">Ý tưởng trang trí phòng khách</div>
-                            <div class="fb-recommended-meta">2 giờ trước</div>
-                        </div>
-                    </div>
-                    <div class="fb-recommended-post">
-                        <div class="fb-recommended-img">
-                            <img src="~/images/blog-placeholder.jpg" alt="Gợi ý bài viết">
-                        </div>
-                        <div class="fb-recommended-info">
-                            <div class="fb-recommended-title">Những xu hướng mới nhất 2025</div>
-                            <div class="fb-recommended-meta">1 ngày trước</div>
-                        </div>
-                    </div>
+                    }
                 </div>
             </div>
 
             <div class="fb-contacts">
                 <h5 class="fb-sidebar-title">Tác giả nổi bật</h5>
                 <div class="fb-contact-list">
-                    <div class="fb-contact-item">
-                        <div class="fb-contact-avatar">
-                            <i class="fas fa-user"></i>
+                    @{
+                        var featuredAuthors = ViewBag.FeaturedAuthors as List<DOAN_LAPTRINHWEB.Controllers.PostsController.FeaturedAuthorDto>;
+                    }
+                    @if (featuredAuthors != null && featuredAuthors.Any())
+                    {
+                        @foreach (var author in featuredAuthors)
+                        {
+                            <div class="fb-contact-item">
+                                <div class="fb-contact-avatar">
+                                    @if (!string.IsNullOrEmpty(author.UserAvatar))
+                                    {
+                                        <img src="@author.UserAvatar" alt="@author.UserName" class="avatar-img" />
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-user"></i>
+                                    }
+                                </div>
+                                <div class="fb-contact-info">
+                                    <div class="fb-contact-name">@author.UserName</div>
+                                    <div class="fb-contact-stats">
+                                        <span class="author-stat">
+                                            <i class="fas fa-thumbs-up text-primary"></i>
+                                            @author.TotalLikes likes
+                                        </span>
+                                        <span class="author-stat">
+                                            <i class="fas fa-newspaper text-success"></i>
+                                            @author.PostCount bài viết
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center py-3">
+                            <p class="text-muted">Chưa có tác giả nổi bật</p>
                         </div>
-                        <div class="fb-contact-name">Nguyễn Văn A</div>
-                    </div>
-                    <div class="fb-contact-item">
-                        <div class="fb-contact-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="fb-contact-name">Trần Thị B</div>
-                    </div>
-                    <div class="fb-contact-item">
-                        <div class="fb-contact-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="fb-contact-name">Lê Văn C</div>
-                    </div>
+                    }
                 </div>
             </div>
 
@@ -410,7 +467,8 @@
             </div>
         </div>
     </div>
-</div>
+
+
 
 <style>
     /* Facebook-style layout */
@@ -458,16 +516,81 @@
         cursor: pointer;
     }
 
-        .fb-post-stat-item i {
-            width: 16px;
-            height: 16px;
-            background: linear-gradient(45deg, #1877f2, #42a5f5);
-            border-radius: 50%;
+        .fb-contact-info {
+            flex: 1;
+        }
+
+        .fb-contact-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-top: 4px;
+        }
+
+        .author-stat {
+            font-size: 11px;
+            color: var(--fb-secondary-text);
             display: flex;
             align-items: center;
+            gap: 4px;
+        }
+
+            .author-stat i {
+                font-size: 10px;
+            }
+
+        .featured-stats {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            color: var(--fb-secondary-text);
+            margin-left: 8px;
+        }
+
+            .featured-stats i {
+                font-size: 10px;
+            }
+
+        .fb-recommended-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .fb-recommended-post {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+            .fb-recommended-post:hover {
+                background-color: var(--fb-hover-bg);
+                border-radius: 8px;
+            }
+
+        .fb-contact-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 8px 0;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+
+            .fb-contact-item:hover {
+                background-color: var(--fb-hover-bg);
+            }
+        .fb-post-stat-item i {
+            width: auto;
+            height: auto;
+            background: none;
+            border-radius: 0;
+            display: inline;
+            align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 10px;
+            color: #1877f2;
+            font-size: 12px;
+            margin-right: 4px;
         }
 
         .fb-post-stat-item:hover {
@@ -847,12 +970,12 @@
     .fb-post-text {
         font-size: 15px;
         color: var(--fb-primary-text);
-        margin-bottom: 12px; /* Reduced from 16px to 12px */
-        margin-top: 0; /* Added to ensure no extra space */
+        margin: 0 0 12px 0 !important;
         line-height: 1.3333;
         font-weight: 400;
-        white-space: pre-wrap;
+        white-space: pre-line !important; /* Thay đổi từ normal sang pre-line */
         word-wrap: break-word;
+        display: block;
     }
 
     /* See more/less functionality */
@@ -1283,7 +1406,7 @@
 
     /* Loại bỏ white-space */
     .content-preview, .content-full {
-        white-space: normal !important;
+        white-space: pre-line !important; /* Thay đổi từ normal sang pre-line */
     }
 
     .fb-post-reaction-active {
