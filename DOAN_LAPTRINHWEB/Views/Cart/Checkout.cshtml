@@ -26,6 +26,7 @@
     <form asp-action="Checkout" method="post">
         <!-- Hidden fields for required model properties -->
         <input type="hidden" asp-for="UserId" />
+        <input type="hidden" id="selectedAddressId" name="SelectedAddressId" value="0" />
 
         <div class="row">
             <div class="col-lg-8">
@@ -37,59 +38,108 @@
                             Thông tin giao hàng
                         </h5>
 
-                        <div class="mb-3">
-                            <label asp-for="Address.FullName" class="form-label">Họ và tên *</label>
-                            <input asp-for="Address.FullName" class="form-control" placeholder="Nhập họ và tên đầy đủ" />
-                            <span asp-validation-for="Address.FullName" class="text-danger"></span>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Address.Phone" class="form-label">Số điện thoại *</label>
-                                <input asp-for="Address.Phone" class="form-control" placeholder="0123456789" />
-                                <span asp-validation-for="Address.Phone" class="text-danger"></span>
+                        @if (ViewBag.Addresses != null && ViewBag.Addresses.Count > 0)
+                        {
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Chọn địa chỉ đã lưu</label>
+                                <select id="savedAddresses" class="form-select mb-3">
+                                    <option value="">-- Chọn địa chỉ --</option>
+                                    @foreach (var address in ViewBag.Addresses)
+                                    {
+                                        if (address.IsDefault)
+                                        {
+                                            <option value="@address.AddressId"
+                                                    data-fullname="@address.FullName"
+                                                    data-phone="@address.Phone"
+                                                    data-street="@address.Street"
+                                                    data-city="@address.City"
+                                                    data-state="@address.State"
+                                                    data-postalcode="@address.PostalCode"
+                                                    data-country="@address.Country"
+                                                    selected="selected">
+                                                @address.FullName - @address.Street, @address.City (Mặc định)
+                                            </option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@address.AddressId"
+                                                    data-fullname="@address.FullName"
+                                                    data-phone="@address.Phone"
+                                                    data-street="@address.Street"
+                                                    data-city="@address.City"
+                                                    data-state="@address.State"
+                                                    data-postalcode="@address.PostalCode"
+                                                    data-country="@address.Country">
+                                                @address.FullName - @address.Street, @address.City
+                                            </option>
+                                        }
+                                    }
+                                </select>
+                                <div class="d-flex justify-content-end mb-3">
+                                    <button type="button" id="newAddressBtn" class="btn btn-sm btn-outline-secondary">
+                                        <i class="fas fa-plus me-1"></i> Địa chỉ mới
+                                    </button>
+                                </div>
+                                <hr class="mb-3" />
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Email</label>
-                                <input type="email" class="form-control" value="@Model.User?.Email" readonly />
-                            </div>
-                        </div>
+                        }
 
-                        <div class="mb-3">
-                            <label asp-for="Address.Street" class="form-label">Địa chỉ *</label>
-                            <input asp-for="Address.Street" class="form-control" placeholder="Số nhà, tên đường" />
-                            <span asp-validation-for="Address.Street" class="text-danger"></span>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label asp-for="Address.City" class="form-label">Thành phố *</label>
-                                <input asp-for="Address.City" class="form-control" placeholder="Hồ Chí Minh" />
-                                <span asp-validation-for="Address.City" class="text-danger"></span>
+                        <div id="addressForm">
+                            <div class="mb-3">
+                                <label asp-for="Address.FullName" class="form-label">Họ và tên *</label>
+                                <input asp-for="Address.FullName" class="form-control" placeholder="Nhập họ và tên đầy đủ" />
+                                <span asp-validation-for="Address.FullName" class="text-danger"></span>
                             </div>
-                            <div class="col-md-4 mb-3">
-                                <label asp-for="Address.State" class="form-label">Tỉnh/Thành *</label>
-                                <input asp-for="Address.State" class="form-control" placeholder="TP.HCM" />
-                                <span asp-validation-for="Address.State" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label asp-for="Address.PostalCode" class="form-label">Mã bưu điện</label>
-                                <input asp-for="Address.PostalCode" class="form-control" placeholder="70000" />
-                                <span asp-validation-for="Address.PostalCode" class="text-danger"></span>
-                            </div>
-                        </div>
 
-                        <div class="mb-3">
-                            <label asp-for="Address.Country" class="form-label">Quốc gia</label>
-                            <input asp-for="Address.Country" class="form-control" value="Việt Nam" readonly />
-                            <span asp-validation-for="Address.Country" class="text-danger"></span>
-                        </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Address.Phone" class="form-label">Số điện thoại *</label>
+                                    <input asp-for="Address.Phone" class="form-control" placeholder="0123456789" />
+                                    <span asp-validation-for="Address.Phone" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" value="@Model.User?.Email" readonly />
+                                </div>
+                            </div>
 
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" asp-for="SaveAddressToAccount" id="saveAddress">
-                            <label class="form-check-label" for="saveAddress">
-                                Lưu địa chỉ này vào tài khoản của tôi
-                            </label>
+                            <div class="mb-3">
+                                <label asp-for="Address.Street" class="form-label">Địa chỉ *</label>
+                                <input asp-for="Address.Street" class="form-control" placeholder="Số nhà, tên đường" />
+                                <span asp-validation-for="Address.Street" class="text-danger"></span>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label asp-for="Address.City" class="form-label">Thành phố *</label>
+                                    <input asp-for="Address.City" class="form-control" placeholder="Hồ Chí Minh" />
+                                    <span asp-validation-for="Address.City" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label asp-for="Address.State" class="form-label">Tỉnh/Thành *</label>
+                                    <input asp-for="Address.State" class="form-control" placeholder="TP.HCM" />
+                                    <span asp-validation-for="Address.State" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label asp-for="Address.PostalCode" class="form-label">Mã bưu điện</label>
+                                    <input asp-for="Address.PostalCode" class="form-control" placeholder="70000" />
+                                    <span asp-validation-for="Address.PostalCode" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Address.Country" class="form-label">Quốc gia</label>
+                                <input asp-for="Address.Country" class="form-control" value="Việt Nam" readonly />
+                                <span asp-validation-for="Address.Country" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" asp-for="SaveAddressToAccount" id="saveAddress">
+                                <label class="form-check-label" for="saveAddress">
+                                    Lưu địa chỉ này vào tài khoản của tôi
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -346,13 +396,10 @@
     }
 
     @@media (max-width: 991px) {
-        .sticky-top
-
-    {
-        position: relative;
-        top: auto !important;
-    }
-
+        .sticky-top {
+            position: relative;
+            top: auto !important;
+        }
     }
 </style>
 
@@ -375,12 +422,94 @@
                 $('#bank-info').show();
             }
 
+            // Function để load địa chỉ từ option được chọn
+            function loadAddressFromOption(option) {
+                if (option && option.length > 0) {
+                    $('#Address_FullName').val(option.data('fullname') || '');
+                    $('#Address_Phone').val(option.data('phone') || '');
+                    $('#Address_Street').val(option.data('street') || '');
+                    $('#Address_City').val(option.data('city') || '');
+                    $('#Address_State').val(option.data('state') || '');
+                    $('#Address_PostalCode').val(option.data('postalcode') || '');
+                    $('#Address_Country').val(option.data('country') || 'Việt Nam');
+
+                    // Set selected address ID
+                    $('#selectedAddressId').val(option.val());
+
+                    // Ẩn checkbox lưu địa chỉ vì đang sử dụng địa chỉ đã có
+                    $('#saveAddress').prop('checked', false);
+                    $('#saveAddress').closest('.form-check').hide();
+                }
+            }
+
+            // Function để clear form địa chỉ
+            function clearAddressForm() {
+                $('#Address_FullName').val('');
+                $('#Address_Phone').val('');
+                $('#Address_Street').val('');
+                $('#Address_City').val('');
+                $('#Address_State').val('');
+                $('#Address_PostalCode').val('');
+                $('#Address_Country').val('Việt Nam');
+                $('#selectedAddressId').val('0');
+                $('#saveAddress').prop('checked', false);
+                $('#saveAddress').closest('.form-check').show();
+            }
+
+            // Load địa chỉ mặc định khi trang được tải
+            var defaultOption = $('#savedAddresses option[selected]');
+            if (defaultOption.length > 0 && defaultOption.val()) {
+                loadAddressFromOption(defaultOption);
+            }
+
+            // Xử lý khi chọn địa chỉ đã lưu
+            $('#savedAddresses').change(function() {
+                const selectedAddressId = $(this).val();
+
+                if (selectedAddressId) {
+                    const option = $(this).find('option:selected');
+                    loadAddressFromOption(option);
+                } else {
+                    clearAddressForm();
+                }
+            });
+
+            // Nút tạo địa chỉ mới
+            $('#newAddressBtn').click(function() {
+                // Reset dropdown
+                $('#savedAddresses').val('');
+
+                // Clear form
+                clearAddressForm();
+
+                // Focus vào ô họ tên
+                $('#Address_FullName').focus();
+            });
+
             // Prevent double form submission and show loading indicator
             $('form').submit(function(e) {
                 var submitButton = $(this).find('button[type="submit"]');
 
                 // Validate form first
                 if (!$(this).valid()) {
+                    return false;
+                }
+
+                // Validate address fields manually
+                var isValid = true;
+                var requiredFields = ['#Address_FullName', '#Address_Phone', '#Address_Street', '#Address_City', '#Address_State'];
+
+                requiredFields.forEach(function(field) {
+                    if (!$(field).val().trim()) {
+                        isValid = false;
+                        $(field).addClass('is-invalid');
+                    } else {
+                        $(field).removeClass('is-invalid');
+                    }
+                });
+
+                if (!isValid) {
+                    alert('Vui lòng điền đầy đủ thông tin địa chỉ giao hàng.');
                     return false;
                 }
 
@@ -404,6 +533,11 @@
                     value = value.substring(0, 10);
                 }
                 $(this).val(value);
+            });
+
+            // Remove validation error styling when user starts typing
+            $('input[required], input[asp-for^="Address"]').on('input', function() {
+                $(this).removeClass('is-invalid');
             });
 
             // Smooth scroll to error messages

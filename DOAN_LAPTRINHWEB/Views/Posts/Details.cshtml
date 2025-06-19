@@ -978,25 +978,7 @@
             .replace(/[ \t]+/g, ' '); // Gộp nhiều space thành 1
             }
 
-        $(document).ready(function() {
-            // Tải bình luận khi trang được load
-            loadComments(@Model.Id, 1);
-
-            // Xử lý khi nhấn Enter trong textarea
-            $("#commentContent").keydown(function(event) {
-                if (event.keyCode === 13 && !event.shiftKey) {
-                    event.preventDefault();
-                    addComment(@Model.Id);
-                }
-            });
-
-            // Tự động cuộn đến phần bình luận nếu URL có hash #commentsSection
-            if (window.location.hash === '#commentsSection') {
-                setTimeout(function() {
-                    scrollToComments();
-                }, 500); // Đợi 500ms để trang load xong
-            }
-        });
+        
 
         // Hàm thêm bình luận
                     // Thay thế hàm addComment hiện tại bằng code này:

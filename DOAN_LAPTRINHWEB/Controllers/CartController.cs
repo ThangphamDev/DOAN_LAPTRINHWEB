@@ -194,18 +194,15 @@ namespace DOAN_LAPTRINHWEB.Controllers
             return View(checkoutViewModel);
         }
 
-        // POST: Cart/Checkout - Phương thức này sẽ được chỉnh sửa để sử dụng giỏ hàng từ database thay vì session
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Checkout(CheckoutViewModel model)
+        public async Task<IActionResult> Checkout(CheckoutViewModel model, int SelectedAddressId = 0)
         {
-            // Use a transaction to ensure database consistency
             using var transaction = await _context.Database.BeginTransactionAsync();
 
             try
             {
-                // Get current user and cart
                 var currentUser = await _userManager.GetUserAsync(User);
                 if (currentUser == null)
                 {
@@ -216,7 +213,6 @@ namespace DOAN_LAPTRINHWEB.Controllers
                 var userId = currentUser.Id;
                 var cart = await _cartService.GetCartAsync(userId);
 
-                // Restore model info
                 model.Cart = cart;
                 model.User = currentUser;
                 model.UserId = userId;
@@ -228,7 +224,7 @@ namespace DOAN_LAPTRINHWEB.Controllers
                     return RedirectToAction("Index");
                 }
 
-                // Check stock availability again before processing order
+                // Check stock availability
                 bool stockAvailable = true;
                 string outOfStockMessage = "";
 
@@ -262,30 +258,72 @@ namespace DOAN_LAPTRINHWEB.Controllers
                     return RedirectToAction("Index");
                 }
 
-                // Validate model
-                if (string.IsNullOrEmpty(model.Address?.FullName) ||
-                    string.IsNullOrEmpty(model.Address?.Phone) ||
-                    string.IsNullOrEmpty(model.Address?.Street) ||
-                    string.IsNullOrEmpty(model.Address?.City) ||
-                    string.IsNullOrEmpty(model.PaymentMethod))
+                // **SỬA CHÍNH** - Xử lý địa chỉ giao hàng
+                Address shippingAddress;
+
+                if (SelectedAddressId > 0)
                 {
-                    ModelState.AddModelError("", "Vui lòng điền đầy đủ thông tin giao hàng và phương thức thanh toán");
+                    // Sử dụng địa chỉ đã chọn
+                    shippingAddress = await _context.Addresses
+                        .FirstOrDefaultAsync(a => a.AddressId == SelectedAddressId && a.UserId == userId);
 
-                    // Pass addresses to ViewBag for dropdown if needed
-                    var addresses = await _context.Addresses
-                        .Where(a => a.UserId == currentUser.Id)
-                        .ToListAsync();
-                    ViewBag.Addresses = addresses;
+                    if (shippingAddress == null)
+                    {
+                        TempData["ErrorMessage"] = "Địa chỉ được chọn không hợp lệ.";
+                        var addresses = await _context.Addresses.Where(a => a.UserId == currentUser.Id).ToListAsync();
+                        ViewBag.Addresses = addresses;
+                        return View(model);
+                    }
+                }
+                else
+                {
+                    // Validate địa chỉ mới
+                    if (string.IsNullOrEmpty(model.Address?.FullName) ||
+                        string.IsNullOrEmpty(model.Address?.Phone) ||
+                        string.IsNullOrEmpty(model.Address?.Street) ||
+                        string.IsNullOrEmpty(model.Address?.City) ||
+                        string.IsNullOrEmpty(model.PaymentMethod))
+                    {
+                        ModelState.AddModelError("", "Vui lòng điền đầy đủ thông tin giao hàng và phương thức thanh toán");
+                        var addresses = await _context.Addresses.Where(a => a.UserId == currentUser.Id).ToListAsync();
+                        ViewBag.Addresses = addresses;
+                        return View(model);
+                    }
 
-                    return View(model);
+                    // Tạo địa chỉ mới
+                    shippingAddress = new Address
+                    {
+                        UserId = currentUser.Id,
+                        FullName = model.Address.FullName,
+                        Phone = model.Address.Phone,
+                        Street = model.Address.Street,
+                        City = model.Address.City,
+                        State = model.Address.State ?? "",
+                        PostalCode = model.Address.PostalCode ?? "",
+                        Country = model.Address.Country ?? "Việt Nam",
+                        IsDefault = false,
+                        CreatedAt = DateTime.Now,
+                        UpdatedAt = DateTime.Now
+                    };
+
+                    _context.Addresses.Add(shippingAddress);
+                    await _context.SaveChangesAsync(); // Lưu để có AddressId
+
+                    // Lưu vào tài khoản nếu được yêu cầu
+                    if (model.SaveAddressToAccount)
+                    {
+                        // Địa chỉ đã được lưu ở trên rồi
+                        Console.WriteLine("Đã lưu địa chỉ vào tài khoản");
+                    }
                 }
 
-                // Create new order
+                // **SỬA CHÍNH** - Tạo order với ShippingAddressId
                 var order = new Order
                 {
                     UserId = currentUser.Id,
                     OrderStatus = "Chờ xác nhận",
                     TotalAmount = cart.TotalAmount,
+                    ShippingAddressId = shippingAddress.AddressId, // **THÊM DÒNG NÀY**
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now
                 };
@@ -293,10 +331,9 @@ namespace DOAN_LAPTRINHWEB.Controllers
                 _context.Orders.Add(order);
                 await _context.SaveChangesAsync();
 
-                // Add order items and update product stock
+                // Add order items và update stock
                 foreach (var item in cart.Items)
                 {
-                    // Create order item
                     var orderItem = new OrderItem
                     {
                         OrderId = order.OrderId,
@@ -307,7 +344,7 @@ namespace DOAN_LAPTRINHWEB.Controllers
                     };
                     _context.OrderItems.Add(orderItem);
 
-                    // Update product stock based on whether item has variant or not
+                    // Update stock
                     if (item.ProductVariantId.HasValue)
                     {
                         var variant = await _context.ProductVariants.FindAsync(item.ProductVariantId);
@@ -329,25 +366,6 @@ namespace DOAN_LAPTRINHWEB.Controllers
                 }
                 await _context.SaveChangesAsync();
 
-                // Save shipping address
-                if (model.Address != null)
-                {
-                    var address = new Address
-                    {
-                        UserId = currentUser.Id,
-                        FullName = model.Address.FullName,
-                        Phone = model.Address.Phone,
-                        Street = model.Address.Street,
-                        City = model.Address.City,
-                        State = model.Address.State ?? "",
-                        PostalCode = model.Address.PostalCode ?? "",
-                        Country = model.Address.Country ?? "Việt Nam"
-                    };
-
-                    _context.Addresses.Add(address);
-                    await _context.SaveChangesAsync();
-                }
-
                 // Add payment information
                 var payment = new Payment
                 {
@@ -361,27 +379,23 @@ namespace DOAN_LAPTRINHWEB.Controllers
                 _context.Payments.Add(payment);
                 await _context.SaveChangesAsync();
 
-                // Clear cart after successful order
+                // Clear cart
                 await _cartService.ClearCartAsync(userId);
 
-                // Commit transaction
                 await transaction.CommitAsync();
 
                 return RedirectToAction("OrderConfirmation", new { orderId = order.OrderId });
             }
             catch (Exception ex)
             {
-                // Roll back transaction
                 await transaction.RollbackAsync();
 
-                // Log error details
                 var errorMessage = ex.InnerException?.Message ?? ex.Message;
                 Console.WriteLine($"Error in Checkout: {errorMessage}");
                 Console.WriteLine($"Stack trace: {ex.StackTrace}");
 
                 TempData["ErrorMessage"] = $"Có lỗi xảy ra khi xử lý đơn hàng: {errorMessage}";
 
-                // Reload cart and user data for the view
                 var currentUser = await _userManager.GetUserAsync(User);
                 var cart = await _cartService.GetCartAsync(currentUser.Id);
 
@@ -390,17 +404,14 @@ namespace DOAN_LAPTRINHWEB.Controllers
                 model.UserId = currentUser?.Id;
                 model.Order = new Order();
 
-                // Pass addresses to ViewBag for dropdown if needed
-                var addresses = await _context.Addresses
-                    .Where(a => a.UserId == currentUser.Id)
-                    .ToListAsync();
+                var addresses = await _context.Addresses.Where(a => a.UserId == currentUser.Id).ToListAsync();
                 ViewBag.Addresses = addresses;
 
                 return View(model);
             }
         }
 
-        // GET: Cart/OrderConfirmation/5 - Phương thức này gần như không thay đổi
+
         [Authorize]
         public async Task<IActionResult> OrderConfirmation(int orderId)
         {
@@ -412,6 +423,7 @@ namespace DOAN_LAPTRINHWEB.Controllers
                     .ThenInclude(oi => oi.ProductVariant)
                 .Include(o => o.User)
                 .Include(o => o.Payments)
+                .Include(o => o.ShippingAddress) // **THÊM DÒNG NÀY**
                 .FirstOrDefaultAsync(o => o.OrderId == orderId);
 
             if (order == null)
@@ -426,26 +438,16 @@ namespace DOAN_LAPTRINHWEB.Controllers
                 return Forbid();
             }
 
-            // Get shipping address for order
-            var addresses = await _context.Addresses
-                .Where(a => a.UserId == currentUser.Id)
-                .OrderByDescending(a => a.AddressId)  // Get most recently added address
-                .FirstOrDefaultAsync();
-
-            // Get payment information
+            // Get payment information và truyền qua ViewBag
             var payment = await _context.Payments
                 .FirstOrDefaultAsync(p => p.OrderId == orderId);
 
-            var viewModel = new OrderConfirmationViewModel
-            {
-                Order = order,
-                Address = addresses,
-                Payment = payment,
-                OrderItems = order.OrderItems.ToList()
-            };
+            ViewBag.Payment = payment;
 
-            return View(viewModel);
+            return View(order); // **Truyền order làm model**
         }
+
+
 
         // GET: Cart/CartPartial (to display cart count in navbar)
         public async Task<IActionResult> CartPartial()

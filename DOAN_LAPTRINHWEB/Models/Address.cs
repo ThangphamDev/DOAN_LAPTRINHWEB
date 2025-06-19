@@ -23,7 +23,16 @@ public partial class Address
     public string PostalCode { get; set; }
 
     public string Country { get; set; }
+
     public bool IsDefault { get; set; }
 
-    public virtual ApplicationUser? User { get; set; }
+    // **THÊM MỚI** - Timestamps
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+
+    // Navigation properties
+    public virtual ApplicationUser User { get; set; }
+
+    // **THÊM MỚI** - Navigation property đến Orders
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 }

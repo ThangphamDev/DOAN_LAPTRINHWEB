@@ -72,6 +72,17 @@ public partial class HomeStylesDbContext : IdentityDbContext<ApplicationUser>
                 .HasDefaultValue(false)
                 .HasColumnName("is_default");
 
+            // **THÊM MỚI** - Timestamps cho Address
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("updated_at");
+
             entity.HasOne(d => d.User)
                 .WithMany(p => p.Addresses)
                 .HasForeignKey(d => d.UserId)
@@ -114,11 +125,21 @@ public partial class HomeStylesDbContext : IdentityDbContext<ApplicationUser>
                 .HasColumnName("updated_at");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
+            // **THÊM MỚI** - ShippingAddressId
+            entity.Property(e => e.ShippingAddressId).HasColumnName("shipping_address_id");
+
             entity.HasOne(d => d.User)
                 .WithMany(p => p.Orders)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Orders__user_id__628FA481");
+
+            // **THÊM MỚI** - Relationship với Address
+            entity.HasOne(d => d.ShippingAddress)
+                .WithMany(a => a.Orders)
+                .HasForeignKey(d => d.ShippingAddressId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK__Orders__shipping_address_id");
         });
 
         modelBuilder.Entity<OrderItem>(entity =>
@@ -300,7 +321,6 @@ public partial class HomeStylesDbContext : IdentityDbContext<ApplicationUser>
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK__Carts__user_id");
         });
-
         modelBuilder.Entity<CartItem>(entity =>
         {
             entity.HasKey(e => e.CartItemId).HasName("PK__CartItems__CartItemId");
@@ -381,7 +401,7 @@ public partial class HomeStylesDbContext : IdentityDbContext<ApplicationUser>
         .HasConversion<string>();
             entity.Property(p => p.IsDeleted)
                 .HasDefaultValue(false); // Mặc định là false cho xóa mềm
-            
+
             entity.HasOne(p => p.User)
          .WithMany()
          .HasForeignKey(p => p.UserId)

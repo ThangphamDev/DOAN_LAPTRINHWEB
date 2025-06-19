@@ -1,90 +1,818 @@
-﻿@model OrderConfirmationViewModel
+﻿@model DOAN_LAPTRINHWEB.Models.Order
 @{
-    ViewData["Title"] = "Xác nhận đơn hàng";
+    ViewData["Title"] = "Hóa đơn điện tử";
+    var payment = ViewBag.Payment as DOAN_LAPTRINHWEB.Models.Payment;
 }
 
-<section class="container py-5">
-    <div class="text-center mb-5">
-        <div class="mb-4">
-            <i class="fas fa-check-circle text-success" style="font-size: 64px;"></i>
-        </div>
-        <h1 class="mb-3">Cảm ơn bạn đã đặt hàng!</h1>
-        <p class="lead mb-1">Đơn hàng #@Model.Order.OrderId đã được xác nhận.</p>
-        <p>Chúng tôi sẽ gửi email xác nhận kèm theo thông tin đơn hàng của bạn.</p>
-    </div>
-
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Chi tiết đơn hàng</h5>
-
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <p class="mb-1">
-                                <strong>Mã đơn hàng:</strong> #@Model.Order.OrderId
-                            </p>
-                            <p class="mb-1">
-                                <strong>Ngày đặt:</strong> @Model.Order.CreatedAt.ToString("dd/MM/yyyy HH:mm")
-                            </p>
-                            <p class="mb-1">
-                                <strong>Tình trạng:</strong> <span class="badge bg-warning">@Model.Order.OrderStatus</span>
-                            </p>
-                            <p class="mb-1">
-                                <strong>Phương thức thanh toán:</strong> @Model.Order.Payments.FirstOrDefault()?.PaymentMethod
-                            </p>
-                        </div>
-                        <div class="col-md-6">
-                            <p class="mb-1"><strong>Địa chỉ giao hàng:</strong></p>
-                            <p class="mb-1">@Model.Address.FullName</p>
-                            <p class="mb-1">@Model.Address.Street</p>
-                            <p class="mb-1">@Model.Address.City, @Model.Address.State @Model.Address.PostalCode</p>
-                            <p class="mb-1">@Model.Address.Country</p>
-                            <p class="mb-1">@Model.Address.Phone</p>
+<div class="invoice-container">
+    <div class="invoice-wrapper">
+        <!-- Header hóa đơn -->
+        <div class="invoice-header">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="company-info">
+                        <h2 class="company-name">HOME STYLES</h2>
+                        <p class="company-tagline">Nội thất cao cấp - Phong cách hiện đại</p>
+                        <div class="company-details">
+                            <p><i class="fas fa-map-marker-alt"></i> 123 Đường ABC, Quận 1, TP.HCM</p>
+                            <p><i class="fas fa-phone"></i> 1900 123 456</p>
+                            <p><i class="fas fa-envelope"></i> info@homestyles.com</p>
                         </div>
                     </div>
-
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Sản phẩm</th>
-                                <th class="text-center">Số lượng</th>
-                                <th class="text-end">Giá</th>
-                                <th class="text-end">Tổng</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model.Order.OrderItems)
-                            {
-                                <tr>
-                                    <td>@item.Product.Name</td>
-                                    <td class="text-center">@item.Quantity</td>
-                                    <td class="text-end">@item.Price.ToString("N0")₫</td>
-                                    <td class="text-end">@((item.Price * item.Quantity).ToString("N0"))₫</td>
-                                </tr>
-                            }
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="3" class="text-end">Tạm tính</td>
-                                <td class="text-end">@Model.Order.TotalAmount.ToString("N0")₫</td>
-                            </tr>
-                            <tr>
-                                <td colspan="3" class="text-end">Phí vận chuyển</td>
-                                <td class="text-end">Miễn phí</td>
-                            </tr>
-                            <tr>
-                                <td colspan="3" class="text-end"><strong>Tổng cộng</strong></td>
-                                <td class="text-end"><strong>@Model.Order.TotalAmount.ToString("N0")₫</strong></td>
-                            </tr>
-                        </tfoot>
-                    </table>
+                </div>
+                <div class="col-md-6 text-end">
+                    <div class="invoice-title">
+                        <h1>HÓA ĐƠN</h1>
+                        <div class="invoice-number">#@Model.OrderId.ToString("D6")</div>
+                        <div class="invoice-date">
+                            <strong>Ngày:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy")
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <div class="text-center mt-4">
-                <a asp-controller="Products" asp-action="Index" class="btn btn-dark">Tiếp tục mua sắm</a>
+        <!-- Thông tin khách hàng và giao hàng -->
+        <div class="invoice-info">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="customer-info">
+                        <h5>Thông tin khách hàng</h5>
+                        <div class="info-box">
+                            <p><strong>Họ tên:</strong> @Model.User?.FullName</p>
+                            <p><strong>Email:</strong> @Model.User?.Email</p>
+                            <p><strong>Điện thoại:</strong> @Model.User?.PhoneNumber</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    @if (Model.ShippingAddress != null)
+                    {
+                        <div class="shipping-info">
+                            <h5>Địa chỉ giao hàng</h5>
+                            <div class="info-box">
+                                <p><strong>Người nhận:</strong> @Model.ShippingAddress.FullName</p>
+                                <p><strong>Điện thoại:</strong> @Model.ShippingAddress.Phone</p>
+                                <p><strong>Địa chỉ:</strong> @Model.ShippingAddress.Street</p>
+                                <p><strong>Thành phố:</strong> @Model.ShippingAddress.City, @Model.ShippingAddress.State</p>
+                                @if (!string.IsNullOrEmpty(Model.ShippingAddress.PostalCode))
+                                {
+                                    <p><strong>Mã bưu điện:</strong> @Model.ShippingAddress.PostalCode</p>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Bảng sản phẩm -->
+        <div class="invoice-items">
+            <h5>Chi tiết đơn hàng</h5>
+            <div class="table-responsive">
+                <table class="table invoice-table">
+                    <thead>
+                        <tr>
+                            <th width="5%">#</th>
+                            <th width="45%">Sản phẩm</th>
+                            <th width="15%" class="text-center">Số lượng</th>
+                            <th width="15%" class="text-end">Đơn giá</th>
+                            <th width="20%" class="text-end">Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int itemIndex = 1;
+                        }
+                        @foreach (var item in Model.OrderItems)
+                        {
+                            <tr>
+                                <td class="text-center">@itemIndex</td>
+                                <td>
+                                    <div class="product-info">
+                                        <strong>@item.Product?.Name</strong>
+                                        @if (item.ProductVariant != null)
+                                        {
+                                            <div class="product-variant">
+                                                @if (!string.IsNullOrEmpty(item.ProductVariant.Size))
+                                                {
+                                                    <span class="variant-tag">Size: @item.ProductVariant.Size</span>
+                                                }
+                                                @if (!string.IsNullOrEmpty(item.ProductVariant.Color))
+                                                {
+                                                    <span class="variant-tag">Màu: @item.ProductVariant.Color</span>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                </td>
+                                <td class="text-center">@item.Quantity</td>
+                                <td class="text-end">@item.Price.ToString("N0")₫</td>
+                                <td class="text-end"><strong>@((item.Price * item.Quantity).ToString("N0"))₫</strong></td>
+                            </tr>
+                            itemIndex++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tổng kết -->
+        <div class="invoice-summary">
+            <div class="row">
+                <div class="col-md-6">
+                    @if (payment != null)
+                    {
+                        <div class="payment-info">
+                            <h6>Thông tin thanh toán</h6>
+                            <div class="payment-details">
+                                <p>
+                                    <strong>Phương thức:</strong>
+                                    @switch (payment.PaymentMethod)
+                                    {
+                                        case "COD":
+                                            <span class="payment-method cod">Thanh toán khi nhận hàng</span>
+                                            break;
+                                        case "Banking":
+                                            <span class="payment-method banking">Chuyển khoản ngân hàng</span>
+                                            break;
+                                        case "Momo":
+                                            <span class="payment-method momo">Ví MoMo</span>
+                                            break;
+                                        default:
+                                            <span class="payment-method">@payment.PaymentMethod</span>
+                                            break;
+                                    }
+                                </p>
+                                <p>
+                                    <strong>Trạng thái:</strong>
+                                    <span class="status-badge status-@payment.PaymentStatus.ToLower().Replace(" ", "-")">
+                                        @payment.PaymentStatus
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="col-md-6">
+                    <div class="total-section">
+                        <div class="total-row subtotal">
+                            <span>Tạm tính:</span>
+                            <span>@Model.OrderItems.Sum(i => i.Price * i.Quantity).ToString("N0")₫</span>
+                        </div>
+                        <div class="total-row shipping">
+                            <span>Phí vận chuyển:</span>
+                            <span class="free-shipping">Miễn phí</span>
+                        </div>
+                        <div class="total-row tax">
+                            <span>Thuế VAT (0%):</span>
+                            <span>0₫</span>
+                        </div>
+                        <div class="total-row grand-total">
+                            <span><strong>Tổng cộng:</strong></span>
+                            <span><strong>@Model.TotalAmount.ToString("N0")₫</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer hóa đơn -->
+        <div class="invoice-footer">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="notes">
+                        <h6>Ghi chú:</h6>
+                        <p>• Hóa đơn này được tạo tự động bởi hệ thống</p>
+                        <p>• Vui lòng giữ lại hóa đơn để đối chiếu khi nhận hàng</p>
+                        <p>• Mọi thắc mắc xin liên hệ hotline: 1900 123 456</p>
+                    </div>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="order-status">
+                        <h6>Trạng thái đơn hàng</h6>
+                        <span class="status-badge status-@Model.OrderStatus.ToLower().Replace(" ", "-")">
+                            @Model.OrderStatus
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nút hành động -->
+        <div class="invoice-actions">
+            <div class="text-center">
+                <button onclick="window.print()" class="btn btn-print">
+                    <i class="fas fa-print"></i> In hóa đơn
+                </button>
+                <button onclick="downloadPDF()" class="btn btn-download">
+                    <i class="fas fa-download"></i> Tải PDF
+                </button>
+                <a href="@Url.Action("Index", "Home")" class="btn btn-continue">
+                    <i class="fas fa-shopping-cart"></i> Tiếp tục mua sắm
+                </a>
             </div>
         </div>
     </div>
-</section>
+</div>
+
+<style>
+    /* Reset và base styles */
+    .invoice-container {
+        background: #f8f9fa;
+        min-height: 100vh;
+        padding: 20px 0;
+    }
+
+    .invoice-wrapper {
+        max-width: 900px;
+        margin: 0 auto;
+        background: white;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    /* Header */
+    .invoice-header {
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        color: white;
+        padding: 30px;
+    }
+
+    .company-name {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+        letter-spacing: 2px;
+    }
+
+    .company-tagline {
+        font-style: italic;
+        margin-bottom: 15px;
+        opacity: 0.9;
+    }
+
+    .company-details p {
+        margin-bottom: 5px;
+        font-size: 0.9rem;
+    }
+
+    .company-details i {
+        width: 20px;
+        margin-right: 8px;
+    }
+
+    .invoice-title h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: #ecf0f1;
+    }
+
+    .invoice-number {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #3498db;
+        margin-bottom: 10px;
+    }
+
+    .invoice-date {
+        font-size: 1rem;
+    }
+
+    /* Thông tin */
+    .invoice-info {
+        padding: 30px;
+        background: #f8f9fa;
+        border-bottom: 3px solid #3498db;
+    }
+
+        .invoice-info h5 {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #3498db;
+        }
+
+    .info-box {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+        .info-box p {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+    /* Bảng sản phẩm */
+    .invoice-items {
+        padding: 30px;
+    }
+
+        .invoice-items h5 {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+
+    .invoice-table {
+        margin-bottom: 0;
+        border: none;
+    }
+
+        .invoice-table thead th {
+            background: #34495e;
+            color: white;
+            border: none;
+            padding: 15px 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        .invoice-table tbody td {
+            padding: 15px 10px;
+            border-bottom: 1px solid #ecf0f1;
+            vertical-align: middle;
+        }
+
+        .invoice-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+    .product-info strong {
+        color: #2c3e50;
+        font-size: 1rem;
+    }
+
+    .product-variant {
+        margin-top: 5px;
+    }
+
+    .variant-tag {
+        display: inline-block;
+        background: #3498db;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        margin-right: 5px;
+    }
+
+    /* Tổng kết */
+    .invoice-summary {
+        padding: 30px;
+        background: #f8f9fa;
+    }
+
+    .payment-info h6 {
+        color: #2c3e50;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .payment-details {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    }
+
+    .payment-method {
+        padding: 4px 12px;
+        border-radius: 15px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+        .payment-method.cod {
+            background: #27ae60;
+            color: white;
+        }
+
+        .payment-method.banking {
+            background: #3498db;
+            color: white;
+        }
+
+        .payment-method.momo {
+            background: #e91e63;
+            color: white;
+        }
+
+    .status-badge {
+        padding: 5px 12px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+        .status-badge.status-chờ-xác-nhận,
+        .status-badge.status-chờ-thanh-toán {
+            background: #f39c12;
+            color: white;
+        }
+
+        .status-badge.status-đang-xử-lý {
+            background: #3498db;
+            color: white;
+        }
+
+        .status-badge.status-hoàn-thành,
+        .status-badge.status-đã-thanh-toán {
+            background: #27ae60;
+            color: white;
+        }
+
+        .status-badge.status-đã-hủy {
+            background: #e74c3c;
+            color: white;
+        }
+
+    .total-section {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .total-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #ecf0f1;
+    }
+
+        .total-row:last-child {
+            border-bottom: none;
+        }
+
+        .total-row.subtotal {
+            font-size: 1rem;
+        }
+
+        .total-row.shipping .free-shipping {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .total-row.tax {
+            color: #7f8c8d;
+        }
+
+        .total-row.grand-total {
+            background: #2c3e50;
+            color: white;
+            margin: 15px -25px -25px -25px;
+            padding: 20px 25px;
+            font-size: 1.3rem;
+            border-radius: 0 0 10px 10px;
+        }
+
+    /* Footer */
+    .invoice-footer {
+        padding: 30px;
+        background: #ecf0f1;
+        border-top: 3px solid #3498db;
+    }
+
+    .notes h6 {
+        color: #2c3e50;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .notes p {
+        margin-bottom: 5px;
+        color: #7f8c8d;
+        font-size: 0.9rem;
+    }
+
+    .order-status h6 {
+        color: #2c3e50;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    /* Nút hành động */
+    .invoice-actions {
+        padding: 30px;
+        background: white;
+        border-top: 1px solid #ecf0f1;
+    }
+
+    .btn {
+        padding: 12px 25px;
+        margin: 0 10px;
+        border: none;
+        border-radius: 25px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+    .btn-print {
+        background: #34495e;
+        color: white;
+    }
+
+        .btn-print:hover {
+            background: #2c3e50;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 73, 94, 0.3);
+        }
+
+    .btn-download {
+        background: #e74c3c;
+        color: white;
+    }
+
+        .btn-download:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+
+    .btn-continue {
+        background: #27ae60;
+        color: white;
+    }
+
+        .btn-continue:hover {
+            background: #229954;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+            text-decoration: none;
+            color: white;
+        }
+
+    /* Print styles */
+    @@media print {
+        body *
+
+    {
+        visibility: hidden;
+    }
+
+    .invoice-container,
+    .invoice-container * {
+        visibility: visible;
+    }
+
+    .invoice-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: white;
+        padding: 0;
+        min-height: auto;
+    }
+
+    .invoice-wrapper {
+        box-shadow: none;
+        border-radius: 0;
+        max-width: none;
+    }
+
+    .invoice-actions {
+        display: none;
+    }
+
+    .invoice-header {
+        background: #2c3e50 !important;
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+    }
+
+    .invoice-table thead th {
+        background: #34495e !important;
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+    }
+
+    .total-row.grand-total {
+        background: #2c3e50 !important;
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+    }
+
+    .status-badge,
+    .payment-method {
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+    }
+
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .invoice-container
+
+    {
+        padding: 10px;
+    }
+
+    .invoice-header,
+    .invoice-info,
+    .invoice-items,
+    .invoice-summary,
+    .invoice-footer,
+    .invoice-actions {
+        padding: 20px 15px;
+    }
+
+    .company-name {
+        font-size: 2rem;
+    }
+
+    .invoice-title h1 {
+        font-size: 2rem;
+    }
+
+    .invoice-number {
+        font-size: 1.2rem;
+    }
+
+    .invoice-table {
+        font-size: 0.85rem;
+    }
+
+        .invoice-table thead th,
+        .invoice-table tbody td {
+            padding: 8px 5px;
+        }
+
+    .btn {
+        display: block;
+        margin: 10px 0;
+        text-align: center;
+    }
+
+    .total-section {
+        margin-top: 20px;
+    }
+
+    }
+
+    @@media (max-width: 576px) {
+        .invoice-table thead
+
+    {
+        display: none;
+    }
+
+    .invoice-table tbody tr {
+        display: block;
+        border: 1px solid #ecf0f1;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        padding: 15px;
+    }
+
+    .invoice-table tbody td {
+        display: block;
+        text-align: left !important;
+        border: none;
+        padding: 5px 0;
+    }
+
+        .invoice-table tbody td:before {
+            content: attr(data-label) ": ";
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+    }
+
+    /* Animation */
+    .invoice-wrapper {
+        animation: slideInUp 0.6s ease-out;
+    }
+
+    @@keyframes slideInUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .invoice-table tbody tr {
+        animation: fadeInRow 0.5s ease-out forwards;
+        opacity: 0;
+    }
+
+        .invoice-table tbody tr:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .invoice-table tbody tr:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .invoice-table tbody tr:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .invoice-table tbody tr:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .invoice-table tbody tr:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+    @@keyframes fadeInRow {
+        from
+
+    {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    }
+</style>
+
+
+
+@section Scripts {
+    <script>
+        // Hàm in hóa đơn
+        function printInvoice() {
+            window.print();
+        }
+
+        // Hàm tải PDF (cần thêm thư viện jsPDF hoặc html2pdf)
+        function downloadPDF() {
+            // Sử dụng html2pdf.js
+            const element = document.querySelector('.invoice-wrapper');
+            const orderId = '@Model.OrderId.ToString("D6")'; // Lấy OrderId từ Model
+            const opt = {
+                margin: 1,
+                filename: `hoa-don-${orderId}.pdf`, // Sửa lại cú pháp JavaScript
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+
+            // Kiểm tra xem html2pdf có tồn tại không
+            if (typeof html2pdf !== 'undefined') {
+                html2pdf().set(opt).from(element).save();
+            } else {
+                alert('Tính năng tải PDF đang được phát triển. Vui lòng sử dụng chức năng in để lưu thành PDF.');
+                window.print();
+            }
+        }
+
+        // Thêm data-label cho responsive table
+        document.addEventListener('DOMContentLoaded', function() {
+            const table = document.querySelector('.invoice-table');
+            if (table) {
+                const headers = table.querySelectorAll('thead th');
+                const rows = table.querySelectorAll('tbody tr');
+
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    cells.forEach((cell, index) => {
+                        if (headers[index]) {
+                            cell.setAttribute('data-label', headers[index].textContent.trim());
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+}
+
