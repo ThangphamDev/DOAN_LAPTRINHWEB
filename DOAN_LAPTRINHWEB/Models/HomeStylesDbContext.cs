@@ -29,6 +29,7 @@ public partial class HomeStylesDbContext : IdentityDbContext<ApplicationUser>
     public virtual DbSet<CartItem> CartItems { get; set; }
     public virtual DbSet<ProductVariant> ProductVariants { get; set; }
 
+    public virtual DbSet<WishlistItem> WishlistItems { get; set; }
 
     // Thêm các DbSet mới
     public virtual DbSet<Post> Posts { get; set; }
@@ -423,6 +424,41 @@ public partial class HomeStylesDbContext : IdentityDbContext<ApplicationUser>
                 .HasForeignKey(p => p.PostTypeId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict); // Giữ PostType khi xóa Post
+        });
+        // THÊM CẤU HÌNH CHO BẢNG WISHLISTITEM TẠI ĐÂY
+        modelBuilder.Entity<WishlistItem>(entity =>
+        {
+            entity.HasKey(e => e.Id); // Khóa chính của bảng WishlistItem
+
+            entity.Property(e => e.UserId)
+                  .IsRequired()
+                  .HasColumnName("user_id"); // Đảm bảo tên cột trùng khớp nếu bạn muốn
+
+            entity.Property(e => e.ProductId)
+                  .IsRequired()
+                  .HasColumnName("product_id"); // Đảm bảo tên cột trùng khớp nếu bạn muốn
+
+            entity.Property(e => e.AddedDate)
+                  .HasColumnType("datetime") // Đặt kiểu dữ liệu cột trong DB
+                  .HasColumnName("added_date") // Đảm bảo tên cột trùng khớp nếu bạn muốn
+                  .HasDefaultValueSql("(getdate())"); // Giá trị mặc định là thời gian hiện tại
+
+            // Mối quan hệ từ WishlistItem tới ApplicationUser (người dùng)
+            entity.HasOne(d => d.User)
+                  .WithMany(p => p.WishlistItems) // Một người dùng có nhiều WishlistItems
+                  .HasForeignKey(d => d.UserId)
+                  .OnDelete(DeleteBehavior.Cascade) // Khi người dùng bị xóa, các mục yêu thích của họ cũng bị xóa
+                  .HasConstraintName("FK_WishlistItems_Users"); // Tên constraint tùy chỉnh, bạn có thể đặt tên khác nếu muốn
+
+            // Mối quan hệ từ WishlistItem tới Product (sản phẩm)
+            entity.HasOne(d => d.Product)
+                  .WithMany() // Một sản phẩm có thể có nhiều WishlistItem (nhưng không cần navigation property ngược lại trong Product nếu không dùng)
+                  .HasForeignKey(d => d.ProductId)
+                  .OnDelete(DeleteBehavior.Cascade) // Khi sản phẩm bị xóa, các mục yêu thích liên quan cũng bị xóa
+                  .HasConstraintName("FK_WishlistItems_Products"); // Tên constraint tùy chỉnh
+
+            // Đảm bảo rằng một người dùng không thể yêu thích cùng một sản phẩm nhiều lần
+            entity.HasIndex(e => new { e.UserId, e.ProductId }).IsUnique();
         });
 
         OnModelCreatingPartial(modelBuilder);

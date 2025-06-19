@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Globalization;
-
+using DOAN_LAPTRINHWEB.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -42,7 +42,7 @@ builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add<RedirectAdminAttribute>();
 });
-
+builder.Services.AddScoped<IWishlistService, WishlistService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -19,7 +19,7 @@ namespace DOAN_LAPTRINHWEB.Models
         public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
         public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
-
+        public virtual ICollection<WishlistItem>? WishlistItems { get; set; } = new List<WishlistItem>();
         public ApplicationUser()
         {
             FullName = string.Empty; 

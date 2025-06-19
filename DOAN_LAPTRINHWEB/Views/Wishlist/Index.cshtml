@@ -1,0 +1,76 @@
+﻿@model List<DOAN_LAPTRINHWEB.Controllers.WishlistController.ProductDto> // Điều chỉnh namespace nếu bạn đặt ProductDto ở nơi khác
+
+@{
+    ViewData["Title"] = "Danh Sách Yêu Thích";
+}
+
+<div class="container my-5">
+    <h1>Danh Sách Sản Phẩm Yêu Thích Của Bạn</h1>
+    <hr />
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row">
+            @foreach (var product in Model)
+            {
+                <div class="col-md-4 col-sm-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name" style="height: 250px; object-fit: cover;">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title mb-2">@product.Name</h5>
+                            <p class="card-text text-muted mb-2">@product.Description</p>
+                            <p class="card-text price-text mb-3"><strong>@product.Price.ToString("C", new System.Globalization.CultureInfo("vi-VN"))</strong></p> {{-- Định dạng tiền tệ Việt Nam --}}
+                            <div class="mt-auto d-flex justify-content-between align-items-center">
+                                <a href="/Products/Details/@product.ProductId" class="btn btn-primary btn-sm">Xem chi tiết</a>
+                                <button class="btn btn-danger btn-sm remove-from-wishlist" data-product-id="@product.ProductId">Xóa khỏi yêu thích</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center" role="alert">
+            <p class="mb-2">Danh sách yêu thích của bạn đang trống.</p>
+            <p>Hãy <a href="/Products/Index" class="alert-link">khám phá các sản phẩm</a> và thêm những thứ bạn yêu thích vào đây!</p>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.remove-from-wishlist').on('click', function () {
+                var productId = $(this).data('product-id');
+                var $cardToRemove = $(this).closest('.col-md-4, .col-sm-6'); 
+
+                if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi danh sách yêu thích?')) {
+                    $.ajax({
+                        url: `/api/wishlist/${productId}`,
+                        type: 'DELETE',
+                        success: function (response) {
+                            alert(response.message);
+                            $cardToRemove.remove(); 
+
+                            if ($('.remove-from-wishlist').length === 0) {
+                                $('.container .row').html(`
+                                    <div class="alert alert-info text-center" role="alert">
+                                        <p class="mb-2">Danh sách yêu thích của bạn đang trống.</p>
+                                        <p>Hãy <a href="/Products/Index" class="alert-link">khám phá các sản phẩm</a> và thêm những thứ bạn yêu thích vào đây!</p>
+                                    </div>
+                                `);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            var errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : "Có lỗi xảy ra khi xóa sản phẩm.";
+                            alert(errorMessage);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}
