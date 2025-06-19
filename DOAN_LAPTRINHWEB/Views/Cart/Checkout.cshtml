@@ -540,12 +540,7 @@
                 $(this).removeClass('is-invalid');
             });
 
-            // Smooth scroll to error messages
-            if ($('.text-danger:visible').length > 0) {
-                $('html, body').animate({
-                    scrollTop: $('.text-danger:visible').first().offset().top - 100
-                }, 500);
-            }
+            
         });
     </script>
 }

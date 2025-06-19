@@ -1,76 +1,210 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@using DOAN_LAPTRINHWEB.Models 
+@using DOAN_LAPTRINHWEB.Models
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
 @{
     var user = await UserManager.GetUserAsync(User);
-    var avatarUrl = user?.AvatarUrl; 
+    var avatarUrl = user?.AvatarUrl;
     var email = await UserManager.GetEmailAsync(user);
     var fullName = user?.FullName ?? UserManager.GetUserName(User);
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }
 
-<div class="list-group list-group-flush">
-    <div class="text-center mb-3 py-3 border-bottom">
-        @if (!string.IsNullOrEmpty(avatarUrl))
-        {
-            <img src="@Url.Content(avatarUrl)"
-                 alt="Ảnh đại diện"
-                 class="rounded-circle mb-2"
-                 style="width: 80px; height: 80px; object-fit: cover;">
+<style>
+    
+    .manage-nav {
+        position: sticky !important;
+        top: 80px !important;
+        z-index: 1020 !important;
+    }
+
+    .container, .row, .col-md-3 {
+        position: relative;
+    }
+        .manage-nav .list-group-flush {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-        else
-        {
-            <img src="~/images/avatars/default-avatar.png"
-                 class="rounded-circle mb-2"
-                 alt="Avatar mặc định"
-                 style="width: 80px; height: 80px; object-fit: cover;">
+
+        .manage-nav .profile-header {
+            background: linear-gradient(135deg, #212529 0%, #495057 100%);
+            color: #ffffff;
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: none;
         }
-        <p class="mb-0 fw-bold">@fullName</p>
-        @if (!string.IsNullOrEmpty(email))
-        {
-            <p class="mb-0 text-muted small">@email</p>
+
+        .manage-nav .profile-avatar {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border: 3px solid #ffffff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
         }
+
+            .manage-nav .profile-avatar:hover {
+                transform: scale(1.05);
+            }
+
+        .manage-nav .profile-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            font-size: 1.1rem;
+        }
+
+        .manage-nav .profile-email {
+            opacity: 0.8;
+            font-size: 0.875rem;
+        }
+
+        /* Navigation items - bỏ animation */
+        .manage-nav .list-group-item {
+            border: none;
+            padding: 0.75rem 1.25rem;
+            transition: all 0.3s ease;
+            color: #212529;
+            background: transparent;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+            .manage-nav .list-group-item:last-child {
+                border-bottom: none;
+            }
+
+            .manage-nav .list-group-item:hover {
+                background: #f8f9fa;
+                color: #212529;
+                transform: translateX(5px);
+                border-left: 3px solid #212529;
+            }
+
+            .manage-nav .list-group-item.active {
+                background: #212529;
+                color: #ffffff;
+                border-left: 3px solid #212529;
+                font-weight: 600;
+            }
+
+                .manage-nav .list-group-item.active:hover {
+                    background: #000000;
+                    transform: translateX(5px);
+                }
+
+            .manage-nav .list-group-item i {
+                width: 20px;
+                text-align: center;
+                opacity: 0.7;
+                transition: all 0.3s ease;
+            }
+
+            .manage-nav .list-group-item:hover i,
+            .manage-nav .list-group-item.active i {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+
+        /* Logout button */
+        .manage-nav .btn-danger {
+            background: #dc3545;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.25rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(220, 53, 69, 0.3);
+        }
+
+            .manage-nav .btn-danger:hover {
+                background: #c82333;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+            }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .manage-nav .profile-header {
+            padding: 1rem;
+        }
+
+        .manage-nav .profile-avatar {
+            width: 60px;
+            height: 60px;
+        }
+
+        .manage-nav .list-group-item {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+    }
+</style>
+
+<div class="manage-nav sticky-top">
+    <div class="list-group list-group-flush">
+        <div class="profile-header">
+            @if (!string.IsNullOrEmpty(avatarUrl))
+            {
+                <img src="@Url.Content(avatarUrl)"
+                     alt="Ảnh đại diện"
+                     class="profile-avatar rounded-circle mb-2">
+            }
+            else
+            {
+                <img src="~/images/avatars/default-avatar.png"
+                     class="profile-avatar rounded-circle mb-2"
+                     alt="Avatar mặc định">
+            }
+            <p class="profile-name mb-0">@fullName</p>
+            @if (!string.IsNullOrEmpty(email))
+            {
+                <p class="profile-email mb-0">@email</p>
+            }
+        </div>
+
+        <a class="list-group-item list-group-item-action @ManageNavPages.IndexNavClass(ViewContext)" asp-page="./Index">
+            <i class="bi bi-person-fill me-2"></i> Hồ sơ
+        </a>
+
+        <a class="list-group-item list-group-item-action @ManageNavPages.EmailNavClass(ViewContext)" asp-page="./Email">
+            <i class="bi bi-envelope-fill me-2"></i> Email
+        </a>
+
+        <a class="list-group-item list-group-item-action @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password-link" asp-page="./ChangePassword">
+            <i class="bi bi-key-fill me-2"></i> Đổi mật khẩu
+        </a>
+
+        @if (await UserManager.GetTwoFactorEnabledAsync(user))
+        {
+            <a class="list-group-item list-group-item-action @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor-link" asp-page="./TwoFactorAuthentication">
+                <i class="bi bi-shield-lock-fill me-2"></i> Xác thực 2 yếu tố
+            </a>
+        }
+
+        @if (hasExternalLogins)
+        {
+            <a class="list-group-item list-group-item-action @ManageNavPages.ExternalLoginsNavClass(ViewContext)" id="external-logins" asp-page="./ExternalLogins">
+                <i class="bi bi-box-arrow-in-right me-2"></i> Đăng nhập bên ngoài
+            </a>
+        }
+
+        <a class="list-group-item list-group-item-action @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">
+            <i class="bi bi-file-earmark-person-fill me-2"></i> Dữ liệu cá nhân
+        </a>
+
+        <a class="list-group-item list-group-item-action @ManageNavPages.OrdersNavClass(ViewContext)" asp-page="./Orders">
+            <i class="bi bi-box-seam-fill me-2"></i> Đơn mua
+        </a>
+
+        <a class="list-group-item list-group-item-action @ManageNavPages.AddressesNavClass(ViewContext)" asp-page="./Addresses">
+            <i class="bi bi-geo-alt-fill me-2"></i> Địa chỉ
+        </a>
+
+        <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post" class="d-grid mt-3 px-3 pb-3">
+            <button type="submit" class="btn btn-danger btn-sm">
+                <i class="bi bi-box-arrow-right me-2"></i> Đăng xuất
+            </button>
+        </form>
     </div>
-
-    <a class="list-group-item list-group-item-action @ManageNavPages.IndexNavClass(ViewContext)" asp-page="./Index">
-        <i class="bi bi-person-fill me-2"></i> Hồ sơ
-    </a>
-    <a class="list-group-item list-group-item-action @ManageNavPages.EmailNavClass(ViewContext)" asp-page="./Email">
-        <i class="bi bi-envelope-fill me-2"></i> Email
-    </a>
-    <a class="list-group-item list-group-item-action @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password-link" asp-page="./ChangePassword">
-        <i class="bi bi-key-fill me-2"></i> Đổi mật khẩu
-    </a>
-    @if (await UserManager.GetTwoFactorEnabledAsync(user))
-    {
-        <a class="list-group-item list-group-item-action @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor-link" asp-page="./TwoFactorAuthentication">
-            <i class="bi bi-shield-lock-fill me-2"></i> Xác thực 2 yếu tố
-        </a>
-    }
-    @if (hasExternalLogins)
-    {
-        <a class="list-group-item list-group-item-action @ManageNavPages.ExternalLoginsNavClass(ViewContext)" id="external-logins" asp-page="./ExternalLogins">
-            <i class="bi bi-box-arrow-in-right me-2"></i> Đăng nhập bên ngoài
-        </a>
-    }
-    <a class="list-group-item list-group-item-action @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">
-        <i class="bi bi-file-earmark-person-fill me-2"></i> Dữ liệu cá nhân
-    </a>
-
-    <a class="list-group-item list-group-item-action @ManageNavPages.OrdersNavClass(ViewContext)" asp-page="./Orders">
-        <i class="bi bi-box-seam-fill me-2"></i> Đơn mua
-    </a>
-
-    <a class="list-group-item list-group-item-action @ManageNavPages.AddressesNavClass(ViewContext)" asp-page="./Addresses">
-        <i class="bi bi-geo-alt-fill me-2"></i> Địa chỉ
-    </a>
-
-
-    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post" class="d-grid mt-3 px-3 pb-3">
-        <button type="submit" class="btn btn-danger btn-sm">
-            <i class="bi bi-box-arrow-right me-2"></i> Đăng xuất
-        </button>
-    </form>
 </div>

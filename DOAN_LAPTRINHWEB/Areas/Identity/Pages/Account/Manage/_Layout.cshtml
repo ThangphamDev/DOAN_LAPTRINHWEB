@@ -7,14 +7,17 @@
 
     <div class="row">
         <div class="col-md-3">
-            <div class="card shadow-sm mb-4 border-0">
-                <div class="card-body p-0">
-                    <partial name="_ManageNav" />
+            <div class="position-sticky" style="top: 80px; z-index: 1020;">
+                <div class="card shadow-sm mb-4 border-0">
+                    <div class="card-body p-0">
+                        <partial name="_ManageNav" />
+                    </div>
                 </div>
             </div>
         </div>
+
         <div class="col-md-9">
-            <div class="card shadow-sm mb-4 p-4 border-0">
+            <div class="card shadow-sm">
                 @RenderBody()
             </div>
         </div>

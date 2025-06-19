@@ -123,6 +123,7 @@ namespace DOAN_LAPTRINHWEB.Areas.Identity.Pages.Account.Manage
             {
                 return NotFound($"Không thể tải người dùng với ID '{_userManager.GetUserId(User)}'.");
             }
+            IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
 
             await LoadAsync(user);
             return Page();
@@ -135,6 +136,7 @@ namespace DOAN_LAPTRINHWEB.Areas.Identity.Pages.Account.Manage
             {
                 return NotFound($"Không thể tải người dùng với ID '{_userManager.GetUserId(User)}'.");
             }
+            IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
 
             if (!ModelState.IsValid)
             {
@@ -219,6 +221,7 @@ namespace DOAN_LAPTRINHWEB.Areas.Identity.Pages.Account.Manage
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
+            IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
 
             if (string.IsNullOrWhiteSpace(Input.Email))
             {

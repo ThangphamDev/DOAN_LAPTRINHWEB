@@ -6,103 +6,400 @@
     ViewData["ActivePage"] = ManageNavPages.Orders;
 }
 
-<h2 class="text-primary fw-bold text-center mb-4">Chi tiết đơn hàng #@Model.Order.OrderId</h2>
+<div class="order-details-container">
+    <h2 class="text-primary fw-bold text-center mb-4">Chi tiết đơn hàng #@Model.Order.OrderId</h2>
 
-<div class="card shadow-sm mb-4 border-0">
-    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Thông tin chung</h5>
-        <span class="badge bg-light text-primary fs-6">@Model.Order.OrderStatus</span>
-    </div>
-    <div class="card-body">
-        <div class="row mb-2">
-            <div class="col-md-4"><strong>Ngày đặt:</strong></div>
-            <div class="col-md-8">@Model.Order.CreatedAt.ToString("HH:mm dd/MM/yyyy")</div>
-        </div>
-        @if (Model.Order.User != null)
-        {
-            <div class="row mb-2">
-                <div class="col-md-4"><strong>Người đặt:</strong></div>
-                <div class="col-md-8">@Model.Order.User.FullName</div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-md-4"><strong>Số điện thoại:</strong></div>
-                <div class="col-md-8">@Model.Order.User.PhoneNumber</div>
-            </div>
-        }
-        <div class="row mb-2">
-            <div class="col-md-4"><strong>Tổng tiền:</strong></div>
-            <div class="col-md-8 text-danger fw-bold">@Model.Order.TotalAmount.ToString("N0") VNĐ</div>
-        </div>
-    </div>
-</div>
-
-<h3 class="text-primary fw-bold mb-3 mt-5">Sản phẩm trong đơn hàng</h3>
-
-<div class="table-responsive">
-    <table class="table table-bordered table-striped table-hover align-middle">
-        <thead>
-            <tr>
-                <th class="text-center">Ảnh</th>
-                <th>Sản phẩm</th>
-                <th class="text-center">Số lượng</th>
-                <th class="text-end">Đơn giá</th>
-                <th class="text-end">Thành tiền</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (Model.Order.OrderItems != null && Model.Order.OrderItems.Any())
-            {
-                @foreach (var item in Model.Order.OrderItems)
-                {
-                    <tr>
-                        <td class="text-center">
-                            @{
-                                string imageUrl = null;
-                                if (item.Product?.ProductImages != null && item.Product.ProductImages.Any())
-                                {
-                                    var primaryImage = item.Product.ProductImages.FirstOrDefault(pi => pi.IsPrimary == true);
-                                    imageUrl = primaryImage?.ImageUrl ?? item.Product.ProductImages.FirstOrDefault()?.ImageUrl;
-                                }
-                            }
-                            @if (!string.IsNullOrEmpty(imageUrl))
+    <div class="row mb-4">
+        <!-- Thông tin đơn hàng -->
+        <div class="col-lg-6 mb-4 mb-lg-0">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Thông tin đơn hàng</h5>
+                    <span class="order-status-badge">@Model.Order.OrderStatus</span>
+                </div>
+                <div class="card-body">
+                    <div class="info-row">
+                        <div class="info-label">Mã đơn hàng:</div>
+                        <div class="info-value fw-bold">#@Model.Order.OrderId</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Ngày đặt:</div>
+                        <div class="info-value">@Model.Order.CreatedAt.ToString("HH:mm dd/MM/yyyy")</div>
+                    </div>
+                    @if (Model.Order.User != null)
+                    {
+                        <div class="info-row">
+                            <div class="info-label">Người đặt:</div>
+                            <div class="info-value">@Model.Order.User.FullName</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Số điện thoại:</div>
+                            <div class="info-value">@Model.Order.User.PhoneNumber</div>
+                        </div>
+                    }
+                    <div class="info-row">
+                        <div class="info-label">Tổng tiền:</div>
+                        <div class="info-value text-danger fw-bold">@Model.Order.TotalAmount.ToString("N0") VNĐ</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Phương thức thanh toán:</div>
+                        <div class="info-value">
+                            @if (Model.Payment != null)
                             {
-                                <img src="@Url.Content(imageUrl)"
-                                     alt="@item.Product?.Name"
-                                     class="img-thumbnail"
-                                     style="width: 70px; height: 70px; object-fit: cover;">
+                                <span class="payment-method">
+                                    @switch (Model.Payment.PaymentMethod)
+                                    {
+                                        case "COD":
+                                            <i class="fas fa-money-bill-wave text-success me-2"></i>
+                                            <span>Thanh toán khi nhận hàng</span>
+                                            break;
+                                        case "Banking":
+                                            <i class="fas fa-university text-primary me-2"></i>
+                                            <span>Chuyển khoản ngân hàng</span>
+                                            break;
+                                        case "Momo":
+                                            <i class="fas fa-wallet text-danger me-2"></i>
+                                            <span>Ví MoMo</span>
+                                            break;
+                                        default:
+                                            <span>@Model.Payment.PaymentMethod</span>
+                                            break;
+                                    }
+                                </span>
                             }
                             else
                             {
-                                <img src="~/images/placeholder-product.png"
-                                     alt="Không có ảnh"
-                                     class="img-thumbnail"
-                                     style="width: 70px; height: 70px; object-fit: cover;">
+                                <span class="text-muted">Không có thông tin</span>
                             }
-                        </td>
-                        <td>
-                            <strong>@item.Product?.Name</strong>
-                        </td>
-                        <td class="text-center">@item.Quantity</td>
-                        <td class="text-end">@item.Price.ToString("N0") VNĐ</td>
-                        <td class="text-end text-danger fw-bold">@((item.Quantity * item.Price).ToString("N0")) VNĐ</td>
-                    </tr>
-                }
-            }
-            else
-            {
-                <tr>
-                    <td colspan="5" class="text-center text-muted py-4">Không có sản phẩm nào trong đơn hàng này.</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Trạng thái thanh toán:</div>
+                        <div class="info-value">
+                            @if (Model.Payment != null)
+                            {
+                                <span class="payment-status-badge
+                                            @(Model.Payment.PaymentStatus == "Đã thanh toán" ? "paid" :
+                                                                                                                  Model.Payment.PaymentStatus == "Chờ thanh toán" ? "pending" : "processing")">
+                                @Model.Payment.PaymentStatus
+                            </span>
+                                                        }
+                            else
+                            {
+                                <span class="text-muted">Không có thông tin</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<div class="d-flex justify-content-between align-items-center mt-4">
-    <a asp-page="./Orders" class="btn btn-outline-primary">
-        <i class="bi bi-arrow-left me-2"></i> Quay lại đơn mua
-    </a>
+        <!-- Địa chỉ giao hàng -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-shipping-fast me-2"></i>Địa chỉ giao hàng</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.ShippingAddress != null)
+                    {
+                        <div class="shipping-address">
+                            <div class="info-row">
+                                <div class="info-label">Họ tên:</div>
+                                <div class="info-value fw-semibold">@Model.ShippingAddress.FullName</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">Số điện thoại:</div>
+                                <div class="info-value">@Model.ShippingAddress.Phone</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">Địa chỉ:</div>
+                                <div class="info-value">@Model.ShippingAddress.Street</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">Thành phố:</div>
+                                <div class="info-value">@Model.ShippingAddress.City</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">Tỉnh/Thành:</div>
+                                <div class="info-value">@Model.ShippingAddress.State</div>
+                            </div>
+                            @if (!string.IsNullOrEmpty(Model.ShippingAddress.PostalCode))
+                            {
+                                <div class="info-row">
+                                    <div class="info-label">Mã bưu điện:</div>
+                                    <div class="info-value">@Model.ShippingAddress.PostalCode</div>
+                                </div>
+                            }
+                            <div class="info-row">
+                                <div class="info-label">Quốc gia:</div>
+                                <div class="info-value">@(string.IsNullOrEmpty(Model.ShippingAddress.Country) ? "Việt Nam" : Model.ShippingAddress.Country)</div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center text-muted p-4">
+                            <i class="fas fa-map-marker-alt fa-3x mb-3"></i>
+                            <p>Không có thông tin địa chỉ giao hàng</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chi tiết sản phẩm -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="fas fa-shopping-basket me-2"></i>Sản phẩm trong đơn hàng</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table order-items-table mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-center" style="width: 80px;">Ảnh</th>
+                            <th>Sản phẩm</th>
+                            <th class="text-center" style="width: 100px;">Số lượng</th>
+                            <th class="text-end" style="width: 150px;">Đơn giá</th>
+                            <th class="text-end" style="width: 180px;">Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Order.OrderItems != null && Model.Order.OrderItems.Any())
+                        {
+                            @foreach (var item in Model.Order.OrderItems)
+                            {
+                                <tr>
+                                    <td class="text-center">
+                                        @{
+                                            string imageUrl = null;
+                                            if (item.Product?.ProductImages != null && item.Product.ProductImages.Any())
+                                            {
+                                                var primaryImage = item.Product.ProductImages.FirstOrDefault(pi => pi.IsPrimary == true);
+                                                imageUrl = primaryImage?.ImageUrl ?? item.Product.ProductImages.FirstOrDefault()?.ImageUrl;
+                                            }
+                                        }
+                                        @if (!string.IsNullOrEmpty(imageUrl))
+                                        {
+                                            <img src="@Url.Content(imageUrl)"
+                                                 alt="@item.Product?.Name"
+                                                 class="product-image">
+                                        }
+                                        else
+                                        {
+                                            <img src="~/images/placeholder-product.png"
+                                                 alt="Không có ảnh"
+                                                 class="product-image">
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="product-name">@item.Product?.Name</div>
+                                        @if (item.ProductVariant != null)
+                                        {
+                                            <div class="product-variant">
+                                                @if (!string.IsNullOrEmpty(item.ProductVariant.Size))
+                                                {
+                                                    <span class="variant-tag">Size: @item.ProductVariant.Size</span>
+                                                }
+                                                @if (!string.IsNullOrEmpty(item.ProductVariant.Color))
+                                                {
+                                                    <span class="variant-tag">Màu: @item.ProductVariant.Color</span>
+                                                }
+                                            </div>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="quantity-badge">@item.Quantity</span>
+                                    </td>
+                                    <td class="text-end unit-price">@item.Price.ToString("N0") VNĐ</td>
+                                    <td class="text-end total-price">@((item.Quantity * item.Price).ToString("N0")) VNĐ</td>
+                                </tr>
+                            }
+                            <tr class="summary-row">
+                                <td colspan="3" class="border-0"></td>
+                                <td class="text-end fw-bold border-0">Tổng cộng:</td>
+                                <td class="text-end text-danger fw-bold border-0">@Model.Order.TotalAmount.ToString("N0") VNĐ</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    <i class="fas fa-shopping-cart fa-2x mb-2"></i>
+                                    <p>Không có sản phẩm nào trong đơn hàng này.</p>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <a asp-page="./Orders" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i> Quay lại đơn mua
+        </a>
+
+        <!-- Các nút khác (nếu cần) -->
+    </div>
 </div>
 
 @section Scripts {
 }
+
+<style>
+    .variant-tag {
+        display: inline-block;
+        background: #3498db;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        margin-right: 5px;
+    }
+    /* Order Details CSS */
+    .order-details-container {
+        padding: 0.5rem 0 2rem;
+    }
+
+    .info-row {
+        display: flex;
+        margin-bottom: 0.75rem;
+        border-bottom: 1px dotted #e0e0e0;
+        padding-bottom: 0.75rem;
+    }
+
+        .info-row:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+    .info-label {
+        flex: 0 0 40%;
+        color: #666;
+        font-weight: 500;
+    }
+
+    .info-value {
+        flex: 0 0 60%;
+    }
+
+    .order-status-badge {
+        display: inline-block;
+        padding: 0.35em 0.65em;
+        font-size: 0.85em;
+        font-weight: 600;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: 0.25rem;
+        background-color: #fff;
+        color: var(--bs-primary);
+    }
+
+    .payment-status-badge {
+        display: inline-block;
+        padding: 0.35em 0.65em;
+        font-size: 0.85em;
+        font-weight: 600;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: 0.25rem;
+    }
+
+        .payment-status-badge.paid {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .payment-status-badge.pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .payment-status-badge.processing {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+    .product-image {
+        width: 70px;
+        height: 70px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 1px solid #e0e0e0;
+        transition: transform 0.2s;
+    }
+
+        .product-image:hover {
+            transform: scale(1.05);
+        }
+
+    .product-name {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.25rem;
+    }
+
+    .quantity-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--bs-primary);
+        color: white;
+        font-weight: 600;
+        border-radius: 50px;
+        min-width: 30px;
+        height: 30px;
+        padding: 0 0.5rem;
+    }
+
+    .unit-price {
+        color: #666;
+        font-weight: 500;
+    }
+
+    .total-price {
+        color: var(--bs-danger);
+        font-weight: 600;
+    }
+
+    .order-items-table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        border-top: 0;
+    }
+
+    .order-items-table tbody tr {
+        transition: background-color 0.15s;
+    }
+
+        .order-items-table tbody tr:hover {
+            background-color: rgba(0, 123, 255, 0.03);
+        }
+
+    .summary-row {
+        background-color: #f9f9f9 !important;
+    }
+
+    /* Card styles */
+    .card {
+        overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+        .card:hover {
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+        }
+
+    .card-header {
+        border-bottom: 0;
+    }
+</style>
