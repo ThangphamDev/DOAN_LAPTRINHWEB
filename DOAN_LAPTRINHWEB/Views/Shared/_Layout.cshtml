@@ -1,44 +1,41 @@
-﻿﻿@using DOAN_LAPTRINHWEB.Extensions
+﻿@using DOAN_LAPTRINHWEB.Extensions
+@using DOAN_LAPTRINHWEB.Models
+@inject DOAN_LAPTRINHWEB.Models.HomeStylesDbContext HomeStylesDbContext
+@inject DOAN_LAPTRINHWEB.Services.CartService CartService
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - HomeStyle - Đồ Decor Phòng</title>
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Bootstrap -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
-    <!-- Toastr CSS for notifications -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 </head>
 <body class="bg-light">
     <header class="header-fixed">
         <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm border-bottom">
             <div class="container-fluid px-4 px-lg-5">
-                <!-- Logo -->
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
                     <span class="brand-name">HomeStyle</span>
                 </a>
 
-                <!-- Mobile Toggle -->
                 <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <!-- Navigation and Actions -->
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <!-- Thêm div để bọc menu và căn giữa -->
                     <div class="navbar-nav-container mx-auto">
                         <ul class="navbar-nav">
                             <li class="nav-item">
@@ -54,9 +51,7 @@
                                 <div class="category-dropdown">
                                     <div class="category-dropdown-inner">
                                         @{
-                                            // Lấy danh sách danh mục từ database
-                                            var dbContext = (HomeStylesDbContext)Context.RequestServices.GetService(typeof(HomeStylesDbContext));
-                                            var categories = dbContext?.Categories.ToList() ?? new List<Category>();
+                                            var categories = HomeStylesDbContext?.Categories.ToList() ?? new List<Category>();
                                         }
                                         @foreach (var category in categories)
                                         {
@@ -69,6 +64,9 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link px-3" asp-area="" asp-controller="Posts" asp-action="Index">Blog</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link px-3" asp-area="" asp-controller="Wishlist" asp-action="Index">Yêu thích</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link px-3" href="#">Liên Hệ</a>
@@ -84,9 +82,7 @@
                         </ul>
                     </div>
 
-                    <!-- Header Actions -->
                     <div class="header-actions">
-                        <!-- Search Bar -->
                         <div class="search-container">
                             <form method="get" asp-controller="Products" asp-action="Index" class="search-form">
                                 <input type="text" name="searchTerm" class="form-control search-input" placeholder="Tìm sản phẩm..." aria-label="Search">
@@ -96,34 +92,24 @@
                             </form>
                         </div>
 
-                        <!-- User Account -->
                         <div class="header-icon-wrapper user-icon">
                             <partial name="_LoginPartial" />
                         </div>
 
-                        <!-- Shopping Cart -->
                         <div class="header-icon-wrapper">
                             <a asp-controller="Cart" asp-action="Index" class="header-icon" id="cartButton">
                                 <i class="fas fa-shopping-cart"></i>
                                 @{
                                     var cartCount = 0;
-                                    // Cho người dùng đã đăng nhập, ưu tiên lấy từ database
                                     if (User.Identity.IsAuthenticated)
                                     {
-                                        var dbContext = (HomeStylesDbContext)Context.RequestServices.GetService(typeof(HomeStylesDbContext));
-                                        var cartService = (DOAN_LAPTRINHWEB.Services.CartService)Context.RequestServices.GetService(typeof(DOAN_LAPTRINHWEB.Services.CartService));
-
-                                        if (cartService != null)
+                                        var userId = CartService.GetCartUserIdAsync().Result;
+                                        var cart = CartService.GetCartAsync(userId).Result;
+                                        if (cart?.Items != null && cart.Items.Any())
                                         {
-                                            var userId = cartService.GetCartUserIdAsync().Result;
-                                            var cart = cartService.GetCartAsync(userId).Result;
-                                            if (cart?.Items != null && cart.Items.Any())
-                                            {
-                                                cartCount = cart.UniqueItemsCount;
-                                            }
+                                            cartCount = cart.UniqueItemsCount;
                                         }
                                     }
-                                    // Cho người dùng chưa đăng nhập, lấy từ session
                                     else if (Context.Session.TryGetString("Cart", out var cartJson) && !string.IsNullOrEmpty(cartJson))
                                     {
                                         try
@@ -163,7 +149,6 @@
         </div>
     </main>
 
-    <!-- Footer section remains the same -->
     <footer class="bg-dark text-white py-5">
         <div class="container">
             <div class="row">
@@ -176,14 +161,10 @@
                         <a href="#" class="text-white me-3"><i class="fab fa-pinterest-p fa-lg"></i></a>
                         <a href="#" class="text-white"><i class="fab fa-youtube fa-lg"></i></a>
                     </div>
-                    <!-- Newsletter Section with Smaller Font Size -->
                     <div class="mt-4">
-                        <h2 class="mb-4 fs-5">Đăng ký nhận thông tin</h2> <!-- Reduced from h2 default to fs-5 -->
-                        <p class="mb-4 text-small">Nhận thông tin về sản phẩm mới, khuyến mãi và ý tưởng trang trí từ chúng tôi</p> <!-- Added text-small class -->
-                        <form class="newsletter-form">
+                        <h2 class="mb-4 fs-5">Đăng ký nhận thông tin</h2> <p class="mb-4 text-small">Nhận thông tin về sản phẩm mới, khuyến mãi và ý tưởng trang trí từ chúng tôi</p> <form class="newsletter-form">
                             <div class="input-group mb-3">
-                                <input type="email" class="form-control" placeholder="Email của bạn" aria-label="Email của bạn" style="font-size: 0.9rem;"> <!-- Reduced font size -->
-                                <button class="btn btn-light" type="submit" style="font-size: 0.9rem;">Đăng ký</button> <!-- Reduced font size -->
+                                <input type="email" class="form-control" placeholder="Email của bạn" aria-label="Email của bạn" style="font-size: 0.9rem;"> <button class="btn btn-light" type="submit" style="font-size: 0.9rem;">Đăng ký</button>
                             </div>
                         </form>
                     </div>
@@ -238,142 +219,10 @@
         </div>
     </footer>
 
-    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script>
-        // Global notification function
-        window.showNotification = function(message, type) {
-            toastr.options = {
-                "closeButton": true,
-                "progressBar": true,
-                "positionClass": "toast-top-right",
-                "showDuration": "300",
-                "hideDuration": "1000",
-                "timeOut": "5000"
-            };
-
-            switch(type) {
-                case 'success':
-                    toastr.success(message);
-                    break;
-                case 'error':
-                    toastr.error(message);
-                    break;
-                case 'warning':
-                    toastr.warning(message);
-                    break;
-                default:
-                    toastr.info(message);
-            }
-        };
-             document.addEventListener("DOMContentLoaded", function() {
-            // Lấy phần tử badge
-            const cartBadge = document.querySelector('.cart-count');
-            if (cartBadge && cartBadge.textContent && parseInt(cartBadge.textContent) > 0) {
-                cartBadge.style.display = '';
-            } else if (cartBadge) {
-                cartBadge.style.display = 'none';
-            }
-        });
-             // Header scroll behavior
-        let lastScrollTop = 0;
-        const header = document.querySelector('.header-fixed');
-        const scrollThreshold = 100;
-
-        window.addEventListener('scroll', function() {
-            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-            // Add box shadow when scrolled
-            if (scrollTop > 0) {
-                header.classList.add('shadow');
-            } else {
-                header.classList.remove('shadow');
-            }
-
-            // Hide/show header based on scroll direction
-            if (scrollTop > scrollThreshold) {
-                if (scrollTop > lastScrollTop) {
-                    // Scrolling down, hide header
-                    header.classList.add('header-hidden');
-                    header.classList.remove('header-visible');
-                } else {
-                    // Scrolling up, show header
-                    header.classList.remove('header-hidden');
-                    header.classList.add('header-visible');
-                }
-            }
-
-            lastScrollTop = scrollTop;
-        });
-                document.addEventListener("DOMContentLoaded", function() {
-            // Kiểm tra xem bootstrap có được tải không
-            if (typeof bootstrap !== 'undefined') {
-                // Khởi tạo tất cả các dropdown
-                var dropdownElementList = document.querySelectorAll('.dropdown-toggle');
-                dropdownElementList.forEach(function(element) {
-                    new bootstrap.Dropdown(element);
-                });
-
-                console.log("Bootstrap dropdowns initialized successfully");
-            } else {
-                console.error("Bootstrap không được tải");
-            }
-        });
-
-                // Thêm xử lý cho dropdown user trên thiết bị di động
-        document.addEventListener("DOMContentLoaded", function() {
-            const userDropdownBtn = document.getElementById('userDropdownBtn');
-            const userDropdownMenu = document.getElementById('userDropdownMenu');
-
-            // Xử lý cho thiết bị di động
-            if (window.innerWidth < 992 && userDropdownBtn && userDropdownMenu) {
-                userDropdownBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    userDropdownMenu.classList.toggle('show');
-                });
-
-                // Đóng dropdown khi click bên ngoài
-                document.addEventListener('click', function(e) {
-                    if (!userDropdownBtn.contains(e.target) && !userDropdownMenu.contains(e.target)) {
-                        userDropdownMenu.classList.remove('show');
-                    }
-                });
-            }
-        });
-                // Đảm bảo tất cả các phần tử header được hiển thị đúng
-        document.addEventListener("DOMContentLoaded", function() {
-            // Đảm bảo dropdown Bootstrap được khởi tạo đúng
-            if (typeof bootstrap !== 'undefined') {
-                var dropdownElementList = document.querySelectorAll('.dropdown-toggle');
-                dropdownElementList.forEach(function(element) {
-                    new bootstrap.Dropdown(element, {
-                        // Tắt tự động đóng để cho phép hover
-                        autoClose: false
-                    });
-                });
-            }
-
-            // Xử lý hiệu ứng hover cho dropdown
-            const userDropdownBtn = document.getElementById('userDropdownBtn');
-            const userDropdownMenu = document.getElementById('userDropdownMenu');
-
-            if (userDropdownBtn && userDropdownMenu) {
-                // Mở dropdown khi hover vào button
-                userDropdownBtn.addEventListener('mouseenter', function() {
-                    new bootstrap.Dropdown(userDropdownBtn).show();
-                });
-
-                // Đóng dropdown khi rời khỏi cả button và menu
-                const dropdown = document.getElementById('customDropdown');
-                dropdown.addEventListener('mouseleave', function() {
-                    new bootstrap.Dropdown(userDropdownBtn).hide();
-                });
-            }
-        });
-    </script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -52,29 +52,20 @@ namespace DOAN_LAPTRINHWEB.Controllers
         [HttpPost("api/wishlist/{productId}")] 
         public async Task<IActionResult> AddToWishlist(int productId)
         {
-            var userId = GetUserId();
+            var userId = GetUserId(); 
             if (string.IsNullOrEmpty(userId))
             {
-                return Unauthorized();
+                return Unauthorized(new { message = "Bạn cần đăng nhập để thêm sản phẩm vào danh sách yêu thích." });
             }
 
             var success = await _wishlistService.AddToWishlistAsync(userId, productId);
-
             if (success)
             {
-                return Ok(new { message = "Product added to wishlist successfully." });
+                return Ok(new { message = "Sản phẩm đã được thêm vào danh sách yêu thích!" });
             }
             else
             {
-                var isInWishlist = await _wishlistService.IsProductInWishlistAsync(userId, productId);
-                if (isInWishlist)
-                {
-                    return Conflict(new { message = "Product is already in wishlist." }); 
-                }
-                else
-                {
-                    return BadRequest(new { message = "Could not add product to wishlist. Product might not exist or other error." }); 
-                }
+                return BadRequest(new { message = "Không thể thêm sản phẩm vào danh sách yêu thích (có thể đã tồn tại hoặc sản phẩm không hợp lệ)." });
             }
         }
 
