@@ -33,7 +33,7 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-
+builder.Services.AddHttpClient();
 // Thêm vào phần đăng ký service
 builder.Services.AddScoped<CartService>();
 

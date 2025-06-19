@@ -368,5 +368,8 @@
         });
     </script>
     @await RenderSectionAsync("Scripts", required: false)
+    <partial name="_ChatBox" />
+    <link rel="stylesheet" href="~/css/chatbox.css" />
+    <script src="~/js/chatbox.js"></script>
 </body>
 </html>

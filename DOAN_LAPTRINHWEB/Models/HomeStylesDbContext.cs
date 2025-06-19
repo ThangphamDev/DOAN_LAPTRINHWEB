@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Reflection.Emit;
 
 namespace DOAN_LAPTRINHWEB.Models;
 
@@ -35,6 +36,8 @@ public partial class HomeStylesDbContext : IdentityDbContext<ApplicationUser>
     public virtual DbSet<Post> Posts { get; set; }
     public virtual DbSet<Comment> Comments { get; set; }
     public virtual DbSet<PostType> PostTypes { get; set; }
+    public DbSet<ChatMessage> ChatMessages { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -419,8 +422,21 @@ public partial class HomeStylesDbContext : IdentityDbContext<ApplicationUser>
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
-        // Thêm cấu hình bổ sung cho Comment
-        modelBuilder.Entity<Comment>(entity =>
+        modelBuilder.Entity<ChatMessage>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Message).IsRequired().HasMaxLength(1000);
+            entity.Property(e => e.Response).HasMaxLength(2000);
+            entity.Property(e => e.SessionId).IsRequired().HasMaxLength(100);
+            entity.HasOne(e => e.User)
+                  .WithMany()
+                  .HasForeignKey(e => e.UserId)
+                  .OnDelete(DeleteBehavior.SetNull);
+        });
+
+
+    // Thêm cấu hình bổ sung cho Comment
+    modelBuilder.Entity<Comment>(entity =>
         {
             entity.HasOne(c => c.Post)
                 .WithMany(p => p.Comments)
@@ -438,8 +454,9 @@ public partial class HomeStylesDbContext : IdentityDbContext<ApplicationUser>
                 .OnDelete(DeleteBehavior.Restrict); // Không xóa ParentComment nếu có Comment con
         });
 
-        // Đảm bảo PostType đã có cấu hình
-        modelBuilder.Entity<PostType>(entity =>
+        
+    // Đảm bảo PostType đã có cấu hình
+    modelBuilder.Entity<PostType>(entity =>
         {
             entity.HasIndex(p => p.Name)
                 .IsUnique(); // Đảm bảo Name là duy nhất
@@ -456,6 +473,8 @@ public partial class HomeStylesDbContext : IdentityDbContext<ApplicationUser>
 
         OnModelCreatingPartial(modelBuilder);
     }
+
+
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
