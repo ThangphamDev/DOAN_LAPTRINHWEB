@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace DOAN_LAPTRINHWEB.Areas.Identity.Pages.Account.Manage
 {
@@ -18,15 +19,18 @@ namespace DOAN_LAPTRINHWEB.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly HomeStylesDbContext _context;
 
         public IndexModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IWebHostEnvironment webHostEnvironment)
+            IWebHostEnvironment webHostEnvironment,
+            HomeStylesDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _webHostEnvironment = webHostEnvironment;
+            _context = context;
         }
 
         public string Username { get; set; }
@@ -67,28 +71,50 @@ namespace DOAN_LAPTRINHWEB.Areas.Identity.Pages.Account.Manage
 
             [Display(Name = "Ảnh đại diện")]
             public string AvatarUrl { get; set; }
+            [Display(Name = "Địa chỉ mặc định")]
+            public string DefaultAddress { get; set; }
         }
 
         private async Task LoadAsync(ApplicationUser user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
-            var email = await _userManager.GetEmailAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
+            string defaultAddress = "Chưa có địa chỉ mặc định";
+
+            // Kiểm tra _context trước khi sử dụng
+            if (_context != null)
+            {
+                try
+                {
+                    var address = await _context.Addresses
+                        .Where(a => a.UserId == user.Id && a.IsDefault == true)
+                        .Select(a => $"{a.Street}, {a.City}, {a.State}, {a.PostalCode}, {a.Country}")
+                        .FirstOrDefaultAsync();
+
+                    defaultAddress = address ?? "Chưa có địa chỉ mặc định";
+                }
+                catch (Exception ex)
+                {
+                    // Log lỗi nếu cần
+                    defaultAddress = "Không thể tải địa chỉ";
+                }
+            }
+
             Username = userName;
-            IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
 
             Input = new InputModel
             {
-                Email = email,
                 PhoneNumber = phoneNumber,
+                Email = user.Email,
                 FullName = user.FullName,
-                Address = user.Address,
                 DateOfBirth = user.DateOfBirth,
                 Gender = user.Gender,
-                AvatarUrl = user.AvatarUrl
+                AvatarUrl = user.AvatarUrl,
+                DefaultAddress = defaultAddress
             };
         }
+
 
         public async Task<IActionResult> OnGetAsync()
         {

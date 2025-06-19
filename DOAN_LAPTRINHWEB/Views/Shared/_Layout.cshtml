@@ -73,14 +73,7 @@
                             <li class="nav-item">
                                 <a class="nav-link px-3" href="#">Liên Hệ</a>
                             </li>
-                            @if (User.IsInRole("Administrator"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link px-3" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
-                                        <i class="fas fa-tachometer-alt me-1"></i> Quản trị Admin
-                                    </a>
-                                </li>
-                            }
+                            
                         </ul>
                     </div>
 
@@ -103,7 +96,7 @@
 
                         <!-- Shopping Cart -->
                         <div class="header-icon-wrapper">
-                            <a asp-controller="Cart" asp-action="Index" class="header-icon" id="cartButton">
+                            <a asp-area="" asp-controller="Cart" asp-action="Index" class="header-icon" id="cartButton">
                                 <i class="fas fa-shopping-cart"></i>
                                 @{
                                     var cartCount = 0;

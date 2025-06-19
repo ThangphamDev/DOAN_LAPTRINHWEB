@@ -164,7 +164,7 @@
                                                     _ => order.OrderStatus ?? "N/A"
                                                 };
                                             }
-                                            <span class="badge @statusClass">@statusText</span>
+                                            <span class="badge @statusClass" style="color: #28a745;">@statusText</span>
                                         </td>
                                         <td class="font-weight-bold text-success">
                                             @order.TotalAmount.ToString("N0") ₫
@@ -299,7 +299,7 @@
                                     <tr>
                                         <td>@stat.Month/@stat.Year</td>
                                         <td>
-                                            <span class="badge badge-info">@stat.OrderCount</span>
+                                            <span class="badge badge-info" style="color: #28a745;>@stat.OrderCount</span>
                                         </td>
                                         <td class="font-weight-bold text-success">
                                             @stat.Revenue.ToString("N0") ₫

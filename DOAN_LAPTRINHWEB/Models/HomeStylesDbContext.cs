@@ -68,6 +68,10 @@ public partial class HomeStylesDbContext : IdentityDbContext<ApplicationUser>
                 .HasColumnName("street");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
+            entity.Property(e => e.IsDefault)
+                .HasDefaultValue(false)
+                .HasColumnName("is_default");
+
             entity.HasOne(d => d.User)
                 .WithMany(p => p.Addresses)
                 .HasForeignKey(d => d.UserId)
