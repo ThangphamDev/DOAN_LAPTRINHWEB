@@ -29,7 +29,7 @@ public partial class HomeStylesDbContext : IdentityDbContext<ApplicationUser>
     public virtual DbSet<CartItem> CartItems { get; set; }
     public virtual DbSet<ProductVariant> ProductVariants { get; set; }
     public DbSet<PostLike> PostLikes { get; set; }
-
+    public DbSet<Wishlist> Wishlists { get; set; }
 
     // Thêm các DbSet mới
     public virtual DbSet<Post> Posts { get; set; }
@@ -425,6 +425,10 @@ public partial class HomeStylesDbContext : IdentityDbContext<ApplicationUser>
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict); // Giữ PostType khi xóa Post
         });
+
+        modelBuilder.Entity<Wishlist>()
+       .HasIndex(w => new { w.UserId, w.ProductId })
+       .IsUnique();
 
         OnModelCreatingPartial(modelBuilder);
     }

@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<DOAN_LAPTRINHWEB.Models.Product>
-
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
 @{
     ViewData["Title"] = "Danh Sách Sản Phẩm";
 }
@@ -525,7 +526,7 @@ body {
 }
 
 .product-title a:hover {
-    color: var(--accent-color);
+    color: #b8860b;
 }
 
 .product-rating {
@@ -1097,6 +1098,12 @@ body {
 </section>
 
 <div class="container">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <form style="display: none;">
+            @Html.AntiForgeryToken()
+        </form>
+    }
     @if (!Model.Any())
     {
         <!-- Empty State -->
@@ -1679,31 +1686,103 @@ body {
                 });
             }
 
-            // Wishlist toggle
+            // Wishlist toggle - CẬP NHẬT CHỨC NĂNG WISHLIST
             document.querySelectorAll('.product-wishlist').forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation();
+        
+                    // Lấy product ID từ card cha
+                    const productCard = this.closest('.product-card');
+                    const productId = productCard.querySelector('.add-to-cart').dataset.id;
                     const icon = this.querySelector('i');
-                    let message = '';
-                    
-                    if (icon.classList.contains('far')) {
-                        icon.classList.remove('far');
-                        icon.classList.add('fas');
-                        this.style.background = '#f8d7da';
-                        icon.style.color = '#dc3545';
-                        message = 'Đã thêm sản phẩm vào danh sách yêu thích';
+        
+                    // Kiểm tra user đã đăng nhập chưa
+                    const isUserLoggedIn = @(SignInManager.IsSignedIn(User) ? "true" : "false");
+        
+                    if (isUserLoggedIn) {
+                        // Kiểm tra trạng thái hiện tại
+                        const isInWishlist = icon.classList.contains('fas');
+            
+                        if (isInWishlist) {
+                            // Xóa khỏi wishlist
+                            fetch('/Wishlist/RemoveFromWishlist', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded',
+                                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                                },
+                                body: `productId=${productId}`
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    icon.classList.remove('fas');
+                                    icon.classList.add('far');
+                                    this.style.background = '#ffffff';
+                                    icon.style.color = '';
+                        
+                                    // Cập nhật wishlist count
+                                    updateWishlistCount(data.wishlistCount);
+                        
+                                    showNotification(data.message, 'success');
+                                } else {
+                                    showNotification(data.message, 'error');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                showNotification('Có lỗi xảy ra. Vui lòng thử lại.', 'error');
+                            });
+                        } else {
+                            // Thêm vào wishlist
+                            fetch('/Wishlist/AddToWishlist', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded',
+                                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                                },
+                                body: `productId=${productId}`
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    icon.classList.remove('far');
+                                    icon.classList.add('fas');
+                                    this.style.background = '#f8d7da';
+                                    icon.style.color = '#dc3545';
+                        
+                                    // Cập nhật wishlist count
+                                    updateWishlistCount(data.wishlistCount);
+                        
+                                    showNotification(data.message, 'success');
+                                } else {
+                                    showNotification(data.message, 'error');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                showNotification('Có lỗi xảy ra. Vui lòng thử lại.', 'error');
+                            });
+                        }
                     } else {
-                        icon.classList.remove('fas');
-                        icon.classList.add('far');
-                        this.style.background = '#ffffff';
-                        icon.style.color = '';
-                        message = 'Đã xóa sản phẩm khỏi danh sách yêu thích';
+                        // Chưa đăng nhập
+                        showNotification('Vui lòng đăng nhập để sử dụng tính năng này.', 'error');
+                        setTimeout(() => {
+                            window.location.href = '/Identity/Account/Login';
+                        }, 1500);
                     }
-                    
-                    // Show notification
-                    showNotification(message, icon.classList.contains('fas') ? 'success' : 'info');
                 });
             });
+
+            // Load wishlist status khi trang load
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <text>
+                loadWishlistStatus();
+                loadWishlistCount();
+                </text>
+            }
+
             
             // Notification functionality
             const notification = document.getElementById('notification');
@@ -1820,5 +1899,45 @@ body {
                 }
             }, 200);
         });
+        function loadWishlistStatus() {
+    document.querySelectorAll('.product-card').forEach(card => {
+        const productId = card.querySelector('.add-to-cart').dataset.id;
+        const wishlistBtn = card.querySelector('.product-wishlist i');
+        
+        if (productId && wishlistBtn) {
+            fetch(`/Wishlist/CheckWishlistStatus?productId=${productId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.isInWishlist) {
+                        wishlistBtn.classList.remove('far');
+                        wishlistBtn.classList.add('fas');
+                        wishlistBtn.parentElement.style.background = '#f8d7da';
+                        wishlistBtn.style.color = '#dc3545';
+                    }
+                })
+                .catch(error => console.error('Error loading wishlist status:', error));
+        }
+    });
+}
+
+    // Hàm load số lượng wishlist
+    function loadWishlistCount() {
+        fetch('/Wishlist/GetWishlistCount')
+            .then(response => response.json())
+            .then(data => {
+                updateWishlistCount(data.count);
+            })
+            .catch(error => console.error('Error loading wishlist count:', error));
+    }
+
+    // Hàm cập nhật số lượng wishlist
+    function updateWishlistCount(count) {
+        const wishlistCountElements = document.querySelectorAll('.wishlist-count');
+        wishlistCountElements.forEach(element => {
+            element.textContent = count;
+            element.style.display = count > 0 ? 'block' : 'none';
+        });
+    }
+
     </script>
 }

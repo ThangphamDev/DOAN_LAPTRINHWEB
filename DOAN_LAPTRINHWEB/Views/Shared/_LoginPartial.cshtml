@@ -48,8 +48,8 @@
             </li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index"><i class="fas fa-user me-2"></i>Tài khoản của tôi</a></li>
-            <li><a class="dropdown-item" href="#"><i class="fas fa-heart me-2"></i>Yêu thích</a></li>
-            <li><a class="dropdown-item" href="#"><i class="fas fa-box me-2"></i>Đơn hàng của tôi</a></li>
+            <li><a class="dropdown-item" asp-controller="Wishlist" asp-action="Index"><i class="fas fa-heart me-2"></i>Yêu thích</a></li>
+            <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Orders"><i class="fas fa-box me-2"></i>Đơn hàng của tôi</a></li>
             <li><hr class="dropdown-divider"></li>
             <li>
                 <form method="post" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
