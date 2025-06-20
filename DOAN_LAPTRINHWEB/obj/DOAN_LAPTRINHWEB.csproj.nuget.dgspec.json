@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\thang\\OneDrive\\Desktop\\Việt\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB.csproj": {}
+    "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB.csproj": {}
   },
   "projects": {
-    "C:\\Users\\thang\\OneDrive\\Desktop\\Việt\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB.csproj": {
+    "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\thang\\OneDrive\\Desktop\\Việt\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB.csproj",
+        "projectUniqueName": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB.csproj",
         "projectName": "DOAN_LAPTRINHWEB",
-        "projectPath": "C:\\Users\\thang\\OneDrive\\Desktop\\Việt\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB.csproj",
-        "packagesPath": "C:\\Users\\thang\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\thang\\OneDrive\\Desktop\\Việt\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\obj\\",
+        "projectPath": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB.csproj",
+        "packagesPath": "C:\\Users\\LE THAI VINH\\.nuget\\packages\\",
+        "outputPath": "E:\\LapTrinhWeb\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\thang\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\LE THAI VINH\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -44,7 +44,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net9.0": {
@@ -100,7 +100,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

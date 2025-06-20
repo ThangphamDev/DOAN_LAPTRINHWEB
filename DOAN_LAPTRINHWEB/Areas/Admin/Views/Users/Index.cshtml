@@ -25,7 +25,20 @@
                 <td>@user.FullName</td>
                 <td>@user.Email</td>
                 <td>@user.PhoneNumber</td>
-                <td>@user.Status</td>
+                <td>
+                    @if (user.Status == "Đang hoạt động" || user.Status == "Active")
+                    {
+                        <span class="badge bg-success text-white">@user.Status</span>
+                    }
+                    else if (user.Status == "Tạm khóa" || user.Status == "Locked" || user.Status == "Inactive")
+                    {
+                        <span class="badge bg-danger text-white">@user.Status</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary text-white">@user.Status</span>
+                    }
+                </td>
                 <td>@(user.EmailConfirmed ? "Đã xác nhận" : "Chưa xác nhận")</td>
                 <td>@string.Join(", ", user.Roles)</td>
                 <td>

@@ -1,0 +1,1295 @@
+﻿@model DOAN_LAPTRINHWEB.Models.CreatePostDto
+
+@{
+    ViewData["Title"] = "Tạo bài viết mới";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="fb-layout-container">
+    <!-- Left sidebar -->
+    <div class="fb-sidebar left-sidebar">
+        <div class="fb-sidebar-content">
+            <div class="fb-profile-section">
+                <a asp-action="Index" class="fb-menu-item">
+                    <div class="fb-menu-icon">
+                        <i class="fas fa-arrow-left"></i>
+                    </div>
+                    <div class="fb-menu-text">Quay lại</div>
+                </a>
+                <div class="fb-menu-subtitle">Tạo bài viết</div>
+                <a href="#" class="fb-menu-item active">
+                    <div class="fb-menu-icon">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <div class="fb-menu-text">Viết bài mới</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="fb-main-feed">
+        <div class="fb-post-card create-post-main">
+            <!-- Header -->
+            <div class="create-post-header">
+                <div class="fb-post-user">
+                    <div class="fb-post-avatar">
+                        @{
+                            var currentUser = ViewBag.CurrentUser as DOAN_LAPTRINHWEB.Models.ApplicationUser;
+                        }
+                        @if (currentUser != null && !string.IsNullOrEmpty(currentUser.AvatarUrl))
+                        {
+                            <img src="@currentUser.AvatarUrl" alt="Avatar" class="avatar-img" />
+                        }
+                        else if (currentUser != null && !string.IsNullOrEmpty(currentUser.Avatar))
+                        {
+                            <img src="@currentUser.Avatar" alt="Avatar" class="avatar-img" />
+                        }
+                        else
+                        {
+                            <i class="fas fa-user"></i>
+                        }
+                    </div>
+                    <div class="fb-post-info">
+                        <div class="fb-post-author">@("Admin")</div>
+                        <div class="fb-post-meta">
+                            <span><i class="fas fa-globe-americas me-1"></i>Công khai</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <form asp-action="Create" method="post" enctype="multipart/form-data" id="createPostForm">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger validation-summary" style="display: none;"></div>
+
+                <!-- Post Type Selection -->
+                <div class="fb-post-section">
+                    <div class="section-label">
+                        <i class="fas fa-tags me-2"></i>Chọn loại bài viết
+                    </div>
+                    <div class="post-type-selector">
+                        @foreach (var postType in ViewData["PostTypes"] as List<DOAN_LAPTRINHWEB.Models.PostType>)
+                        {
+                            <div class="post-type-option">
+                                <input type="radio" asp-for="PostTypeId" value="@postType.Id" id="postType_@postType.Id" />
+                                <label for="postType_@postType.Id" class="post-type-label">
+                                    <i class="fas fa-hashtag"></i>
+                                    <span>@postType.Name</span>
+                                </label>
+                            </div>
+                        }
+                    </div>
+                    <span asp-validation-for="PostTypeId" class="text-danger validation-error"></span>
+                </div>
+
+                <!-- Title Input -->
+                <div class="fb-post-section">
+                    <div class="title-input-wrapper">
+                        <input asp-for="Title" class="fb-title-input" placeholder="Tiêu đề bài viết..." maxlength="200" />
+                        <div class="char-counter">
+                            <span id="titleCounter">0</span>/200
+                        </div>
+                    </div>
+                    <span asp-validation-for="Title" class="text-danger validation-error"></span>
+                </div>
+
+                <!-- Content Editor -->
+                <div class="fb-post-section">
+                    <div class="content-editor-wrapper">
+                        <textarea asp-for="Content" id="contentEditor" class="fb-content-editor" placeholder="Bạn đang nghĩ gì?"></textarea>
+                    </div>
+                    <span asp-validation-for="Content" class="text-danger validation-error"></span>
+                </div>
+
+                <!-- Image Upload -->
+                <div class="fb-post-section">
+                    <div class="image-upload-section">
+                        <input type="file" id="CoverImageFile" name="CoverImageFile" accept="image/*" class="file-input" />
+                        <div class="upload-area" id="uploadArea">
+                            <div class="upload-placeholder" id="uploadPlaceholder">
+                                <i class="fas fa-image upload-icon"></i>
+                                <span>Thêm ảnh (không bắt buộc)</span>
+                            </div>
+                            <div class="image-preview" id="imagePreview" style="display: none;">
+                                <img id="previewImg" src="" alt="Preview" />
+                                <button type="button" class="remove-image-btn" onclick="removeImage()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="fb-post-footer create-post-actions">
+                    <div class="post-options">
+                        <button type="button" class="fb-post-option" onclick="document.getElementById('CoverImageFile').click()">
+                            <i class="fas fa-image text-success"></i>
+                            <span>Ảnh/Video</span>
+                        </button>
+                        <button type="button" class="fb-post-option" onclick="previewPost()">
+                            <i class="fas fa-eye text-primary"></i>
+                            <span>Xem trước</span>
+                        </button>
+                    </div>
+                    <div class="post-submit">
+                        <button type="submit" class="btn-post" id="publishBtn">
+                            <i class="fas fa-paper-plane me-2"></i>Đăng
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Right sidebar -->
+    <div class="fb-sidebar right-sidebar">
+        <div class="fb-sidebar-content">
+            
+        </div>
+    </div>
+</div>
+
+<!-- Preview Modal -->
+<div class="modal fade" id="previewModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-eye me-2"></i>Xem trước bài viết
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="previewContent"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" onclick="$('#createPostForm').submit()">
+                    <i class="fas fa-paper-plane me-2"></i>Đăng bài
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Facebook-style variables */
+    :root {
+        --fb-bg: #f0f2f5;
+        --fb-card-bg: #ffffff;
+        --fb-primary-text: #1c1e21;
+        --fb-secondary-text: #65676b;
+        --fb-hover-bg: #f2f2f2;
+        --fb-active-bg: #e7f3ff;
+        --fb-active-color: #1877f2;
+        --fb-border: #e4e6eb;
+        --fb-primary-button: #1877f2;
+        --fb-icon-bg: #e4e6eb;
+        --fb-divider: #ced0d4;
+        --fb-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        --fb-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    body {
+        background-color: var(--fb-bg) !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* Layout - same as Index */
+    .fb-layout-container {
+        display: flex;
+        max-width: 1920px;
+        margin: 0 auto;
+        padding-top: 20px;
+        position: relative;
+    }
+
+    .fb-sidebar {
+        width: 360px;
+        height: calc(100vh - 100px);
+        position: sticky;
+        top: 80px;
+        overflow-y: auto;
+    }
+
+    .left-sidebar {
+        padding-right: 15px;
+    }
+
+    .right-sidebar {
+        padding-left: 15px;
+    }
+
+    .fb-sidebar-content {
+        padding: 0 8px;
+    }
+
+    .fb-main-feed {
+        flex: 1;
+        max-width: 680px;
+        margin: 0 auto;
+    }
+
+    /* Menu items - same as Index */
+    .fb-menu-item {
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 10px;
+        text-decoration: none;
+        color: var(--fb-primary-text);
+        margin-bottom: 5px;
+        transition: all 0.2s ease;
+    }
+
+        .fb-menu-item:hover {
+            background-color: var(--fb-hover-bg);
+            color: var(--fb-primary-text);
+        }
+
+        .fb-menu-item.active {
+            background-color: var(--fb-active-bg);
+            color: var(--fb-active-color);
+            font-weight: 500;
+        }
+
+    .fb-menu-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: var(--fb-icon-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+    }
+
+    .fb-menu-item.active .fb-menu-icon {
+        background-color: #d4e5f9;
+    }
+
+    .fb-menu-text {
+        font-size: 15px;
+        font-weight: 500;
+    }
+
+    .fb-menu-subtitle {
+        color: var(--fb-secondary-text);
+        font-weight: 600;
+        padding: 10px 12px 8px;
+        font-size: 17px;
+    }
+
+    /* Main create post card */
+    .create-post-main {
+        background-color: var(--fb-card-bg);
+        border-radius: 8px;
+        box-shadow: var(--fb-shadow);
+        margin-bottom: 16px;
+        overflow: hidden;
+    }
+
+    .create-post-header {
+        padding: 16px;
+        border-bottom: 1px solid var(--fb-border);
+    }
+
+    .fb-post-user {
+        display: flex;
+        align-items: center;
+    }
+
+    .fb-post-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: var(--fb-icon-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+        overflow: hidden;
+    }
+
+    .avatar-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    .fb-post-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .fb-post-author {
+        font-weight: 600;
+        font-size: 15px;
+        color: var(--fb-primary-text);
+        line-height: 1.3333;
+    }
+
+        .fb-post-meta {
+        display: flex;
+        align-items: center;
+        font-size: 13px;
+        color: var(--fb-secondary-text);
+        line-height: 1.3333;
+    }
+
+    /* Form sections */
+    .fb-post-section {
+        padding: 16px;
+        border-bottom: 1px solid var(--fb-border);
+    }
+
+    .fb-post-section:last-of-type {
+        border-bottom: none;
+    }
+
+    .section-label {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--fb-primary-text);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Post type selector */
+    .post-type-selector {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+
+    .post-type-option {
+        position: relative;
+    }
+
+    .post-type-option input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .post-type-label {
+        display: flex;
+        align-items: center;
+        padding: 8px 16px;
+        border: 1px solid var(--fb-border);
+        border-radius: 20px;
+        background: var(--fb-card-bg);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--fb-secondary-text);
+    }
+
+    .post-type-label i {
+        margin-right: 6px;
+        font-size: 12px;
+    }
+
+    .post-type-label:hover {
+        background-color: var(--fb-hover-bg);
+        border-color: var(--fb-active-color);
+    }
+
+    .post-type-option input:checked + .post-type-label {
+        background-color: var(--fb-active-bg);
+        border-color: var(--fb-active-color);
+        color: var(--fb-active-color);
+        font-weight: 600;
+    }
+
+    /* Title input */
+    .title-input-wrapper {
+        position: relative;
+    }
+
+    .fb-title-input {
+        width: 100%;
+        border: none;
+        outline: none;
+        font-size: 24px;
+        font-weight: 400;
+        color: var(--fb-primary-text);
+        background: transparent;
+        padding: 0;
+        resize: none;
+        line-height: 1.2;
+        min-height: 60px;
+    }
+
+    .fb-title-input::placeholder {
+        color: var(--fb-secondary-text);
+        font-weight: 400;
+    }
+
+    .char-counter {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        font-size: 12px;
+        color: var(--fb-secondary-text);
+        background: var(--fb-card-bg);
+        padding: 2px 6px;
+        border-radius: 4px;
+    }
+
+    /* Content editor */
+    .content-editor-wrapper {
+        position: relative;
+    }
+
+    .fb-content-editor {
+        width: 100%;
+        border: none;
+        outline: none;
+        font-size: 15px;
+        color: var(--fb-primary-text);
+        background: transparent;
+        resize: none;
+        min-height: 200px;
+        line-height: 1.3333;
+        font-family: inherit;
+    }
+
+    .fb-content-editor::placeholder {
+        color: var(--fb-secondary-text);
+        font-size: 24px;
+        font-weight: 300;
+    }
+
+    /* Image upload */
+    .image-upload-section {
+        margin-top: 8px;
+    }
+
+    .file-input {
+        display: none;
+    }
+
+    .upload-area {
+        border: 1px solid var(--fb-border);
+        border-radius: 8px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .upload-area:hover {
+        border-color: var(--fb-active-color);
+        background-color: rgba(24, 119, 242, 0.02);
+    }
+
+    .upload-placeholder {
+        padding: 40px 20px;
+        text-align: center;
+        color: var(--fb-secondary-text);
+        transition: all 0.2s ease;
+    }
+
+    .upload-icon {
+        font-size: 32px;
+        margin-bottom: 8px;
+        display: block;
+        color: var(--fb-active-color);
+    }
+
+    .upload-placeholder span {
+        font-size: 16px;
+        font-weight: 500;
+    }
+
+    .image-preview {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 8px;
+    }
+
+    .image-preview img {
+        max-width: 100%;
+        max-height: 300px;
+        border-radius: 8px;
+        object-fit: cover;
+    }
+
+    .remove-image-btn {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.7);
+        border: none;
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+    .remove-image-btn:hover {
+        background: rgba(0, 0, 0, 0.9);
+        transform: scale(1.1);
+    }
+
+    /* Post footer actions */
+    .create-post-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 16px;
+        border-top: 1px solid var(--fb-border);
+        background: var(--fb-card-bg);
+    }
+
+    .post-options {
+        display: flex;
+        gap: 4px;
+    }
+
+    .fb-post-option {
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        border: none;
+        background: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--fb-secondary-text);
+    }
+
+    .fb-post-option:hover {
+        background-color: var(--fb-hover-bg);
+    }
+
+    .fb-post-option i {
+        margin-right: 8px;
+        font-size: 16px;
+    }
+
+    .post-submit {
+        display: flex;
+        align-items: center;
+    }
+
+    .btn-post {
+        background-color: var(--fb-primary-button);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 8px 16px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+    }
+
+    .btn-post:hover {
+        background-color: var(--fb-primary-button);
+        opacity: 0.9;
+    }
+
+    .btn-post:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    /* Right sidebar tips */
+    .fb-sponsored {
+        margin-bottom: 24px;
+        background-color: var(--fb-card-bg);
+        border-radius: 8px;
+        box-shadow: var(--fb-shadow);
+        padding: 16px;
+    }
+
+    .fb-sidebar-title {
+        color: var(--fb-secondary-text);
+        font-size: 17px;
+        font-weight: 600;
+        margin: 0 0 16px 0;
+    }
+
+    .writing-tips {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .tip-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .tip-item i {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: var(--fb-icon-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    .tip-content {
+        flex: 1;
+    }
+
+    .tip-content strong {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--fb-primary-text);
+        margin-bottom: 4px;
+    }
+
+    .tip-content p {
+        font-size: 13px;
+        color: var(--fb-secondary-text);
+        margin: 0;
+        line-height: 1.3;
+    }
+
+    /* Validation styles */
+    .validation-error {
+        font-size: 13px;
+        color: #e41e3f;
+        margin-top: 4px;
+        display: block;
+    }
+
+    .validation-summary {
+        background-color: #ffebee;
+        border: 1px solid #f8bbd9;
+        color: #721c24;
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin: 16px;
+        font-size: 14px;
+    }
+
+    /* Modal styles */
+    .modal-content {
+        border-radius: 8px;
+        border: none;
+        box-shadow: var(--fb-shadow-hover);
+    }
+
+    .modal-header {
+        background-color: var(--fb-card-bg);
+        border-bottom: 1px solid var(--fb-border);
+        padding: 16px;
+    }
+
+    .modal-title {
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--fb-primary-text);
+    }
+
+    .modal-body {
+        padding: 20px;
+    }
+
+    .modal-footer {
+        background-color: var(--fb-card-bg);
+        border-top: 1px solid var(--fb-border);
+        padding: 12px 16px;
+    }
+
+    /* Preview content */
+    .preview-post {
+        background-color: var(--fb-card-bg);
+        border-radius: 8px;
+        box-shadow: var(--fb-shadow);
+        overflow: hidden;
+    }
+
+    .preview-header {
+        padding: 16px;
+        border-bottom: 1px solid var(--fb-border);
+    }
+
+    .preview-meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--fb-secondary-text);
+    }
+
+    .preview-category {
+        background-color: var(--fb-active-bg);
+        color: var(--fb-active-color);
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-weight: 500;
+        font-size: 12px;
+    }
+
+    .preview-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--fb-primary-text);
+        margin: 16px 0 8px 0;
+        line-height: 1.2;
+    }
+
+    .preview-content {
+        padding: 0 16px 16px;
+        font-size: 15px;
+        color: var(--fb-primary-text);
+        line-height: 1.3333;
+    }
+
+    /* Loading states */
+    .btn-loading {
+        position: relative;
+        color: transparent !important;
+    }
+
+    .btn-loading::after {
+        content: '';
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        top: 50%;
+        left: 50%;
+        margin-left: -8px;
+        margin-top: -8px;
+        border: 2px solid transparent;
+        border-top-color: currentColor;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        color: white;
+    }
+
+    @@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive design */
+    @@media (max-width: 1200px) {
+        .fb-sidebar {
+            width: 280px;
+        }
+        .fb-main-feed {
+            max-width: 600px;
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .right-sidebar {
+            display: none;
+        }
+        .fb-main-feed {
+            margin-right: 0;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .fb-layout-container {
+            flex-direction: column;
+            padding-top: 10px;
+        }
+        .left-sidebar {
+            display: none;
+        }
+        .fb-main-feed {
+            width: 100%;
+            max-width: none;
+            padding: 0 10px;
+        }
+        .create-post-main {
+            border-radius: 0;
+            margin-bottom: 8px;
+        }
+        .fb-title-input {
+            font-size: 20px;
+        }
+        .fb-content-editor::placeholder {
+            font-size: 20px;
+        }
+        .post-type-selector {
+            flex-direction: column;
+        }
+        .post-type-label {
+            justify-content: center;
+        }
+        .create-post-actions {
+            flex-direction: column;
+            gap: 12px;
+            align-items: stretch;
+        }
+        .post-options {
+            justify-content: space-around;
+        }
+        .btn-post {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .create-post-header {
+            padding: 12px;
+        }
+        .fb-post-section {
+            padding: 12px;
+        }
+        .fb-title-input {
+            font-size: 18px;
+            min-height: 50px;
+        }
+        .fb-content-editor {
+            min-height: 150px;
+        }
+        .fb-content-editor::placeholder {
+            font-size: 18px;
+        }
+        .upload-placeholder {
+            padding: 30px 15px;
+        }
+        .upload-icon {
+            font-size: 24px;
+        }
+    }
+</style>
+
+@section Scripts {
+    <script src="https://cdn.tiny.cloud/1/YOUR_API_KEY/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        $(document).ready(function() {
+            // Title character counter
+            $('#Title').on('input', function() {
+                const length = $(this).val().length;
+                $('#titleCounter').text(length);
+
+                if (length > 180) {
+                    $('#titleCounter').css('color', '#e41e3f');
+                } else if (length > 150) {
+                    $('#titleCounter').css('color', '#f39c12');
+                } else {
+                    $('#titleCounter').css('color', 'var(--fb-secondary-text)');
+                }
+            });
+
+            // Auto-resize title input
+            $('#Title').on('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.max(60, this.scrollHeight) + 'px';
+            });
+
+            // Auto-resize content editor
+            $('#contentEditor').on('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.max(200, this.scrollHeight) + 'px';
+            });
+
+            // Image upload handling
+            $('#CoverImageFile').on('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // Validate file size (5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('Kích thước file quá lớn. Vui lòng chọn file nhỏ hơn 5MB.');
+                        $(this).val('');
+                        return;
+                    }
+
+                    // Validate file type
+                    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                    if (!allowedTypes.includes(file.type)) {
+                        alert('Chỉ chấp nhận file hình ảnh JPG, PNG hoặc GIF.');
+                        $(this).val('');
+                        return;
+                    }
+
+                    // Show preview
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#previewImg').attr('src', e.target.result);
+                        $('#uploadPlaceholder').hide();
+                        $('#imagePreview').show();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Click upload area to select file
+            $('#uploadArea').on('click', function() {
+                $('#CoverImageFile').click();
+            });
+
+            // Drag and drop functionality
+            $('#uploadArea').on('dragover', function(e) {
+                e.preventDefault();
+                $(this).addClass('drag-over');
+            });
+
+            $('#uploadArea').on('dragleave', function(e) {
+                e.preventDefault();
+                $(this).removeClass('drag-over');
+            });
+
+            $('#uploadArea').on('drop', function(e) {
+                e.preventDefault();
+                $(this).removeClass('drag-over');
+
+                const files = e.originalEvent.dataTransfer.files;
+                if (files.length > 0) {
+                    $('#CoverImageFile')[0].files = files;
+                    $('#CoverImageFile').trigger('change');
+                }
+            });
+
+            // Form validation
+            $('#createPostForm').on('submit', function(e) {
+                let isValid = true;
+                const errors = [];
+
+                // Clear previous validation
+                $('.validation-error').hide();
+                $('.validation-summary').hide();
+
+                // Validate post type
+                if (!$('input[name="PostTypeId"]:checked').length) {
+                    errors.push('Vui lòng chọn loại bài viết');
+                    isValid = false;
+                }
+
+                // Validate title
+                const title = $('#Title').val().trim();
+                if (!title) {
+                    errors.push('Vui lòng nhập tiêu đề bài viết');
+                    isValid = false;
+                } else if (title.length > 200) {
+                    errors.push('Tiêu đề không được vượt quá 200 ký tự');
+                    isValid = false;
+                }
+
+                // Validate content
+                const content = $('#contentEditor').val().trim();
+                if (!content) {
+                    errors.push('Vui lòng nhập nội dung bài viết');
+                    isValid = false;
+                }
+
+                if (!isValid) {
+                    e.preventDefault();
+                    showValidationErrors(errors);
+                    return false;
+                }
+
+                // Show loading state
+                const submitBtn = $('#publishBtn');
+                submitBtn.addClass('btn-loading').prop('disabled', true);
+
+                // Prevent double submission
+                $(this).off('submit');
+            });
+
+            // Auto-save functionality
+            let autoSaveTimer;
+            function autoSave() {
+                const formData = {
+                    title: $('#Title').val(),
+                    content: $('#contentEditor').val(),
+                    postTypeId: $('input[name="PostTypeId"]:checked').val()
+                };
+
+                if (formData.title || formData.content) {
+                    localStorage.setItem('draftPost', JSON.stringify(formData));
+                    showNotification('Đã tự động lưu bản nháp', 'success');
+                }
+            }
+
+            // Auto-save every 30 seconds when typing
+            $('#Title, #contentEditor').on('input', function() {
+                clearTimeout(autoSaveTimer);
+                autoSaveTimer = setTimeout(autoSave, 30000);
+            });
+
+            // Load draft on page load
+            const draft = localStorage.getItem('draftPost');
+            if (draft && draft !== 'null') {
+                try {
+                    const draftData = JSON.parse(draft);
+                    if (draftData.title || draftData.content) {
+                        if (confirm('Bạn có muốn khôi phục bản nháp đã lưu không?')) {
+                            if (draftData.title) $('#Title').val(draftData.title).trigger('input');
+                            if (draftData.content) $('#contentEditor').val(draftData.content).trigger('input');
+                            if (draftData.postTypeId) {
+                                $(`input[name="PostTypeId"][value="${draftData.postTypeId}"]`).prop('checked', true);
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.log('Error loading draft:', e);
+                }
+            }
+
+            // Clear draft after successful submission
+            $('#createPostForm').on('submit', function() {
+                setTimeout(() => {
+                    localStorage.removeItem('draftPost');
+                }, 1000);
+            });
+
+            // Keyboard shortcuts
+            $(document).keydown(function(e) {
+                // Ctrl/Cmd + S to save draft
+                if ((e.ctrlKey || e.metaKey) && e.keyCode === 83) {
+                    e.preventDefault();
+                    autoSave();
+                }
+
+                // Ctrl/Cmd + Enter to submit
+                if ((e.ctrlKey || e.metaKey) && e.keyCode === 13) {
+                    e.preventDefault();
+                    $('#createPostForm').submit();
+                }
+            });
+        });
+
+        // Remove image function
+        function removeImage() {
+            $('#CoverImageFile').val('');
+            $('#imagePreview').hide();
+            $('#uploadPlaceholder').show();
+        }
+
+        // Preview post function
+        function previewPost() {
+            const title = $('#Title').val().trim();
+            const content = $('#contentEditor').val().trim();
+            const postTypeText = $('input[name="PostTypeId"]:checked').next('label').find('span').text();
+
+            if (!title && !content) {
+                alert('Vui lòng nhập tiêu đề hoặc nội dung để xem trước.');
+                return;
+            }
+
+            const previewHTML = `
+                <div class="preview-post">
+                    <div class="preview-header">
+                        <div class="preview-meta">
+                            ${postTypeText ? `<span class="preview-category">${postTypeText}</span>` : ''}
+                            <span class="preview-date">${new Date().toLocaleDateString('vi-VN')}</span>
+                        </div>
+                    </div>
+                    ${title ? `<h2 class="preview-title">${title}</h2>` : ''}
+                    <div class="preview-content">${content.replace(/\n/g, '<br>')}</div>
+                </div>
+            `;
+
+            $('#previewContent').html(previewHTML);
+            $('#previewModal').modal('show');
+        }
+
+        // Show validation errors
+        function showValidationErrors(errors) {
+            const errorHtml = errors.map(error => `<li>${error}</li>`).join('');
+            const alertHtml = `
+                <div class="validation-summary" style="display: block;">
+                    <strong><i class="fas fa-exclamation-triangle me-2"></i>Vui lòng kiểm tra lại:</strong>
+                    <ul class="mb-0 mt-2">${errorHtml}</ul>
+                </div>
+            `;
+
+            $('.validation-summary').remove();
+            $('.create-post-main form').prepend(alertHtml);
+
+            // Scroll to top
+            $('html, body').animate({
+                scrollTop: $('.validation-summary').offset().top - 100
+            }, 500);
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = $(`
+                <div class="fb-notification notification-${type}">
+                    <i class="fas fa-${type === 'success' ? 'check' : 'info'}-circle me-2"></i>
+                    ${message}
+                </div>
+            `);
+
+            $('body').append(notification);
+
+            setTimeout(() => {
+                notification.addClass('show');
+            }, 100);
+
+            setTimeout(() => {
+                notification.removeClass('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+    </script>
+
+    <style>
+        /* Additional styles for enhanced functionality */
+        .drag-over {
+            border-color: var(--fb-active-color) !important;
+            background-color: rgba(24, 119, 242, 0.05) !important;
+        }
+
+        /* Notification styles */
+        .fb-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--fb-card-bg);
+            border: 1px solid var(--fb-border);
+            border-radius: 8px;
+            padding: 12px 16px;
+            box-shadow: var(--fb-shadow-hover);
+            z-index: 9999;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            max-width: 300px;
+            font-size: 14px;
+        }
+
+            .fb-notification.show {
+                transform: translateX(0);
+            }
+
+        .notification-success {
+            border-left: 4px solid #42b883;
+            color: #42b883;
+        }
+
+        .notification-info {
+            border-left: 4px solid var(--fb-active-color);
+            color: var(--fb-active-color);
+        }
+
+        /* Enhanced upload area */
+        .upload-area.drag-over .upload-placeholder {
+            color: var(--fb-active-color);
+        }
+
+        .upload-area.drag-over .upload-icon {
+            transform: scale(1.1);
+        }
+
+        /* Better focus states */
+        .fb-title-input:focus,
+        .fb-content-editor:focus {
+            outline: none;
+        }
+
+        .fb-post-section:focus-within {
+            background-color: rgba(24, 119, 242, 0.02);
+        }
+
+        /* Enhanced post type selection */
+        .post-type-option input:focus + .post-type-label {
+            outline: 2px solid var(--fb-active-color);
+            outline-offset: 2px;
+        }
+
+        /* Better button states */
+        .btn-post:focus {
+            outline: 2px solid var(--fb-active-color);
+            outline-offset: 2px;
+        }
+
+        .fb-post-option:focus {
+            outline: 2px solid var(--fb-active-color);
+            outline-offset: 2px;
+            background-color: var(--fb-hover-bg);
+        }
+
+        /* Improved validation display */
+        .validation-summary ul {
+            padding-left: 20px;
+            margin: 8px 0 0 0;
+        }
+
+        .validation-summary li {
+            margin: 4px 0;
+        }
+
+        /* Better modal appearance */
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-dialog {
+            margin: 30px auto;
+        }
+
+        /* Enhanced preview styles */
+        .preview-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 8px 0;
+        }
+
+        .preview-content p {
+            margin: 8px 0;
+        }
+
+        /* Loading animation improvements */
+        @@keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Accessibility improvements */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Print styles */
+        @@media print {
+            .fb-sidebar, .create-post-actions, .fb-notification {
+                display: none !important;
+            }
+
+            .fb-main-feed {
+                width: 100% !important;
+                max-width: none !important;
+            }
+
+            .create-post-main {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+            }
+        }
+    </style>
+}

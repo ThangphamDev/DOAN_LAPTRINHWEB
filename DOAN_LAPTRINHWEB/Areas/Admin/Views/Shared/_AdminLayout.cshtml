@@ -49,6 +49,12 @@
                         <i class="fas fa-users"></i> <span>Người dùng</span>
                     </a>
                 </li>
+                <li>
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Posts" ? "active" : "")"
+                       asp-area="Admin" asp-controller="Posts" asp-action="Index">
+                        <i class="fas fa-newspaper"></i> <span>Bài viết</span>
+                    </a>
+                </li>
             </ul>
         </nav>
         <div class="sidebar-footer">

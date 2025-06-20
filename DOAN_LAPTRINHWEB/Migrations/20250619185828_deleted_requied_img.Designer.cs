@@ -4,6 +4,7 @@ using DOAN_LAPTRINHWEB.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DOAN_LAPTRINHWEB.Migrations
 {
     [DbContext(typeof(HomeStylesDbContext))]
-    partial class HomeStylesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250619185828_deleted_requied_img")]
+    partial class deleted_requied_img
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,12 +45,6 @@ namespace DOAN_LAPTRINHWEB.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("country");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("(getdate())");
 
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -84,12 +81,6 @@ namespace DOAN_LAPTRINHWEB.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("street");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasColumnName("updated_at")
-                        .HasDefaultValueSql("(getdate())");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -322,45 +313,6 @@ namespace DOAN_LAPTRINHWEB.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("DOAN_LAPTRINHWEB.Models.ChatMessage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsFromUser")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<string>("Response")
-                        .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.Property<string>("SessionId")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ChatMessages");
-                });
-
             modelBuilder.Entity("DOAN_LAPTRINHWEB.Models.Comment", b =>
                 {
                     b.Property<int>("Id")
@@ -420,10 +372,6 @@ namespace DOAN_LAPTRINHWEB.Migrations
                         .HasDefaultValue("pending")
                         .HasColumnName("order_status");
 
-                    b.Property<int>("ShippingAddressId")
-                        .HasColumnType("int")
-                        .HasColumnName("shipping_address_id");
-
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(10, 2)")
                         .HasColumnName("total_amount");
@@ -441,8 +389,6 @@ namespace DOAN_LAPTRINHWEB.Migrations
 
                     b.HasKey("OrderId")
                         .HasName("PK__Orders__465962293C338FDC");
-
-                    b.HasIndex("ShippingAddressId");
 
                     b.HasIndex("UserId");
 
@@ -1086,16 +1032,6 @@ namespace DOAN_LAPTRINHWEB.Migrations
                     b.Navigation("ProductVariant");
                 });
 
-            modelBuilder.Entity("DOAN_LAPTRINHWEB.Models.ChatMessage", b =>
-                {
-                    b.HasOne("DOAN_LAPTRINHWEB.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("DOAN_LAPTRINHWEB.Models.Comment", b =>
                 {
                     b.HasOne("DOAN_LAPTRINHWEB.Models.Comment", "ParentComment")
@@ -1124,20 +1060,11 @@ namespace DOAN_LAPTRINHWEB.Migrations
 
             modelBuilder.Entity("DOAN_LAPTRINHWEB.Models.Order", b =>
                 {
-                    b.HasOne("DOAN_LAPTRINHWEB.Models.Address", "ShippingAddress")
-                        .WithMany("Orders")
-                        .HasForeignKey("ShippingAddressId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("FK__Orders__shipping_address_id");
-
                     b.HasOne("DOAN_LAPTRINHWEB.Models.ApplicationUser", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
                         .IsRequired()
                         .HasConstraintName("FK__Orders__user_id__628FA481");
-
-                    b.Navigation("ShippingAddress");
 
                     b.Navigation("User");
                 });
@@ -1365,11 +1292,6 @@ namespace DOAN_LAPTRINHWEB.Migrations
                         .HasForeignKey("TagId")
                         .IsRequired()
                         .HasConstraintName("FK__ProductTa__tag_i__5CD6CB2B");
-                });
-
-            modelBuilder.Entity("DOAN_LAPTRINHWEB.Models.Address", b =>
-                {
-                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("DOAN_LAPTRINHWEB.Models.ApplicationUser", b =>

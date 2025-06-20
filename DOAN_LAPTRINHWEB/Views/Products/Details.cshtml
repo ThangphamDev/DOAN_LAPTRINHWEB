@@ -511,7 +511,11 @@
     align-items: center;
     justify-content: center;
 }
-   
+
+    .btn-primary:hover, .btn-primary:focus {
+        color: #000 !important;
+    }
+
 </style>
 
 
@@ -664,6 +668,7 @@
                 </div>
 
                 <!-- Product actions section - unchanged -->
+                 
                 <div class="product-actions">
                     <button type="button" id="addToCartBtn" class="btn btn-primary" data-product-id="@Model.ProductId"
                             @(Model.Stock <= 0 ? "disabled" : "")>
