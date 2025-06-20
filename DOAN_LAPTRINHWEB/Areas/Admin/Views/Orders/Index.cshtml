@@ -40,6 +40,32 @@
                 <td>@order.User?.FullName</td>
                 <td>@order.TotalAmount.ToString("C")</td>
                 <td>@order.OrderStatus</td>
+                <td>
+                    @if (@order.OrderStatus == "Hoàn thành")
+                    {
+                        <span class="badge bg-success text-white">@order.OrderStatus</span>
+                    }
+                    else if (@order.OrderStatus == "Đã hủy")
+                    {
+                        <span class="badge bg-danger text-white">@order.OrderStatus</span>
+                    }
+                    else if (@order.OrderStatus == "Đang giao hàng")
+                    {
+                        <span class="badge bg-warning text-dark">@order.OrderStatus</span>
+                    }
+                    else if (@order.OrderStatus == "Đã xác nhận")
+                    {
+                        <span class="badge bg-primary text-white">@order.OrderStatus</span>
+                    }
+                    else if (@order.OrderStatus == "Chờ xác nhận")
+                    {
+                        <span class="badge bg-secondary text-white">@order.OrderStatus</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary text-white">@order.OrderStatus</span>
+                    }
+                </td>
                 <td>@order.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
                 <td>
                     <a asp-action="Details" asp-route-id="@order.OrderId" class="btn btn-info btn-sm">Chi tiết</a>

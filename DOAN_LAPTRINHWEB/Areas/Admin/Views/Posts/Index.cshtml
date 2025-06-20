@@ -1,0 +1,331 @@
+﻿@model IEnumerable<DOAN_LAPTRINHWEB.Models.Post>
+@{
+    ViewData["Title"] = "Quản lý bài viết";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <!-- Notifications -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">Quản lý bài viết</h1>
+        <a asp-area="Admin" asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Thêm bài viết
+        </a>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="bg-warning bg-opacity-10 p-3 rounded me-3">
+                        <i class="fas fa-clock text-warning fa-2x"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1">Chờ duyệt</h6>
+                        <h3 class="mb-0">@ViewBag.PendingCount</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="bg-success bg-opacity-10 p-3 rounded me-3">
+                        <i class="fas fa-check-circle text-success fa-2x"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1">Đã duyệt</h6>
+                        <h3 class="mb-0">@ViewBag.ApprovedCount</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="bg-danger bg-opacity-10 p-3 rounded me-3">
+                        <i class="fas fa-times-circle text-danger fa-2x"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1">Từ chối</h6>
+                        <h3 class="mb-0">@ViewBag.RejectedCount</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Card -->
+    <div class="card border-0 shadow-sm">
+        <!-- Filters and Bulk Actions -->
+        <div class="card-header bg-white py-3">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <form asp-action="Index" method="get" class="d-flex align-items-center flex-grow-1">
+                    <label class="form-label me-2 mb-0">Lọc trạng thái:</label>
+                    <select name="statusFilter" class="form-select w-auto" onchange="this.form.submit()">
+                        <option value="All" selected="@(ViewBag.StatusFilter == "All")">Tất cả</option>
+                        <option value="Pending" selected="@(ViewBag.StatusFilter == "Pending")">Chờ duyệt</option>
+                        <option value="Approved" selected="@(ViewBag.StatusFilter == "Approved")">Đã duyệt</option>
+                        <option value="Rejected" selected="@(ViewBag.StatusFilter == "Rejected")">Bị từ chối</option>
+                    </select>
+                </form>
+                <form id="bulkActionForm" asp-action="BulkAction" method="post" class="d-flex align-items-center">
+                    <select name="action" id="bulkActionSelect" class="form-select w-auto me-2">
+                        <option value="">Hành động hàng loạt</option>
+                        <option value="Pending">Chờ duyệt</option>
+                        <option value="Approved">Đã duyệt</option>
+                        <option value="Rejected">Bị từ chối</option>
+                    </select>
+                    <button type="button" class="btn btn-primary" id="bulkActionSubmit" data-bs-toggle="modal" data-bs-target="#bulkActionModal">
+                        <i class="fas fa-check me-2"></i>Thực hiện
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" style="width: 50px;">
+                                <input type="checkbox" id="selectAll" />
+                            </th>
+                            <th scope="col">Tiêu đề</th>
+                            <th scope="col">Người đăng</th>
+                            <th scope="col">Loại bài viết</th>
+                            <th scope="col">Ngày tạo</th>
+                            <th scope="col">Trạng thái</th>
+                            <th scope="col" style="width: 200px;">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var post in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="selectedPosts" value="@post.Id" class="selectPost" />
+                                </td>
+                                <td>@post.Title</td>
+                                <td>@post.User?.UserName</td>
+                                <td>@post.PostType?.Name</td>
+                                <td>@post.CreatedDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>
+                                    @switch (post.ApprovalStatus)
+                                    {
+                                        case "Pending":
+                                            <span class="badge bg-warning">Chờ duyệt</span>
+                                            break;
+                                        case "Approved":
+                                            <span class="badge bg-success">Đã duyệt</span>
+                                            break;
+                                        case "Rejected":
+                                            <span class="badge bg-danger">Bị từ chối</span>
+                                            break;
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@post.Id" class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-eye"></i> Xem
+                                        </a>
+                                        <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateStatusModal"
+                                                data-id="@post.Id" data-title="@post.Title">
+                                            <i class="fas fa-edit"></i> Cập nhật
+                                        </button>
+                                        <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                                data-id="@post.Id" data-title="@post.Title">
+                                            <i class="fas fa-trash"></i> Xóa
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="card-footer bg-white py-3">
+            <nav aria-label="Page navigation">
+                <ul class="pagination mb-0 justify-content-end">
+                    @for (var i = 1; i <= ViewBag.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { page = i, statusFilter = ViewBag.StatusFilter })">@i</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Update Status Modal -->
+    <div class="modal fade" id="updateStatusModal" tabindex="-1" aria-labelledby="updateStatusModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="UpdateStatus" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="updateStatusModalLabel">Cập nhật trạng thái bài viết</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="id" id="modalPostId" />
+                        <p>Bài viết: <strong id="modalPostTitle"></strong></p>
+                        <div class="mb-3">
+                            <label class="form-label">Trạng thái</label>
+                            <select name="approvalStatus" class="form-select">
+                                <option value="Pending">Chờ duyệt</option>
+                                <option value="Approved">Đã duyệt</option>
+                                <option value="Rejected">Bị từ chối</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Ghi chú</label>
+                            <textarea name="approvalComment" class="form-control" rows="4"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="Delete" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">Xác nhận xóa bài viết</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="id" id="modalDeleteId" />
+                        <p>Bạn có chắc chắn muốn xóa bài viết <strong id="modalDeleteTitle"></strong>?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-danger">Xóa</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Action Confirmation Modal -->
+    <div class="modal fade" id="bulkActionModal" tabindex="-1" aria-labelledby="bulkActionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bulkActionModalLabel">Xác nhận hành động hàng loạt</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Bạn có chắc chắn muốn cập nhật trạng thái thành <strong id="bulkActionName"></strong> cho các bài viết đã chọn?</p>
+                    <div id="bulkActionLoading" class="d-none">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Đang xử lý...</span>
+                        </div>
+                        <span>Đang xử lý...</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="confirmBulkAction">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Select all checkboxes
+        document.getElementById('selectAll').addEventListener('change', function () {
+            document.querySelectorAll('.selectPost').forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+
+        // Update modal data for single post actions
+        const updateStatusModal = document.getElementById('updateStatusModal');
+        updateStatusModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const id = button.getAttribute('data-id');
+            const title = button.getAttribute('data-title');
+            updateStatusModal.querySelector('#modalPostId').value = id;
+            updateStatusModal.querySelector('#modalPostTitle').textContent = title;
+        });
+
+        const deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const id = button.getAttribute('data-id');
+            const title = button.getAttribute('data-title');
+            deleteModal.querySelector('#modalDeleteId').value = id;
+            deleteModal.querySelector('#modalDeleteTitle').textContent = title;
+        });
+
+        // Bulk action handling
+        const bulkActionModal = document.getElementById('bulkActionModal');
+        const bulkActionSubmit = document.getElementById('bulkActionSubmit');
+        const confirmBulkAction = document.getElementById('confirmBulkAction');
+        const bulkActionForm = document.getElementById('bulkActionForm');
+        const bulkActionSelect = document.getElementById('bulkActionSelect');
+
+        bulkActionSubmit.addEventListener('click', function () {
+            const selectedPosts = document.querySelectorAll('.selectPost:checked');
+            const action = bulkActionSelect.value;
+
+            if (!action) {
+                alert('Vui lòng chọn một trạng thái.');
+                return;
+            }
+
+            if (selectedPosts.length === 0) {
+                alert('Vui lòng chọn ít nhất một bài viết.');
+                return;
+            }
+
+            const actionNames = {
+                'Pending': 'Chờ duyệt',
+                'Approved': 'Đã duyệt',
+                'Rejected': 'Bị từ chối'
+            };
+            bulkActionModal.querySelector('#bulkActionName').textContent = actionNames[action] || action;
+        });
+
+        confirmBulkAction.addEventListener('click', function () {
+            const loading = document.getElementById('bulkActionLoading');
+            const submitButton = this;
+
+            loading.classList.remove('d-none');
+            submitButton.disabled = true;
+
+            bulkActionForm.submit();
+        });
+    </script>
+}

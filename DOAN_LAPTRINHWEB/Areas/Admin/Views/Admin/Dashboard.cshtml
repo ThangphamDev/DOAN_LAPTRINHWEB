@@ -143,32 +143,32 @@
                                         <td>@(order.User?.FullName ?? "Khách vãng lai")</td>
                                         <td>@order.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
                                         <td>
-                                            @{
-                                                var statusClass = order.OrderStatus?.ToLower() switch
-                                                {
-                                                    "pending" => "badge-warning",
-                                                    "processing" => "badge-primary", 
-                                                    "shipped" => "badge-info",
-                                                    "delivered" => "badge-success",
-                                                    "cancelled" => "badge-danger",
-                                                    _ => "badge-secondary"
-                                                };
-                                                
-                                                var statusText = order.OrderStatus?.ToLower() switch
-                                                {
-                                                    "pending" => "Chờ xử lý",
-                                                    "processing" => "Đang xử lý",
-                                                    "shipped" => "Đã giao hàng", 
-                                                    "delivered" => "Đã nhận hàng",
-                                                    "cancelled" => "Đã hủy",
-                                                    _ => order.OrderStatus ?? "N/A"
-                                                };
+                                            @if (order.OrderStatus == "Hoàn thành")
+                                            {
+                                                <span class="badge bg-success text-white">@order.OrderStatus</span>
                                             }
-                                            <span class="badge @statusClass" style="color: #28a745;">@statusText</span>
+                                            else if (order.OrderStatus == "Đã hủy")
+                                            {
+                                                <span class="badge bg-danger text-white">@order.OrderStatus</span>
+                                            }
+                                            else if (order.OrderStatus == "Đang giao hàng")
+                                            {
+                                                <span class="badge bg-warning text-dark">@order.OrderStatus</span>
+                                            }
+                                            else if (order.OrderStatus == "Đã xác nhận")
+                                            {
+                                                <span class="badge bg-primary text-white">@order.OrderStatus</span>
+                                            }
+                                            else if (order.OrderStatus == "Chờ xác nhận")
+                                            {
+                                                <span class="badge bg-secondary text-white">@order.OrderStatus</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary text-white">@order.OrderStatus</span>
+                                            }
                                         </td>
-                                        <td class="font-weight-bold text-success">
-                                            @order.TotalAmount.ToString("N0") ₫
-                                        </td>
+                                        <td class="font-weight-bold text-success">@order.TotalAmount.ToString("N0") ₫</td>
                                     </tr>
                                 }
                             </tbody>
@@ -316,9 +316,9 @@
                                             // Tính tổng số đơn hàng từ danh sách
                                             var totalOrderCount = ((IEnumerable<dynamic>)ViewBag.MonthlyStats).Sum(s => (int)s.OrderCount);
                                         }
-                                        <span class="badge badge-dark">@totalOrderCount</span>
+                                        <span class="badge badge-dark" style="color: #28a745;>@totalOrderCount</span>
                                     </td>
-                                    <td class="font-weight-bold text-danger">
+                                    <td class="font-weight-bold text-danger" >
                                         @{
                                             // Tính tổng doanh thu từ danh sách
                                             var totalRevenue = ((IEnumerable<dynamic>)ViewBag.MonthlyStats).Sum(s => (decimal)s.Revenue);

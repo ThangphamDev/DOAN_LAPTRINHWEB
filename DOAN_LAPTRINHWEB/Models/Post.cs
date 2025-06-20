@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using DOAN_LAPTRINHWEB.Models; // Đảm bảo namespace đúng
+using DOAN_LAPTRINHWEB.Models;
 
 namespace DOAN_LAPTRINHWEB.Models
 {
     public class Post
     {
-       
-
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -28,10 +26,7 @@ namespace DOAN_LAPTRINHWEB.Models
         [ForeignKey("User")]
         public string? UserId { get; set; }
         public ApplicationUser? User { get; set; }
-
-        [Required]
-        public string ImageUrls { get; set; }
-
+        public string? ImageUrls { get; set; }
         [ForeignKey("PostType")]
         public int PostTypeId { get; set; }
         public PostType PostType { get; set; }

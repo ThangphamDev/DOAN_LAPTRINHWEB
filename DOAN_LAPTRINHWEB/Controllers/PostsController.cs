@@ -57,7 +57,7 @@ namespace DOAN_LAPTRINHWEB.Controllers
             var query = _context.Posts
                 .Include(p => p.User)
                 .Include(p => p.PostType)
-                .Where(p => !p.IsDeleted)
+                .Where(p => !p.IsDeleted && p.ApprovalStatus == "Approved")
                 .AsQueryable();
 
             if (postTypeId.HasValue)
@@ -105,7 +105,7 @@ namespace DOAN_LAPTRINHWEB.Controllers
                 var featuredPosts = await _context.Posts
                     .Include(p => p.User)
                     .Include(p => p.PostType)
-                    .Where(p => p.CreatedDate >= thirtyDaysAgo && !p.IsDeleted)
+                    .Where(p => p.CreatedDate >= thirtyDaysAgo && !p.IsDeleted && p.ApprovalStatus == "Approved")
                     .Select(p => new
                     {
                         Post = p,
@@ -128,7 +128,7 @@ namespace DOAN_LAPTRINHWEB.Controllers
             {
                 var featuredAuthors = await _context.Posts
                     .Include(p => p.User)
-                    .Where(p => p.CreatedDate >= thirtyDaysAgo && p.User != null && !p.IsDeleted)
+                    .Where(p => p.CreatedDate >= thirtyDaysAgo && p.User != null && !p.IsDeleted && p.ApprovalStatus == "Approved")
                     .GroupBy(p => p.UserId)
                     .Select(g => new FeaturedAuthorDto
                     {
@@ -162,8 +162,6 @@ namespace DOAN_LAPTRINHWEB.Controllers
 
             return View(posts);
         }
-
-
 
         // GET: Posts/MyPosts - Danh sách bài viết của người dùng hiện tại có lọc
         public async Task<IActionResult> MyPosts(string statusFilter)
@@ -222,23 +220,6 @@ namespace DOAN_LAPTRINHWEB.Controllers
             }).ToList();
 
             return Json(new { success = true, posts = postsData });
-        }
-
-
-
-
-        // GET: Posts/AllPosts - Danh sách tất cả bài viết (Admin)
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AllPosts()
-        {
-            var posts = await _context.Posts
-                .Include(p => p.User)
-                .Include(p => p.PostType)
-                .Include(p => p.ApprovedBy)
-                .OrderByDescending(p => p.CreatedDate)
-                .ToListAsync();
-            ViewData["Title"] = "Tất cả bài đăng";
-            return View(posts);
         }
         // GET: Posts/Create - Form tạo bài viết
         public IActionResult Create()
@@ -323,7 +304,7 @@ namespace DOAN_LAPTRINHWEB.Controllers
                     PostTypeId = dto.PostTypeId,
                     UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
                     CreatedDate = DateTime.UtcNow,
-                    ApprovalStatus = "Approved",
+                    ApprovalStatus = "Pending",
                     IsDeleted = false
                 };
 
@@ -428,7 +409,7 @@ namespace DOAN_LAPTRINHWEB.Controllers
                 existingPost.Content = dto.Content?.Replace("../uploads/", "/uploads/");
                 existingPost.ImageUrls = imageUrls;
                 existingPost.PostTypeId = dto.PostTypeId;
-                existingPost.ApprovalStatus = "Approved";
+                existingPost.ApprovalStatus = "Pending";
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(MyPosts));
@@ -486,49 +467,6 @@ namespace DOAN_LAPTRINHWEB.Controllers
             return RedirectToAction(nameof(MyPosts));
         }
 
-        // GET: Posts/Approve/5 - Form duyệt bài viết (Admin)
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Approve(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var post = await _context.Posts
-                .Include(p => p.User)
-                .Include(p => p.PostType)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (post == null || post.IsDeleted)
-            {
-                return NotFound();
-            }
-
-            return View(post);
-        }
-
-        // POST: Posts/Approve/5 - Lưu trạng thái duyệt (Admin)
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Approve(int id, string ApprovalStatus, string ApprovalComment)
-        {
-            var post = await _context.Posts.FindAsync(id);
-            if (post == null || post.IsDeleted)
-            {
-                return NotFound();
-            }
-
-            post.ApprovalStatus = ApprovalStatus;
-            post.ApprovalComment = ApprovalComment;
-            post.ApprovalDate = DateTime.UtcNow;
-            post.ApprovedById = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            _context.Update(post);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(AllPosts));
-        }
         public async Task<IActionResult> Details(int id)
         {
             var post = await _context.Posts
@@ -576,7 +514,7 @@ namespace DOAN_LAPTRINHWEB.Controllers
 
             var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
 
-            // ✅ Tạo thư mục nếu chưa tồn tại
+            // Tạo thư mục nếu chưa tồn tại
             if (!Directory.Exists(uploadsFolder))
             {
                 Directory.CreateDirectory(uploadsFolder);
