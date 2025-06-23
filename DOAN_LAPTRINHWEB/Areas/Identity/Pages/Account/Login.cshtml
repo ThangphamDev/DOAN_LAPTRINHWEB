@@ -5,150 +5,278 @@
     ViewData["Title"] = "Đăng nhập";
 }
 
-<div class="auth-container">
-    <div class="auth-header">
-        <h1>@ViewData["Title"]</h1>
-        <p>Đăng nhập để tiếp tục mua sắm với HomeStyle</p>
-    </div>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - HomeStyle</title>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="auth-form">
-                <h2 class="auth-form-title">Đăng nhập vào tài khoản</h2>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #2c3e50; /* Màu chính (xanh đen) */
+            --secondary-color: #3498db; /* Màu phụ (xanh dương) */
+            --light-gray: #f8f9fa;
+            --text-color: #34495e;
+            --border-radius: 8px;
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            color: var(--text-color);
+        }
+
+        .login-wrapper {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        .login-image-side {
+            flex: 1;
+            background: url('https://images.unsplash.com/photo-1554995207-c18c203602cb?q=80&w=2070&auto=format&fit=crop') center center;
+            background-size: cover;
+        }
+
+        .login-form-side {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background-color: #fff;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 450px;
+        }
+
+            .login-box .logo {
+                font-size: 2rem;
+                font-weight: 700;
+                color: var(--primary-color);
+                margin-bottom: 0.5rem;
+                text-align: center;
+            }
+
+            .login-box .welcome-text {
+                color: #7f8c8d;
+                margin-bottom: 2rem;
+                text-align: center;
+            }
+
+        /* --- Form Elements --- */
+
+        .form-floating > .form-control {
+            border-radius: var(--border-radius);
+        }
+
+            .form-floating > .form-control:focus {
+                border-color: var(--secondary-color);
+                box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+            }
+
+        .form-floating > label {
+            color: #95a5a6;
+        }
+
+        .btn-auth-primary {
+            background-color: var(--primary-color);
+            color: #fff;
+            padding: 0.8rem;
+            font-weight: 600;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+            .btn-auth-primary:hover {
+                background-color: #34495e;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            }
+
+        .auth-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+            .auth-options a {
+                color: var(--secondary-color);
+                text-decoration: none;
+            }
+
+                .auth-options a:hover {
+                    text-decoration: underline;
+                }
+
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: #bdc3c7;
+            margin: 2rem 0;
+            font-size: 0.9rem;
+        }
+
+            .auth-divider::before, .auth-divider::after {
+                content: '';
+                flex: 1;
+                border-bottom: 1px solid #ecf0f1;
+            }
+
+            .auth-divider:not(:empty)::before {
+                margin-right: .5em;
+            }
+
+            .auth-divider:not(:empty)::after {
+                margin-left: .5em;
+            }
+
+        .btn-social {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 1px solid #ecf0f1;
+            color: var(--text-color);
+            background-color: #fff;
+        }
+
+            .btn-social:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+                border-color: #dfe6e9;
+            }
+
+            .btn-social i {
+                font-size: 1.2rem;
+            }
+
+        .fa-google {
+            color: #DB4437;
+        }
+
+        .fa-facebook-f {
+            color: #3b5998;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.95rem;
+        }
+
+            .auth-footer a {
+                color: var(--secondary-color);
+                font-weight: 600;
+                text-decoration: none;
+            }
+
+                .auth-footer a:hover {
+                    text-decoration: underline;
+                }
+
+
+        /* --- Responsive --- */
+        @@media (max-width: 992px) {
+            .login-image-side {
+                display: none; /* Ẩn ảnh nền trên mobile để tập trung vào form */
+            }
+
+            .login-form-side {
+                flex: auto; /* Chiếm toàn bộ không gian */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="login-image-side"></div>
+
+        <div class="login-form-side">
+            <div class="login-box">
+                <h1 class="logo">HomeStyle</h1>
+                <p class="welcome-text">Chào mừng bạn đã quay trở lại!</p>
 
                 <form id="account" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert" style="border-radius: var(--border-radius);"></div>
 
                     <div class="form-floating mb-3">
                         <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                        <label asp-for="Input.Email">Email</label>
-                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        <label asp-for="Input.Email">Địa chỉ Email</label>
+                        <span asp-validation-for="Input.Email" class="text-danger small mt-1"></span>
                     </div>
 
                     <div class="form-floating mb-3">
                         <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
                         <label asp-for="Input.Password">Mật khẩu</label>
-                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        <span asp-validation-for="Input.Password" class="text-danger small mt-1"></span>
                     </div>
 
-                    <div class="d-flex justify-content-between mb-3">
+                    <div class="auth-options">
                         <div class="form-check">
                             <input class="form-check-input" asp-for="Input.RememberMe" />
-                            <label class="form-check-label" asp-for="Input.RememberMe">Ghi nhớ đăng nhập</label>
+                            <label class="form-check-label" asp-for="Input.RememberMe">Ghi nhớ tôi</label>
                         </div>
                         <a id="forgot-password" asp-page="./ForgotPassword">Quên mật khẩu?</a>
                     </div>
 
-                    <button id="login-submit" type="submit" class="btn-auth">Đăng nhập</button>
+                    <button id="login-submit" type="submit" class="btn-auth-primary w-100">Đăng nhập</button>
 
-                    <div class="auth-footer">
-                        <p>Chưa có tài khoản? <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Đăng ký ngay</a></p>
-                    </div>
-                </form>
-            </div>
-        </div>
+                    <div class="auth-divider">hoặc</div>
 
-        <div class="col-md-6">
-            <div class="auth-form">
-                <h2 class="auth-form-title">Đăng nhập bằng mạng xã hội</h2>
-
-                @{
-                    if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                    {
-                        <div class="social-login-buttons">
-                            <a href="#" class="btn-social btn-google">
-                                <i class="fab fa-google me-2"></i> Google
-                            </a>
-                            <a href="#" class="btn-social btn-facebook">
-                                <i class="fab fa-facebook-f me-2"></i> Facebook
-                            </a>
-                        </div>
-                        <div class="auth-divider">
-                            <span>Hoặc</span>
-                        </div>
-                        <p class="text-center">
-                            Bạn có thể đăng nhập bằng tài khoản mạng xã hội sau khi kết nối với tài khoản HomeStyle.
-                        </p>
-                    }
-                    else
-                    {
-                        <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                            <div class="social-login-buttons">
+                    <div class="d-grid gap-2">
+                        @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+                        {
+                            <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="d-grid gap-2">
                                 @foreach (var provider in Model.ExternalLogins!)
                                 {
-                                    <button type="submit" class="btn-social @(provider.Name.ToLower() == "google" ? "btn-google" : "btn-facebook")"
-                                            name="provider" value="@provider.Name">
+                                    <button type="submit" class="btn-social" name="provider" value="@provider.Name">
                                         <i class="fab fa-@(provider.Name.ToLower() == "google" ? "google" : "facebook-f") me-2"></i>
-                                        @provider.DisplayName
+                                        Tiếp tục với @provider.DisplayName
                                     </button>
                                 }
-                            </div>
-                        </form>
-                    }
-                }
+                            </form>
+                        }
+                        else
+                        {
+                            <a href="#" class="btn-social">
+                                <i class="fab fa-google me-2"></i> Tiếp tục với Google
+                            </a>
+                            <a href="#" class="btn-social">
+                                <i class="fab fa-facebook-f me-2"></i> Tiếp tục với Facebook
+                            </a>
+                        }
+                    </div>
 
-                <div class="auth-features mt-5">
-                    <h4 class="mb-4">Tại sao chọn HomeStyle?</h4>
-                    <div class="d-flex align-items-center mb-3">
-                        <i class="fas fa-check-circle text-success me-3 fs-4"></i>
-                        <div>
-                            <h5 class="mb-1">Sản phẩm chất lượng</h5>
-                            <p class="mb-0 small text-muted">Các sản phẩm decor được lựa chọn kỹ lưỡng</p>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center mb-3">
-                        <i class="fas fa-truck text-success me-3 fs-4"></i>
-                        <div>
-                            <h5 class="mb-1">Giao hàng nhanh chóng</h5>
-                            <p class="mb-0 small text-muted">Giao hàng trong vòng 2-3 ngày trên toàn quốc</p>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-shield-alt text-success me-3 fs-4"></i>
-                        <div>
-                            <h5 class="mb-1">Bảo mật thông tin</h5>
-                            <p class="mb-0 small text-muted">Thông tin cá nhân của bạn luôn được bảo vệ</p>
-                        </div>
-                    </div>
+                </form>
+
+                <div class="auth-footer">
+                    <p>Chưa có tài khoản? <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Đăng ký ngay</a></p>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<style>
-    .card {
-        border-radius: 1rem;
-    }
-
-    .form-floating > label {
-        color: #6c757d;
-    }
-
-    .form-control:focus {
-        border-color: #212529;
-        box-shadow: 0 0 0 0.25rem rgba(33, 37, 41, 0.15);
-    }
-
-    .btn-dark {
-        font-weight: 500;
-    }
-
-        .btn-dark:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-    .btn-outline-secondary {
-        font-weight: 500;
-    }
-
-        .btn-outline-secondary:hover {
-            background-color: #f8f9fa;
-            transform: translateY(-1px);
-        }
-</style>
-
-@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <partial name="_ValidationScriptsPartial" />
-}
+</body>
+</html>

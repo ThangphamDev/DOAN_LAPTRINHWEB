@@ -1,34 +1,170 @@
 ﻿@model DOAN_LAPTRINHWEB.Models.Category
 
 @{
-    ViewData["Title"] = "Thêm Danh Mục";
+    ViewData["Title"] = "Thêm danh mục mới";
     Layout = "/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-6 col-lg-5">
-        <div class="card shadow-sm border-0 mt-4">
-            <div class="card-header bg-white border-0">
-                <h4 class="card-title mb-0">Thêm Danh Mục Mới</h4>
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">
+            <i class="fas fa-plus-circle text-success"></i> Thêm danh mục mới
+        </h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Danh mục</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Thêm mới</li>
+            </ol>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="row">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-info-circle"></i> Thông tin danh mục mới
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post" id="createForm">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Name" class="form-label fw-bold">
+                                        <i class="fas fa-tag me-1"></i> Tên danh mục <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="Name" class="form-control" placeholder="Nhập tên danh mục..." required />
+                                    <span asp-validation-for="Name" class="text-danger small"></span>
+                                    <div class="form-text">Tên danh mục nên ngắn gọn và dễ hiểu</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Type" class="form-label fw-bold">
+                                        <i class="fas fa-layer-group me-1"></i> Loại danh mục <span class="text-danger">*</span>
+                                    </label>
+                                    <select asp-for="Type" class="form-select" required>
+                                        <option value="">-- Chọn loại danh mục --</option>
+                                        <option value="Nội thất">Nội thất</option>
+                                        <option value="Trang trí">Trang trí</option>
+                                        <option value="Đồ dùng">Đồ dùng</option>
+                                        <option value="Phụ kiện">Phụ kiện</option>
+                                        <option value="Khác">Khác</option>
+                                    </select>
+                                    <span asp-validation-for="Type" class="text-danger small"></span>
+                                    <div class="form-text">Phân loại theo nhóm sản phẩm chính</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Preview Section -->
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <div class="card bg-light">
+                                    <div class="card-header">
+                                        <h6 class="mb-0 text-muted">
+                                            <i class="fas fa-eye me-1"></i> Xem trước
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div class="category-preview-icon me-3">
+                                                <i class="fas fa-folder fa-2x text-primary"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1" id="previewName">Tên danh mục sẽ hiển thị ở đây</h6>
+                                                <small class="text-muted" id="previewType">Loại danh mục sẽ hiển thị ở đây</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="form-group mt-4">
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-success" id="submitBtn">
+                                    <i class="fas fa-plus me-1"></i> Thêm danh mục
+                                </button>
+                                <a asp-action="Index" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left me-1"></i> Quay lại
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="card-body">
-                <form asp-action="Create">
-                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-                    <div class="mb-3">
-                        <label asp-for="Name" class="form-label fw-semibold"></label>
-                        <input asp-for="Name" class="form-control" placeholder="Tên danh mục" />
-                        <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <!-- Side Panel -->
+        <div class="col-lg-4 col-md-2">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-success">
+                        <i class="fas fa-lightbulb"></i> Hướng dẫn
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <i class="fas fa-info-circle fa-2x text-gray-300 mb-3"></i>
                     </div>
-                    <div class="mb-3">
-                        <label asp-for="Type" class="form-label fw-semibold"></label>
-                        <input asp-for="Type" class="form-control" placeholder="Loại" />
-                        <span asp-validation-for="Type" class="text-danger"></span>
+                    <div class="text-gray-600 small">
+                        <div class="mb-3">
+                            <strong class="text-success">Tên danh mục:</strong>
+                            <ul class="mt-1 mb-0">
+                                <li>Nên từ 3-50 ký tự</li>
+                                <li>Dễ hiểu, dễ nhớ</li>
+                                <li>Không trùng lặp</li>
+                            </ul>
+                        </div>
+                        <div class="mb-3">
+                            <strong class="text-success">Loại danh mục:</strong>
+                            <ul class="mt-1 mb-0">
+                                <li>Phân loại theo nhóm sản phẩm</li>
+                                <li>Giúp khách hàng tìm kiếm dễ dàng</li>
+                                <li>Hỗ trợ quản lý kho hàng</li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <input type="submit" value="Thêm" class="btn btn-primary px-4" />
-                        <a asp-action="Index" class="btn btn-outline-secondary px-4">Quay lại</a>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-info">
+                        <i class="fas fa-chart-bar"></i> Thống kê nhanh
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="text-center">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="border-end">
+                                    <div class="h5 mb-0 text-primary">
+                                        @{
+                                            var dbContext = (HomeStylesDbContext)Context.RequestServices.GetService(typeof(HomeStylesDbContext));
+                                            var totalCategories = dbContext?.Categories.Count() ?? 0;
+                                        }
+                                        @totalCategories
+                                    </div>
+                                    <small class="text-muted">Tổng danh mục</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="h5 mb-0 text-success">+1</div>
+                                <small class="text-muted">Sẽ thêm</small>
+                            </div>
+                        </div>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
@@ -38,4 +174,65 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        $(document).ready(function() {
+            // Real-time preview
+            function updatePreview() {
+                var name = $('#Name').val() || 'Tên danh mục sẽ hiển thị ở đây';
+                var type = $('#Type').val() || 'Loại danh mục sẽ hiển thị ở đây';
+
+                $('#previewName').text(name);
+                $('#previewType').text(type);
+            }
+
+            // Update preview on input change
+            $('#Name, #Type').on('input change', updatePreview);
+
+            // Form validation enhancement
+            $('#createForm').on('submit', function(e) {
+                var isValid = true;
+
+                // Check required fields
+                $('input[required], select[required]').each(function() {
+                    if ($(this).val().trim() === '') {
+                        $(this).addClass('is-invalid');
+                        isValid = false;
+                    } else {
+                        $(this).removeClass('is-invalid').addClass('is-valid');
+                    }
+                });
+
+                if (!isValid) {
+                    e.preventDefault();
+                    toastr.error('Vui lòng điền đầy đủ thông tin bắt buộc!');
+                    return false;
+                }
+
+                // Show loading state
+                $('#submitBtn').html('<i class="fas fa-spinner fa-spin me-1"></i> Đang thêm...');
+                $('#submitBtn').prop('disabled', true);
+            });
+
+            // Real-time validation
+            $('input, select').on('blur', function() {
+                if ($(this).attr('required') && $(this).val().trim() === '') {
+                    $(this).addClass('is-invalid');
+                } else {
+                    $(this).removeClass('is-invalid').addClass('is-valid');
+                }
+            });
+
+            // Reset form
+            $('button[type="reset"]').on('click', function() {
+                setTimeout(function() {
+                    $('input, select').removeClass('is-valid is-invalid');
+                    updatePreview();
+                }, 100);
+            });
+
+            // Initialize preview
+            updatePreview();
+        });
+    </script>
 }

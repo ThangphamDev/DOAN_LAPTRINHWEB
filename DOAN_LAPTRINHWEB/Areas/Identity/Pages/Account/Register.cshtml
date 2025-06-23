@@ -5,209 +5,268 @@
     ViewData["Title"] = "Đăng ký";
 }
 
-<div class="auth-container">
-    <div class="auth-header">
-        <h1>@ViewData["Title"]</h1>
-        <p>Tạo tài khoản để trải nghiệm mua sắm tốt hơn với HomeStyle</p>
-    </div>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - HomeStyle</title>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="auth-form">
-                <h2 class="auth-form-title">Tạo tài khoản mới</h2>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #2ecc71;
+            --warning-color: #f1c40f;
+            --danger-color: #e74c3c;
+            --light-gray: #f8f9fa;
+            --text-color: #34495e;
+            --border-radius: 8px;
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            color: var(--text-color);
+        }
+
+        .register-wrapper {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        .register-image-side {
+            flex: 1;
+            /* Một ảnh khác để tạo sự đa dạng nhưng vẫn cùng chủ đề */
+            background: url('https://images.unsplash.com/photo-1618220179428-22790b461013?q=80&w=2127&auto=format&fit=crop') center center;
+            background-size: cover;
+        }
+
+        .register-form-side {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background-color: #fff;
+        }
+
+        .register-box {
+            width: 100%;
+            max-width: 480px; /* Rộng hơn một chút để chứa nhiều trường hơn */
+        }
+
+            .register-box .welcome-title {
+                font-size: 2.2rem;
+                font-weight: 700;
+                color: var(--primary-color);
+                margin-bottom: 0.5rem;
+            }
+
+            .register-box .welcome-text {
+                color: #7f8c8d;
+                margin-bottom: 2rem;
+            }
+
+        /* --- Form Elements --- */
+
+        .form-floating > .form-control {
+            border-radius: var(--border-radius);
+        }
+
+            .form-floating > .form-control:focus {
+                border-color: var(--secondary-color);
+                box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+            }
+
+        .form-floating > label {
+            color: #95a5a6;
+        }
+
+        .btn-auth-primary {
+            background-color: var(--primary-color);
+            color: #fff;
+            padding: 0.8rem;
+            font-weight: 600;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+            .btn-auth-primary:hover {
+                background-color: #34495e;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            }
+
+        .form-check-label a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+            .form-check-label a:hover {
+                text-decoration: underline;
+            }
+
+        /* --- Password Strength Meter --- */
+        .password-strength-meter {
+            height: 6px;
+            background-color: #ecf0f1;
+            border-radius: 3px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+            .password-strength-meter .progress-bar {
+                height: 100%;
+                width: 0;
+                transition: width 0.3s ease, background-color 0.3s ease;
+            }
+
+        .progress-bar.weak {
+            width: 33%;
+            background-color: var(--danger-color);
+        }
+
+        .progress-bar.medium {
+            width: 66%;
+            background-color: var(--warning-color);
+        }
+
+        .progress-bar.strong {
+            width: 100%;
+            background-color: var(--success-color);
+        }
+
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+            .auth-footer a {
+                color: var(--secondary-color);
+                font-weight: 600;
+                text-decoration: none;
+            }
+
+                .auth-footer a:hover {
+                    text-decoration: underline;
+                }
+
+
+        /* --- Responsive --- */
+        @@media (max-width: 992px) {
+            .register-image-side {
+                display: none; /* Ẩn ảnh nền trên mobile */
+            }
+
+            .register-form-side {
+                flex: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-wrapper">
+        <div class="register-image-side"></div>
+
+        <div class="register-form-side">
+            <div class="register-box">
+                <h1 class="welcome-title">Bắt đầu hành trình</h1>
+                <p class="welcome-text">Tạo tài khoản mới để khám phá thế giới HomeStyle.</p>
 
                 <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert" style="border-radius: var(--border-radius);"></div>
 
                     <div class="form-floating mb-3">
-                        <input asp-for="Input.FullName" class="form-control" autocomplete="fullname" aria-required="true" placeholder="Nhập họ tên" />
+                        <input asp-for="Input.FullName" class="form-control" autocomplete="name" aria-required="true" placeholder="Nguyễn Văn An" />
                         <label asp-for="Input.FullName">Họ và tên</label>
-                        <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                        <span asp-validation-for="Input.FullName" class="text-danger small mt-1"></span>
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                        <label asp-for="Input.Email">Email</label>
-                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        <input asp-for="Input.Email" class="form-control" autocomplete="email" aria-required="true" placeholder="name@example.com" />
+                        <label asp-for="Input.Email">Địa chỉ Email</label>
+                        <span asp-validation-for="Input.Email" class="text-danger small mt-1"></span>
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                        <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Mật khẩu" />
                         <label asp-for="Input.Password">Mật khẩu</label>
-                        <span asp-validation-for="Input.Password" class="text-danger"></span>
-                        <div class="password-strength mt-2">
+                        <div class="password-strength-meter">
                             <div class="progress-bar"></div>
                         </div>
+                        <span asp-validation-for="Input.Password" class="text-danger small mt-1"></span>
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                        <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Xác nhận mật khẩu" />
                         <label asp-for="Input.ConfirmPassword">Xác nhận mật khẩu</label>
-                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger small mt-1"></span>
                     </div>
 
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" id="agreeTerms" required />
+                    <div class="form-check mb-4">
+                        <input class="form-check-input" type="checkbox" value="" id="agreeTerms" required>
                         <label class="form-check-label" for="agreeTerms">
-                            Tôi đồng ý với <a href="#">Điều khoản dịch vụ</a> và <a href="#">Chính sách bảo mật</a>
+                            Tôi đồng ý với các <a href="#">Điều khoản Dịch vụ</a>.
                         </label>
                     </div>
 
-                    <button id="registerSubmit" type="submit" class="btn-auth">Đăng ký tài khoản</button>
-
-                    <div class="auth-footer">
-                        <p>Đã có tài khoản? <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Đăng nhập</a></p>
+                    <div class="d-grid">
+                        <button id="registerSubmit" type="submit" class="btn-auth-primary">Tạo tài khoản</button>
                     </div>
                 </form>
-            </div>
-        </div>
 
-        <div class="col-md-6">
-            <div class="auth-form">
-                <h2 class="auth-form-title">Đăng ký bằng mạng xã hội</h2>
-
-                @{
-                    if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                    {
-                        <div class="social-login-buttons">
-                            <a href="#" class="btn-social btn-google">
-                                <i class="fab fa-google me-2"></i> Google
-                            </a>
-                            <a href="#" class="btn-social btn-facebook">
-                                <i class="fab fa-facebook-f me-2"></i> Facebook
-                            </a>
-                        </div>
-                    }
-                    else
-                    {
-                        <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                            <div class="social-login-buttons">
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn-social @(provider.Name.ToLower() == "google" ? "btn-google" : "btn-facebook")"
-                                            name="provider" value="@provider.Name">
-                                        <i class="fab fa-@(provider.Name.ToLower() == "google" ? "google" : "facebook-f") me-2"></i>
-                                        @provider.DisplayName
-                                    </button>
-                                }
-                            </div>
-                        </form>
-                    }
-                }
-
-                <div class="auth-divider">
-                    <span>Lợi ích khi đăng ký</span>
-                </div>
-
-                <div class="benefits">
-                    <div class="d-flex align-items-start mb-3">
-                        <div class="me-3 text-primary">
-                            <i class="fas fa-history fs-4"></i>
-                        </div>
-                        <div>
-                            <h5 class="mb-1">Lịch sử đơn hàng</h5>
-                            <p class="text-muted mb-0 small">Dễ dàng theo dõi và quản lý tất cả đơn hàng của bạn</p>
-                        </div>
-                    </div>
-
-                    <div class="d-flex align-items-start mb-3">
-                        <div class="me-3 text-primary">
-                            <i class="fas fa-heart fs-4"></i>
-                        </div>
-                        <div>
-                            <h5 class="mb-1">Danh sách yêu thích</h5>
-                            <p class="text-muted mb-0 small">Lưu các sản phẩm bạn yêu thích để mua sau</p>
-                        </div>
-                    </div>
-
-                    <div class="d-flex align-items-start mb-3">
-                        <div class="me-3 text-primary">
-                            <i class="fas fa-percentage fs-4"></i>
-                        </div>
-                        <div>
-                            <h5 class="mb-1">Ưu đãi độc quyền</h5>
-                            <p class="text-muted mb-0 small">Nhận thông tin về khuyến mãi và sản phẩm mới</p>
-                        </div>
-                    </div>
-
-                    <div class="d-flex align-items-start">
-                        <div class="me-3 text-primary">
-                            <i class="fas fa-shipping-fast fs-4"></i>
-                        </div>
-                        <div>
-                            <h5 class="mb-1">Thanh toán nhanh chóng</h5>
-                            <p class="text-muted mb-0 small">Lưu thông tin giao hàng để thanh toán nhanh hơn</p>
-                        </div>
-                    </div>
+                <div class="auth-footer">
+                    <p>Đã có tài khoản? <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Đăng nhập ngay</a></p>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<style>
-    .container py-5 {
-        padding-top: 80px;
-    }
-
-    body {
-        padding-top: 80px;
-    }
-
-    .card {
-        border-radius: 1rem;
-    }
-
-    .form-floating > label {
-        color: #6c757d;
-    }
-
-    .form-control:focus {
-        border-color: #212529;
-        box-shadow: 0 0 0 0.25rem rgba(33, 37, 41, 0.15);
-    }
-
-    .btn-dark {
-        font-weight: 500;
-    }
-
-        .btn-dark:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-    .btn-outline-secondary {
-        font-weight: 500;
-    }
-
-        .btn-outline-secondary:hover {
-            background-color: #f8f9fa;
-            transform: translateY(-1px);
-        }
-</style>
-
-@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <partial name="_ValidationScriptsPartial" />
+
     <script>
-        // Password strength meter
+        // Script kiểm tra độ mạnh mật khẩu
         $(document).ready(function() {
             $('#Input_Password').on('keyup', function() {
                 var password = $(this).val();
-                var progressBar = $('.password-strength .progress-bar');
+                var progressBar = $('.password-strength-meter .progress-bar');
+                var strength = 0;
 
-                // Remove previous classes
-                progressBar.removeClass('weak medium strong');
+                // Xóa các class cũ
+                progressBar.removeClass('weak medium strong').css('width', '0%');
 
-                if (password.length === 0) {
-                    progressBar.css('width', '0%');
-                } else if (password.length < 6) {
-                    progressBar.addClass('weak');
-                } else if (password.length < 10) {
-                    progressBar.addClass('medium');
-                } else {
-                    progressBar.addClass('strong');
+                if (password.length > 0) {
+                    if (password.length >= 8) strength += 1;
+                    if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength += 1;
+                    if (password.match(/\d/)) strength += 1;
+                    if (password.match(/[^a-zA-Z\d]/)) strength += 1;
+
+                    if (strength <= 1) {
+                         progressBar.addClass('weak');
+                    } else if (strength <= 3) {
+                         progressBar.addClass('medium');
+                    } else {
+                         progressBar.addClass('strong');
+                    }
                 }
             });
         });
     </script>
-}
+</body>
+</html>

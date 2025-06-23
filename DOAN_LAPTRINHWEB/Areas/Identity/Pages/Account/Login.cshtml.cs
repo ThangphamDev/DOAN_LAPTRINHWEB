@@ -21,11 +21,15 @@ namespace DOAN_LAPTRINHWEB.Areas.Identity.Pages.Account
     public class LoginModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<ApplicationUser> signInManager,
+                         UserManager<ApplicationUser> userManager,
+                         ILogger<LoginModel> logger)
         {
             _signInManager = signInManager;
+            _userManager = userManager;
             _logger = logger;
         }
 
@@ -110,37 +114,50 @@ namespace DOAN_LAPTRINHWEB.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
+                // Kiểm tra trạng thái người dùng trước khi đăng nhập
+                var user = await _userManager.FindByEmailAsync(Input.Email);
+
+                if (user != null)
+                {
+                    // Kiểm tra trạng thái tài khoản
+                    if (user.Status == "Tạm khóa")
+                    {
+                        ModelState.AddModelError(string.Empty,
+                            "Tài khoản của bạn đang bị giới hạn và không thể đăng nhập. Vui lòng liên hệ với quản trị viên để được hỗ trợ.");
+                        return Page();
+                    }
+                }
+
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
 
-                    // Get UserManager from DI
-                    var userManager = HttpContext.RequestServices.GetService<UserManager<ApplicationUser>>();
-                    var user = await userManager.FindByEmailAsync(Input.Email);
-
-                    if (user != null && await userManager.IsInRoleAsync(user, "Admin"))
+                    // Kiểm tra vai trò admin
+                    if (user != null && await _userManager.IsInRoleAsync(user, "Admin"))
                     {
-                        // Redirect admin to Admin area dashboard (Razor Pages)
+                        // Redirect admin to Admin area dashboard
                         return RedirectToAction("Dashboard", "Admin", new { area = "Admin" });
                     }
 
                     return LocalRedirect(returnUrl);
                 }
+
                 if (result.RequiresTwoFactor)
                 {
                     return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
                 }
+
                 if (result.IsLockedOut)
                 {
                     _logger.LogWarning("User account locked out.");
                     return RedirectToPage("./Lockout");
                 }
 
-                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                ModelState.AddModelError(string.Empty, "Email hoặc mật khẩu không chính xác.");
                 return Page();
             }
-
 
             // If we got this far, something failed, redisplay form
             return Page();
