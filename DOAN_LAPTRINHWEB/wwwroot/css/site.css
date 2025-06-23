@@ -16,7 +16,7 @@
 
 /* =========== Base Styles =========== */
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Be Vietnam Pro', sans-serif;
     color: var(--text-color);
     padding-top: 80px; /* Để không bị header che khi fixed */
 }

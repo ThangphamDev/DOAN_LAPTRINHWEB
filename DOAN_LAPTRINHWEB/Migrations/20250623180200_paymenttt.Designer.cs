@@ -4,6 +4,7 @@ using DOAN_LAPTRINHWEB.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DOAN_LAPTRINHWEB.Migrations
 {
     [DbContext(typeof(HomeStylesDbContext))]
-    partial class HomeStylesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250623180200_paymenttt")]
+    partial class paymenttt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -512,6 +515,7 @@ namespace DOAN_LAPTRINHWEB.Migrations
                         .HasColumnName("paid_at");
 
                     b.Property<string>("PaymentDetails")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PaymentMethod")
@@ -529,6 +533,7 @@ namespace DOAN_LAPTRINHWEB.Migrations
                         .HasColumnName("payment_status");
 
                     b.Property<string>("TransactionId")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("transaction_id");

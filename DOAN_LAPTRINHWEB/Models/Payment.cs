@@ -17,7 +17,8 @@ public partial class Payment
 
     public DateTime PaidAt { get; set; }
 
+    // Add this property if not already existing
     public string? TransactionId { get; set; }
-
+    public string? PaymentDetails { get; set; }
     public virtual Order? Order { get; set; }
 }
