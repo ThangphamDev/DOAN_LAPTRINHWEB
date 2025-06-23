@@ -8430,11 +8430,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\thang\\OneDrive\\Desktop\\THANG-1\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB.csproj",
+      "projectUniqueName": "C:\\Users\\thang\\OneDrive\\Desktop\\Thang\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB.csproj",
       "projectName": "DOAN_LAPTRINHWEB",
-      "projectPath": "C:\\Users\\thang\\OneDrive\\Desktop\\THANG-1\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB.csproj",
+      "projectPath": "C:\\Users\\thang\\OneDrive\\Desktop\\Thang\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB.csproj",
       "packagesPath": "C:\\Users\\thang\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\thang\\OneDrive\\Desktop\\THANG-1\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\obj\\",
+      "outputPath": "C:\\Users\\thang\\OneDrive\\Desktop\\Thang\\DOAN_LAPTRINHWEB\\DOAN_LAPTRINHWEB\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

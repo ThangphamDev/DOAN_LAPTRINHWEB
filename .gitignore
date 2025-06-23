@@ -8,3 +8,5 @@
 
 # Nếu bạn ghi là .bin hoặc .obj thì Git hiểu là file chấm .bin, chấm .obj chứ không phải thư mục!
 .appsettings.json
+
+.bin/
