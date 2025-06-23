@@ -151,7 +151,7 @@
                             <i class="fas fa-credit-card me-2"></i>
                             Phương thức thanh toán
                         </h5>
-
+                       
                         <div class="form-check mb-3 p-3 border rounded">
                             <input class="form-check-input payment-method-radio" type="radio" asp-for="PaymentMethod" id="payment-cod" value="COD" checked>
                             <label class="form-check-label d-flex align-items-center" for="payment-cod">
@@ -190,7 +190,19 @@
                                 </div>
                             </label>
                         </div>
-
+                        <!-- Thêm phương thức thanh toán VNPAY vào phần phương thức thanh toán -->
+                        <div class="form-check mb-3 p-3 border rounded">
+                            <input class="form-check-input payment-method-radio" type="radio" asp-for="PaymentMethod" id="payment-vnpay" value="VnPay">
+                            <label class="form-check-label d-flex align-items-center" for="payment-vnpay">
+                                <span class="me-3">
+                                    <img src="https://sandbox.vnpayment.vn/images/logos/logo-vnpay.svg" alt="VNPAY" height="30" />
+                                </span>
+                                <div>
+                                    <strong>Thanh toán VNPAY</strong>
+                                    <small class="d-block text-muted">Thanh toán bằng QR code hoặc thẻ ATM, VISA, JCB,...</small>
+                                </div>
+                            </label>
+                        </div>
                         <div id="bank-info" class="mt-3 p-4 bg-light rounded border-start border-primary border-4" style="display: none;">
                             <h6 class="text-primary mb-3">
                                 <i class="fas fa-info-circle me-2"></i>
@@ -304,9 +316,14 @@
                                 <span class="fw-bold fs-4 text-danger">@Model.Cart.TotalAmount.ToString("N0")₫</span>
                             </div>
 
-                            <button type="submit" class="btn btn-dark w-100 py-3 mb-3">
+                            <button type="submit" id="checkoutButton" class="btn btn-dark w-100 py-3 mb-3">
                                 <i class="fas fa-lock me-2"></i>
                                 Đặt hàng ngay
+                            </button>
+
+                            <button type="button" id="vnpayButton" class="btn btn-primary w-100 py-3 mb-3" style="display:none;">
+                                <img src="https://sandbox.vnpayment.vn/images/logos/logo-vnpay.svg" alt="VNPAY" height="24" class="me-2" />
+                                Thanh toán qua VNPAY
                             </button>
 
                             <div class="text-center">
@@ -345,6 +362,22 @@
                 </div>
             </div>
         </div>
+    </form>
+    <!-- Thêm form trực tiếp cho VNPAY -->
+    <form id="directVnpayForm" action="/VnPayment/CreatePaymentDirect" method="post" style="display:none;">
+        @Html.AntiForgeryToken()
+        <input type="hidden" id="direct_UserId" name="UserId" />
+        <input type="hidden" name="PaymentMethod" value="VnPay" />
+        <input type="hidden" id="direct_SelectedAddressId" name="SelectedAddressId" />
+        <input type="hidden" id="direct_SaveAddressToAccount" name="SaveAddressToAccount" />
+
+        <input type="hidden" id="direct_FullName" name="Address.FullName" />
+        <input type="hidden" id="direct_Phone" name="Address.Phone" />
+        <input type="hidden" id="direct_Street" name="Address.Street" />
+        <input type="hidden" id="direct_City" name="Address.City" />
+        <input type="hidden" id="direct_State" name="Address.State" />
+        <input type="hidden" id="direct_PostalCode" name="Address.PostalCode" />
+        <input type="hidden" id="direct_Country" name="Address.Country" />
     </form>
 </section>
 
@@ -408,21 +441,74 @@
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     <script>
         $(document).ready(function() {
-            // Hiển thị thông tin ngân hàng khi chọn phương thức chuyển khoản
-            $('.payment-method-radio').change(function() {
-                if ($(this).val() === 'Banking') {
-                    $('#bank-info').slideDown(300);
-                } else {
-                    $('#bank-info').slideUp(300);
-                }
-            });
+            // Hàm cập nhật hiển thị nút dựa trên phương thức thanh toán đã chọn
+            function updatePaymentUI() {
+                var selectedPayment = $('input[name="PaymentMethod"]:checked').val();
+                console.log("Phương thức thanh toán được chọn:", selectedPayment);
 
-            // Show bank info initially if Banking is selected
-            if ($('#payment-bank').is(':checked')) {
-                $('#bank-info').show();
+                // Ẩn tất cả các thành phần đặc biệt
+                $('#bank-info').hide();
+                $('#vnpayButton').hide();
+                $('#checkoutButton').show();
+
+                // Hiển thị các thành phần dựa trên phương thức
+                if (selectedPayment === 'VnPay') {
+                    $('#checkoutButton').hide();
+                    $('#vnpayButton').show();
+                } else if (selectedPayment === 'Banking') {
+                    $('#bank-info').show();
+                }
             }
 
-            // Function để load địa chỉ từ option được chọn
+            // Cập nhật UI khi trang được tải
+            updatePaymentUI();
+
+            // Cập nhật UI khi thay đổi phương thức thanh toán
+            $('.payment-method-radio').change(function() {
+                updatePaymentUI();
+            });
+
+            // Xử lý khi click vào nút thanh toán VNPAY
+            $('#vnpayButton').click(function() {
+                // Validate địa chỉ
+                var isValid = true;
+                var requiredFields = ['#Address_FullName', '#Address_Phone', '#Address_Street', '#Address_City', '#Address_State'];
+
+                requiredFields.forEach(function(field) {
+                    if (!$(field).val().trim()) {
+                        isValid = false;
+                        $(field).addClass('is-invalid');
+                    } else {
+                        $(field).removeClass('is-invalid');
+                    }
+                });
+
+                if (!isValid) {
+                    alert('Vui lòng điền đầy đủ thông tin địa chỉ giao hàng.');
+                    return false;
+                }
+
+                // Điền dữ liệu vào form trực tiếp
+                $('#direct_UserId').val($('#UserId').val());
+                $('#direct_SelectedAddressId').val($('#selectedAddressId').val() || '0');
+                $('#direct_SaveAddressToAccount').val($('#saveAddress').is(':checked'));
+                $('#direct_FullName').val($('#Address_FullName').val());
+                $('#direct_Phone').val($('#Address_Phone').val());
+                $('#direct_Street').val($('#Address_Street').val());
+                $('#direct_City').val($('#Address_City').val());
+                $('#direct_State').val($('#Address_State').val());
+                $('#direct_PostalCode').val($('#Address_PostalCode').val() || '');
+                $('#direct_Country').val($('#Address_Country').val() || 'Việt Nam');
+
+                // Hiển thị trạng thái đang xử lý
+                $(this).prop('disabled', true);
+                $(this).html('<i class="fas fa-spinner fa-spin me-2"></i>Đang chuyển đến cổng thanh toán...');
+
+                // Submit form trực tiếp
+                $('#directVnpayForm').submit();
+            });
+
+            // Xử lý địa chỉ
             function loadAddressFromOption(option) {
                 if (option && option.length > 0) {
                     $('#Address_FullName').val(option.data('fullname') || '');
@@ -488,6 +574,11 @@
 
             // Prevent double form submission and show loading indicator
             $('form').submit(function(e) {
+                // Ngăn xử lý cho directVnpayForm
+                if ($(this).attr('id') === 'directVnpayForm') {
+                    return true;
+                }
+
                 var submitButton = $(this).find('button[type="submit"]');
 
                 // Validate form first
@@ -539,8 +630,6 @@
             $('input[required], input[asp-for^="Address"]').on('input', function() {
                 $(this).removeClass('is-invalid');
             });
-
-            
         });
     </script>
 }
