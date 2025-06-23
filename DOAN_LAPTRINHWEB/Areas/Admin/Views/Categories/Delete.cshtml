@@ -1,34 +1,161 @@
 ﻿@model DOAN_LAPTRINHWEB.Models.Category
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Xóa danh mục";
     Layout = "/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Delete</h1>
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">
+            <i class="fas fa-trash-alt text-danger"></i> Xóa danh mục
+        </h1>
+    </div>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Category</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Type)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Type)
-        </dd>
-    </dl>
+    <!-- Warning Alert -->
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <strong>Cảnh báo!</strong> Bạn có chắc chắn muốn xóa danh mục này không? Hành động này không thể hoàn tác.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="CategoryId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+    <!-- Main Content -->
+    <div class="row">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow mb-4 border-left-danger">
+                <div class="card-header py-3 bg-danger">
+                    <h6 class="m-0 font-weight-bold text-white">
+                        <i class="fas fa-info-circle"></i> Thông tin danh mục sẽ bị xóa
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <!-- Category Information -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="info-item mb-3">
+                                <label class="form-label fw-bold text-gray-800">
+                                    <i class="fas fa-tag me-1 text-primary"></i> Tên danh mục
+                                </label>
+                                <div class="info-value p-2 bg-light rounded">
+                                    @Html.DisplayFor(model => model.Name)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-item mb-3">
+                                <label class="form-label fw-bold text-gray-800">
+                                    <i class="fas fa-layer-group me-1 text-primary"></i> Loại danh mục
+                                </label>
+                                <div class="info-value p-2 bg-light rounded">
+                                    @Html.DisplayFor(model => model.Type)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Info -->
+                    <div class="alert alert-info" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Lưu ý:</strong> Việc xóa danh mục này có thể ảnh hưởng đến các sản phẩm đang thuộc danh mục này.
+                    </div>
+
+                    <!-- Action Form -->
+                    <form asp-action="Delete" method="post" id="deleteForm">
+                        <input type="hidden" asp-for="CategoryId" />
+
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
+                                <i class="fas fa-trash-alt me-1"></i> Xác nhận xóa
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-1"></i> Hủy bỏ
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Side Panel -->
+        <div class="col-lg-4 col-md-2">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-danger">
+                        <i class="fas fa-exclamation-triangle"></i> Tác động của việc xóa
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="text-center">
+                        <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                        <div class="text-gray-600 small">
+                            <p class="mb-2"><strong>Khi xóa danh mục này:</strong></p>
+                            <ul class="text-start">
+                                <li>Các sản phẩm thuộc danh mục sẽ cần được phân loại lại</li>
+                                <li>Dữ liệu thống kê theo danh mục sẽ bị ảnh hưởng</li>
+                                <li>Không thể khôi phục sau khi xóa</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Xác nhận xóa
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <i class="fas fa-trash-alt fa-3x text-danger mb-3"></i>
+                    <h5>Bạn có chắc chắn muốn xóa danh mục này?</h5>
+                    <p class="text-muted">
+                        Danh mục "<strong>@Model.Name</strong>" sẽ bị xóa vĩnh viễn và không thể khôi phục.
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i> Hủy bỏ
+                </button>
+                <button type="button" class="btn btn-danger" onclick="document.getElementById('deleteForm').submit();">
+                    <i class="fas fa-trash-alt me-1"></i> Xóa ngay
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Auto dismiss alert after 10 seconds
+            setTimeout(function() {
+                $('.alert-warning').fadeOut('slow');
+            }, 10000);
+
+            // Add confirmation before delete
+            $('#deleteForm').on('submit', function(e) {
+                // This will be handled by modal, but keep as backup
+                if (!confirm('Bạn có chắc chắn muốn xóa danh mục này không?')) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            // Show loading when deleting
+            $('button[onclick*="submit"]').on('click', function() {
+                $(this).html('<i class="fas fa-spinner fa-spin me-1"></i> Đang xóa...');
+                $(this).prop('disabled', true);
+            });
+        });
+    </script>
+}

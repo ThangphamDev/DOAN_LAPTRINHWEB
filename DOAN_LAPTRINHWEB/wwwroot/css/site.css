@@ -425,6 +425,83 @@ body {
     animation-delay: 0.45s;
 }
 
+/* Contact Dropdown Styles */
+.contact-dropdown-wrapper {
+    position: relative;
+}
+
+.contact-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    min-width: 280px;
+}
+
+.contact-dropdown-wrapper:hover .contact-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.contact-dropdown-inner {
+    padding: 12px 0;
+}
+
+.contact-dropdown .dropdown-item {
+    padding: 12px 20px;
+    color: #333;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s ease;
+    border: none;
+    background: none;
+    width: 100%;
+}
+
+    .contact-dropdown .dropdown-item:hover {
+        background-color: #f8f9fa;
+        color: #333;
+    }
+
+    .contact-dropdown .dropdown-item i {
+        width: 20px;
+        text-align: center;
+        color: #333; /* Icon màu đen */
+    }
+
+.contact-dropdown .dropdown-divider {
+    margin: 8px 20px;
+    border-top: 1px solid #e9ecef;
+}
+
+/* Responsive */
+@media (max-width: 991.98px) {
+    .contact-dropdown {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        box-shadow: none;
+        border: none;
+        border-radius: 0;
+        min-width: auto;
+    }
+
+    .contact-dropdown-wrapper:hover .contact-dropdown {
+        display: block;
+    }
+}
+
 /* =========== User Dropdown =========== */
 .hover-dropdown {
     position: relative;
