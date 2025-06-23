@@ -39,10 +39,18 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
                 var currentMonth = DateTime.Now.Month;
                 var currentYear = DateTime.Now.Year;
 
+                // SỬA ĐỔI: Kiểm tra các trạng thái có thể coi là "hoàn thành"
+                var completedStatuses = new[] { "delivered", "completed", "hoàn thành", "đã giao hàng", "đã nhận hàng" };
+
                 ViewBag.MonthlyRevenue = await _context.Orders
                     .Where(o => o.CreatedAt.Month == currentMonth &&
                                 o.CreatedAt.Year == currentYear &&
-                                (o.OrderStatus.ToLower() == "delivered"))
+                                completedStatuses.Contains(o.OrderStatus.ToLower()))
+                    .SumAsync(o => (decimal?)o.TotalAmount) ?? 0;
+
+                // THÊM: Tổng doanh thu tất cả thời gian
+                ViewBag.TotalRevenue = await _context.Orders
+                    .Where(o => completedStatuses.Contains(o.OrderStatus.ToLower()))
                     .SumAsync(o => (decimal?)o.TotalAmount) ?? 0;
 
                 // Đơn hàng gần đây (10 đơn gần nhất)
@@ -105,7 +113,6 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
                     ViewBag.OrderStatusStats = new List<dynamic>();
                 }
 
-                // *** SỬA ĐỔI CHÍNH Ở ĐÂY ***
                 // Thống kê theo tháng (6 tháng gần nhất)
                 var sixMonthsAgo = DateTime.Now.AddMonths(-6).Date;
                 var monthlyStatsData = await _context.Orders
@@ -116,15 +123,14 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
                         Year = g.Key.Year,
                         Month = g.Key.Month,
                         OrderCount = g.Count(),
-                        // SỬA ĐỔI: Đảm bảo so sánh không phân biệt hoa thường để tính doanh thu chính xác
-                        Revenue = g.Where(o => o.OrderStatus.ToLower() == "delivered")
+                        // SỬA ĐỔI: Sử dụng danh sách trạng thái hoàn thành
+                        Revenue = g.Where(o => completedStatuses.Contains(o.OrderStatus.ToLower()))
                                      .Sum(o => (decimal?)o.TotalAmount) ?? 0
                     })
                     .OrderBy(x => x.Year)
                     .ThenBy(x => x.Month)
                     .ToListAsync();
 
-                // Chuyển đổi dữ liệu để dễ sử dụng trong View
                 ViewBag.MonthlyStats = monthlyStatsData.Select(s => new
                 {
                     s.Year,
@@ -140,14 +146,16 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
                 ViewBag.TotalProducts = 0;
                 ViewBag.TotalOrders = 0;
                 ViewBag.TotalUsers = 0;
-                ViewBag.MonthlyRevenue = 0m; // Sử dụng 0m cho decimal
+                ViewBag.MonthlyRevenue = 0m;
+                ViewBag.TotalRevenue = 0m; // THÊM
                 ViewBag.RecentOrders = new List<dynamic>();
                 ViewBag.TopProducts = new List<dynamic>();
                 ViewBag.OrderStatusStats = new List<dynamic>();
                 ViewBag.MonthlyStats = new List<dynamic>();
 
-                // Log error nếu cần
+                // Log error
                 ViewBag.ErrorMessage = "Có lỗi xảy ra khi tải dữ liệu dashboard: " + ex.Message;
+                ViewBag.DebugInfo = new { Error = ex.Message, StackTrace = ex.StackTrace };
             }
 
             return View();
@@ -160,8 +168,13 @@ namespace DOAN_LAPTRINHWEB.Areas.Admin.Controllers
                 "pending" => "Chờ xử lý",
                 "processing" => "Đang xử lý",
                 "shipped" => "Đang giao hàng",
-                "delivered" => "Đã nhận hàng", // Trạng thái này được tính là doanh thu
+                "delivered" => "Đã giao hàng",
+                "completed" => "Hoàn thành",
+                "đã giao hàng" => "Đã giao hàng",
+                "đã nhận hàng" => "Đã nhận hàng",
+                "hoàn thành" => "Hoàn thành",
                 "cancelled" => "Đã hủy",
+                "canceled" => "Đã hủy",
                 _ => status ?? "Không xác định"
             };
         }
