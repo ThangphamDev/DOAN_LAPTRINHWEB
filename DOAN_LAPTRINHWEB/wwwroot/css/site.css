@@ -120,14 +120,65 @@ body {
         font-weight: 500;
         color: var(--text-color);
         margin: 0 5px;
-        transition: var(--transition);
+        padding: 10px 15px !important;
+        position: relative;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        overflow: hidden;
     }
-
-        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+            border-radius: 1px;
+        }
+        .navbar-nav .nav-link:hover::before {
+            width: 80%;
+            animation: underlineExpand 0.3s ease-out;
+        }
+        .navbar-nav .nav-link:hover {
+            color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+        .navbar-nav .nav-link.active::before {
+            width: 80%;
+            background-color: var(--primary-color);
+        }
+        .navbar-nav .nav-link.dropdown-toggle::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px; /* Giảm từ 3px xuống 2px */
+            background-color: var(--primary-color);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+            border-radius: 1px;
+        }
+        /* Style cho active link - giữ underline luôn */
         .navbar-nav .nav-link.active {
             color: var(--primary-color);
+            font-weight: 600;
         }
-
+            .navbar-nav .nav-link.active::after {
+                content: '';
+                position: absolute;
+                bottom: -2px;
+                left: 50%;
+                width: 4px; /* Giảm kích thước dấu chấm từ 6px xuống 4px */
+                height: 4px;
+                background-color: var(--primary-color);
+                border-radius: 50%;
+                transform: translateX(-50%);
+                animation: fadeIn 0.5s ease;
+            }
 .brand-name {
     font-weight: 700;
     font-size: 1.5rem;
