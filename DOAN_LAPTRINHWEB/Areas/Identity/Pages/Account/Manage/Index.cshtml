@@ -383,7 +383,7 @@
                 <div class="col-md-3 text-center">
                     <div class="profile-avatar-container">
                         <img id="profile-avatar-img"
-                             src="@(string.IsNullOrEmpty(Model.Input.AvatarUrl) ? "/images/default-avatar.png" : Model.Input.AvatarUrl)"
+                             src="@(string.IsNullOrEmpty(Model.Input.AvatarUrl) ? "~/images/avatars/default-avatar.jpg" : Model.Input.AvatarUrl)"
                              alt="Ảnh đại diện"
                              class="profile-avatar-img rounded-circle" />
                         <button type="button" class="avatar-upload-btn" onclick="document.getElementById('avatarFileInput').click();">
