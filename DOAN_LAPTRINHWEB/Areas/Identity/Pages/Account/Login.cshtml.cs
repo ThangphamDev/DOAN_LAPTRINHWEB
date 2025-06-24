@@ -4,13 +4,9 @@
 
 using DOAN_LAPTRINHWEB.Models;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -25,67 +21,35 @@ namespace DOAN_LAPTRINHWEB.Areas.Identity.Pages.Account
         private readonly ILogger<LoginModel> _logger;
 
         public LoginModel(SignInManager<ApplicationUser> signInManager,
-                         UserManager<ApplicationUser> userManager,
-                         ILogger<LoginModel> logger)
+                          UserManager<ApplicationUser> userManager,
+                          ILogger<LoginModel> logger)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
         }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public string ReturnUrl { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [TempData]
         public string ErrorMessage { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "Vui lòng nhập địa chỉ email.")]
+            [EmailAddress(ErrorMessage = "Địa chỉ email không hợp lệ.")]
             public string Email { get; set; }
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [Required]
+            [Required(ErrorMessage = "Vui lòng nhập mật khẩu.")]
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [Display(Name = "Remember me?")]
+            [Display(Name = "Ghi nhớ tôi?")]
             public bool RememberMe { get; set; }
         }
 
@@ -114,12 +78,10 @@ namespace DOAN_LAPTRINHWEB.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                // Kiểm tra trạng thái người dùng trước khi đăng nhập
                 var user = await _userManager.FindByEmailAsync(Input.Email);
 
                 if (user != null)
                 {
-                    // Kiểm tra trạng thái tài khoản
                     if (user.Status == "Tạm khóa")
                     {
                         ModelState.AddModelError(string.Empty,
@@ -134,29 +96,27 @@ namespace DOAN_LAPTRINHWEB.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User logged in.");
 
-                    // Kiểm tra vai trò admin
                     if (user != null && await _userManager.IsInRoleAsync(user, "Admin"))
                     {
-                        // Redirect admin to Admin area dashboard
                         return RedirectToAction("Dashboard", "Admin", new { area = "Admin" });
                     }
 
                     return LocalRedirect(returnUrl);
                 }
-
                 if (result.RequiresTwoFactor)
                 {
                     return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
                 }
-
                 if (result.IsLockedOut)
                 {
                     _logger.LogWarning("User account locked out.");
                     return RedirectToPage("./Lockout");
                 }
-
-                ModelState.AddModelError(string.Empty, "Email hoặc mật khẩu không chính xác.");
-                return Page();
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Email hoặc mật khẩu không chính xác.");
+                    return Page();
+                }
             }
 
             // If we got this far, something failed, redisplay form

@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "Đăng nhập";
+    Layout = null; // Trang login thường không có layout chung
 }
 
 <!DOCTYPE html>
@@ -13,17 +14,15 @@
     <title>@ViewData["Title"] - HomeStyle</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <style>
         :root {
-            --primary-color: #2c3e50; /* Màu chính (xanh đen) */
-            --secondary-color: #3498db; /* Màu phụ (xanh dương) */
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
             --light-gray: #f8f9fa;
             --text-color: #34495e;
             --border-radius: 8px;
@@ -32,6 +31,7 @@
         body {
             font-family: 'Be Vietnam Pro', sans-serif;
             color: var(--text-color);
+            background-color: var(--light-gray);
         }
 
         .login-wrapper {
@@ -73,8 +73,6 @@
                 margin-bottom: 2rem;
                 text-align: center;
             }
-
-        /* --- Form Elements --- */
 
         .form-floating > .form-control {
             border-radius: var(--border-radius);
@@ -193,15 +191,13 @@
                     text-decoration: underline;
                 }
 
-
-        /* --- Responsive --- */
         @@media (max-width: 992px) {
             .login-image-side {
-                display: none; /* Ẩn ảnh nền trên mobile để tập trung vào form */
+                display: none;
             }
 
             .login-form-side {
-                flex: auto; /* Chiếm toàn bộ không gian */
+                flex: auto;
             }
         }
     </style>
@@ -209,28 +205,23 @@
 <body>
     <div class="login-wrapper">
         <div class="login-image-side"></div>
-
         <div class="login-form-side">
             <div class="login-box">
                 <h1 class="logo">HomeStyle</h1>
                 <p class="welcome-text">Chào mừng bạn đã quay trở lại!</p>
 
                 <form id="account" method="post">
-
-                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert" style="border-radius: var(--border-radius);"></div>
-
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert" style="border-radius: var(--border-radius); font-size: 0.9rem;"></div>
                     <div class="form-floating mb-3">
                         <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                         <label asp-for="Input.Email">Địa chỉ Email</label>
                         <span asp-validation-for="Input.Email" class="text-danger small mt-1"></span>
                     </div>
-
                     <div class="form-floating mb-3">
                         <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
                         <label asp-for="Input.Password">Mật khẩu</label>
                         <span asp-validation-for="Input.Password" class="text-danger small mt-1"></span>
                     </div>
-
                     <div class="auth-options">
                         <div class="form-check">
                             <input class="form-check-input" asp-for="Input.RememberMe" />
@@ -238,36 +229,42 @@
                         </div>
                         <a id="forgot-password" asp-page="./ForgotPassword">Quên mật khẩu?</a>
                     </div>
-
                     <button id="login-submit" type="submit" class="btn-auth-primary w-100">Đăng nhập</button>
+                </form>
 
-                    <div class="auth-divider">hoặc</div>
+                <div class="auth-divider">hoặc</div>
 
-                    <div class="d-grid gap-2">
-                        @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+                <section>
+                    @{
+                        if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                        {
+                            <div>
+                                <p>
+                                    Chưa có dịch vụ đăng nhập ngoài nào được cấu hình.
+                                </p>
+                            </div>
+                        }
+                        else
                         {
                             <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="d-grid gap-2">
                                 @foreach (var provider in Model.ExternalLogins!)
                                 {
-                                    <button type="submit" class="btn-social" name="provider" value="@provider.Name">
-                                        <i class="fab fa-@(provider.Name.ToLower() == "google" ? "google" : "facebook-f") me-2"></i>
+                                    <button type="submit" class="btn-social" name="provider" value="@provider.Name" title="Đăng nhập bằng tài khoản @provider.DisplayName của bạn">
+                                        @if (provider.Name.ToLower().Contains("google"))
+                                        {
+                                            <i class="fab fa-google me-2"></i>
+                                        }
+                                        else if (provider.Name.ToLower().Contains("facebook"))
+                                        {
+                                            <i class="fab fa-facebook-f me-2"></i>
+                                        }
                                         Tiếp tục với @provider.DisplayName
                                     </button>
                                 }
                             </form>
                         }
-                        else
-                        {
-                            <a href="#" class="btn-social">
-                                <i class="fab fa-google me-2"></i> Tiếp tục với Google
-                            </a>
-                            <a href="#" class="btn-social">
-                                <i class="fab fa-facebook-f me-2"></i> Tiếp tục với Facebook
-                            </a>
-                        }
-                    </div>
-
-                </form>
+                    }
+                </section>
 
                 <div class="auth-footer">
                     <p>Chưa có tài khoản? <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Đăng ký ngay</a></p>

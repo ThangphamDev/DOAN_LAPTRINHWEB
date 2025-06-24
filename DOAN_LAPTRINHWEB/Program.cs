@@ -1,6 +1,8 @@
 using DOAN_LAPTRINHWEB.Filters;
 using DOAN_LAPTRINHWEB.Models;
 using DOAN_LAPTRINHWEB.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +16,6 @@ builder.Services.AddControllersWithViews();
 // Cấu hình DbContext
 builder.Services.AddDbContext<HomeStylesDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("HomeStylesDb")));
-
 // Cấu hình Identity với role
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
@@ -23,6 +24,22 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<HomeStylesDbContext>()
 .AddDefaultTokenProviders()
 .AddDefaultUI();
+
+builder.Services.AddAuthentication()
+    .AddGoogle(googleOptions =>
+    {
+        // Đọc cấu hình từ file appsettings.json
+        IConfigurationSection googleAuthNSection =
+            builder.Configuration.GetSection("Authentication:Google");
+
+        // Gán ClientId và ClientSecret
+        googleOptions.ClientId = googleAuthNSection["ClientId"];
+        googleOptions.ClientSecret = googleAuthNSection["ClientSecret"];
+
+        // Callback path mặc định là /signin-google, khớp với cấu hình trên Google Console
+        // googleOptions.CallbackPath = "/signin-google"; 
+    });
+
 builder.Services.AddRazorPages();
 
 builder.Services.AddHttpContextAccessor();
